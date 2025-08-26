@@ -6,13 +6,21 @@ use Illuminate\Support\ServiceProvider;
 class ModuleServiceProvider extends ServiceProvider
 {
     /**
-     * Register services: register autoloaders and providers for enabled modules.
+     * Register services.
      */
     public function register(): void
     {
-        // Try to load enabled modules from the database and register their autoloads/providers
+        // Don't access database during register phase - do it in boot instead
+    }
+
+    /**
+     * Bootstrap services: load routes and views for enabled modules.
+     */
+    public function boot(): void
+    {
         try {
-            if (!\Illuminate\Support\Facades\Schema::hasTable('modules')) {
+            // Check if we're in a context where database is available
+            if (!$this->app->bound('db') || !\Illuminate\Support\Facades\Schema::hasTable('modules')) {
                 return;
             }
 
@@ -40,38 +48,10 @@ class ModuleServiceProvider extends ServiceProvider
 
                 // register module-specific provider if provided
                 if (!empty($config['provider'])) {
-                    // provider class may become available after adding psr4 mapping
                     if (class_exists($config['provider'])) {
                         $this->app->register($config['provider']);
                     }
                 }
-            }
-        } catch (\Exception $e) {
-            // don't crash the application if DB isn't ready during early artisan commands
-            // Log::debug('Module loader skipped: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Bootstrap services: load routes and views for enabled modules.
-     */
-    public function boot(): void
-    {
-        try {
-            if (!\Illuminate\Support\Facades\Schema::hasTable('modules')) {
-                return;
-            }
-
-            $modules = \App\Models\Module::where('enabled', true)->get();
-
-            foreach ($modules as $module) {
-                $modulePath = base_path($module->path);
-                $moduleFile = $modulePath . '/module.php';
-                if (!file_exists($moduleFile)) {
-                    continue;
-                }
-
-                $config = include $moduleFile;
 
                 if (!empty($config['routes']) && file_exists($modulePath . '/' . $config['routes'])) {
                     $this->loadRoutesFrom($modulePath . '/' . $config['routes']);
@@ -82,7 +62,7 @@ class ModuleServiceProvider extends ServiceProvider
                 }
             }
         } catch (\Exception $e) {
-            // ignore
+            // Silently ignore database errors during boot
         }
     }
 }
