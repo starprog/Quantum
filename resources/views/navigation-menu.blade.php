@@ -55,9 +55,12 @@
                         </x-dropdown>
                     </div>
                 @else
-                    <!-- Log In button for guests -->
+                    <!-- Log In and Register buttons for guests -->
                     <a href="{{ route('login') }}" class="ms-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold">
                         Log In
+                    </a>
+                    <a href="{{ route('register') }}" class="ms-3 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold">
+                        Register
                     </a>
                 @endif
             </div>
