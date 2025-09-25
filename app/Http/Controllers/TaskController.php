@@ -9,7 +9,7 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = auth()->user()->tasks()->get();
         return view('tasks.index', compact('tasks'));
     }
 
@@ -19,7 +19,7 @@ class TaskController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        Task::create([
+        auth()->user()->tasks()->create([
             'name' => $request->name,
         ]);
 
