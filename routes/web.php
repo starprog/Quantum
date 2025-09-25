@@ -11,6 +11,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo');
+    Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
 });
 
 Route::get('/', function () {
