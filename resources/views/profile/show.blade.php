@@ -1,14 +1,8 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
-
     @section('content')
     <div class="flex justify-center pt-12">
         <div class="max-w-xl w-full bg-white p-6 rounded shadow">
-            <h1 class="text-2xl font-bold mb-4">Profile</h1>
+            <h1 class="text-2xl font-bold mb-4 text-center">Profile</h1>
             <div class="mb-4 flex items-center gap-4">
                 <img src="{{ $user->profile_photo_url }}" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover">
                 <form method="POST" action="{{ route('profile.photo') }}" enctype="multipart/form-data">
