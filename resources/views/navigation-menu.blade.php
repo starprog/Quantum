@@ -18,6 +18,9 @@
                     <x-nav-link href="{{ route('tasks.index') }}" :active="request()->routeIs('tasks.index')">
                         {{ __('To-Do List') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('time-tracker.index') }}" :active="request()->routeIs('time-tracker.index')">
+                        {{ __('Time Tracker') }}
+                    </x-nav-link>
                 </div>
             </div>
 

@@ -64,6 +64,11 @@ class User extends Authenticatable
         return $this->hasMany(Task::class);
     }
 
+    public function timeEntries()
+    {
+        return $this->hasMany(TimeEntry::class);
+    }
+
     public function getProfilePhotoUrlAttribute()
     {
         return $this->profile_photo_path
