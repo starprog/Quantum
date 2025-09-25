@@ -5,6 +5,27 @@
         </h2>
     </x-slot>
 
+    @section('content')
+    <div class="max-w-xl mx-auto mt-12 bg-white p-6 rounded shadow">
+        <h1 class="text-2xl font-bold mb-4">Profile</h1>
+        <div class="mb-4 flex items-center gap-4">
+            <img src="{{ $user->profile_photo_url }}" alt="Profile Photo" class="w-16 h-16 rounded-full object-cover">
+            <form method="POST" action="{{ route('profile.photo') }}" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="profile_photo" accept="image/*" required>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Upload</button>
+            </form>
+        </div>
+        <div class="mb-4">
+            <strong>Name:</strong> {{ $user->name }}
+        </div>
+        <div class="mb-4">
+            <strong>Email:</strong> {{ $user->email }}
+        </div>
+        <!-- Add more public fields as needed -->
+    </div>
+    @endsection
+
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @if (Laravel\Fortify\Features::canUpdateProfileInformation())
