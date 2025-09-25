@@ -25,4 +25,12 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.show');
     }
+    public function toggleTheme(Request $request)
+    {
+        $user = auth()->user();
+        $user->theme = $user->theme === 'dark' ? 'light' : 'dark';
+        $user->save();
+
+        return back();
+    }
 }

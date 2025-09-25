@@ -17,6 +17,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/time-tracker', [TimeEntryController::class, 'index'])->name('time-tracker.index');
     Route::post('/time-tracker/clock-in', [TimeEntryController::class, 'clockIn'])->name('time-tracker.clock-in');
     Route::post('/time-tracker/clock-out', [TimeEntryController::class, 'clockOut'])->name('time-tracker.clock-out');
+    Route::post('/toggle-theme', [ProfileController::class, 'toggleTheme'])->name('toggle-theme');
 });
 
 Route::get('/', function () {
