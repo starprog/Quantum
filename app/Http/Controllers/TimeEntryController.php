@@ -18,7 +18,15 @@ class TimeEntryController extends Controller
         $entries = $user->timeEntries()->orderBy('clock_in', 'desc')->get();
         $activeEntry = $user->timeEntries()->whereNull('clock_out')->latest()->first();
 
-        return view('time-tracker.index', compact('entries', 'activeEntry'));
+        // Calculate total minutes for completed sessions
+        $totalMinutes = $entries->reduce(function ($carry, $entry) {
+            if ($entry->clock_out) {
+                return $carry + $entry->clock_in->diffInMinutes($entry->clock_out);
+            }
+            return $carry;
+        }, 0);
+
+        return view('time-tracker.index', compact('entries', 'activeEntry', 'totalMinutes'));
     }
 
     /**

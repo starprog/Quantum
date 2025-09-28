@@ -5,12 +5,14 @@
     <div class="w-full max-w-xl bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-4 text-center">Time Tracker</h1>
 
+        {{-- Display error message if present --}}
         @if(session('error'))
             <div class="mb-4 text-red-600 font-bold text-center">
                 {{ session('error') }}
             </div>
         @endif
 
+        {{-- Clock In/Out Button and Status --}}
         <div class="mb-6 text-center">
             @if($activeEntry)
                 <form method="POST" action="{{ route('time-tracker.clock-out') }}">
@@ -41,6 +43,7 @@
                 </tr>
             </thead>
             <tbody>
+                {{-- List all time entries --}}
                 @foreach($entries as $entry)
                     <tr>
                         <td class="px-2 py-1 border">{{ $entry->clock_in->format('M d, Y') }}</td>
@@ -49,14 +52,31 @@
                             {{ $entry->clock_out ? $entry->clock_out->format('g:i A') : '—' }}
                         </td>
                         <td class="px-2 py-1 border">
+                            {{-- Show duration in hours and minutes if clocked out --}}
                             @if($entry->clock_out)
-                                {{ $entry->clock_in->diffForHumans($entry->clock_out, true) }}
+                                @php
+                                    $diffInMinutes = $entry->clock_in->diffInMinutes($entry->clock_out);
+                                    $hours = intdiv($diffInMinutes, 60);
+                                    $minutes = $diffInMinutes % 60;
+                                @endphp
+                                {{ $hours > 0 ? $hours . 'h ' : '' }}{{ $minutes }}m
                             @else
                                 —
                             @endif
                         </td>
                     </tr>
                 @endforeach
+                {{-- Display total time for all sessions --}}
+                @php
+                    $totalHours = intdiv($totalMinutes, 60);
+                    $totalMins = $totalMinutes % 60;
+                @endphp
+                <tr>
+                    <td colspan="3" class="px-2 py-1 border font-bold text-right">Total Time:</td>
+                    <td class="px-2 py-1 border font-bold">
+                        {{ $totalHours > 0 ? $totalHours . 'h ' : '' }}{{ $totalMins }}m
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
