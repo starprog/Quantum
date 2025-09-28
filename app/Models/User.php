@@ -59,16 +59,31 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Get the tasks for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function tasks()
     {
         return $this->hasMany(Task::class);
     }
 
+    /**
+     * Get the time entries for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function timeEntries()
     {
         return $this->hasMany(TimeEntry::class);
     }
 
+    /**
+     * Get the URL to the user's profile photo.
+     *
+     * @return string
+     */
     public function getProfilePhotoUrlAttribute()
     {
         return $this->profile_photo_path

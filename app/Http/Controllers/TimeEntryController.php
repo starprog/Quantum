@@ -7,6 +7,11 @@ use App\Models\TimeEntry;
 
 class TimeEntryController extends Controller
 {
+    /**
+     * Display the time tracker page with all time entries and the current active entry.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $user = auth()->user();
@@ -16,6 +21,13 @@ class TimeEntryController extends Controller
         return view('time-tracker.index', compact('entries', 'activeEntry'));
     }
 
+    /**
+     * Clock in the authenticated user by creating a new time entry.
+     * Prevents multiple active sessions.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function clockIn(Request $request)
     {
         $user = auth()->user();
@@ -32,6 +44,12 @@ class TimeEntryController extends Controller
         return redirect()->route('time-tracker.index');
     }
 
+    /**
+     * Clock out the authenticated user by updating the latest active time entry.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function clockOut(Request $request)
     {
         $user = auth()->user();
