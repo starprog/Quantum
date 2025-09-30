@@ -14,7 +14,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = auth()->user()->tasks()->orderBy('order')->get();
+        $tasks = auth()->user()->tasks()
+            ->orderBy('completed') // incomplete (0) first, completed (1) last
+            ->orderBy('order')     // then by custom order
+            ->get();
         return view('tasks.index', compact('tasks'));
     }
 
