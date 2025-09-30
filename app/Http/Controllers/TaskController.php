@@ -14,7 +14,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = auth()->user()->tasks()->get();
+        $tasks = auth()->user()->tasks()->orderBy('order')->get();
         return view('tasks.index', compact('tasks'));
     }
 
@@ -61,5 +61,19 @@ class TaskController extends Controller
         $task->save();
 
         return redirect()->route('tasks.index');
+    }
+
+    /**
+     * Update the order of tasks based on drag-and-drop sorting.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reorder(Request $request)
+    {
+        foreach ($request->order as $index => $id) {
+            Task::where('id', $id)->update(['order' => $index]);
+        }
+        return response()->json(['status' => 'success']);
     }
 }

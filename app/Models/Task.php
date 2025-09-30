@@ -14,7 +14,7 @@ class Task extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'user_id', 'completed'];
+    protected $fillable = ['name', 'user_id', 'completed', 'order'];
 
     /**
      * Get the user that owns the task.

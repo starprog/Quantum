@@ -21,9 +21,10 @@
                 Add Task
             </button>
         </form>
-        <ul>
+        {{-- Drag-and-drop enabled task list --}}
+        <ul id="task-list">
             @foreach ($tasks as $task)
-                <li class="flex justify-between items-center mb-2 border-b pb-2">
+                <li data-id="{{ $task->id }}" class="flex justify-between items-center mb-2 border-b pb-2">
                     <div class="flex items-center gap-2">
                         <form method="POST" action="{{ route('tasks.toggle', $task) }}">
                             @csrf
@@ -44,3 +45,29 @@
     </div>
 </div>
 @endsection
+
+{{-- SortableJS CDN script for drag-and-drop functionality --}}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var el = document.getElementById('task-list');
+        var sortable = Sortable.create(el, {
+            animation: 150,
+            onEnd: function (evt) {
+                let order = [];
+                document.querySelectorAll('#task-list li').forEach((li) => {
+                    order.push(li.getAttribute('data-id'));
+                });
+
+                fetch("{{ route('tasks.reorder') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ order: order })
+                });
+            }
+        });
+    });
+</script>
