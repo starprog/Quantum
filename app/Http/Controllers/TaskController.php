@@ -8,17 +8,27 @@ use App\Models\Task;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the authenticated user's tasks.
+     * Display a listing of the authenticated user's tasks,
+     * ordered with incomplete tasks first and completed tasks last.
+     * Also calculates metrics for total, completed, and incomplete tasks.
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
+        // Get tasks ordered by completion status and custom order
         $tasks = auth()->user()->tasks()
-            ->orderBy('completed') // incomplete (0) first, completed (1) last
-            ->orderBy('order')     // then by custom order
+            ->orderBy('completed') // incomplete first, completed last
+            ->orderBy('order')     // then by drag-and-drop order
             ->get();
-        return view('tasks.index', compact('tasks'));
+
+        // Calculate metrics for display
+        $totalTasks = $tasks->count();
+        $completedTasks = $tasks->where('completed', true)->count();
+        $incompleteTasks = $tasks->where('completed', false)->count();
+
+        // Pass tasks and metrics to the view
+        return view('tasks.index', compact('tasks', 'totalTasks', 'completedTasks', 'incompleteTasks'));
     }
 
     /**
