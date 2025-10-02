@@ -92,4 +92,23 @@ class TaskController extends Controller
         }
         return response()->json(['status' => 'success']);
     }
+
+    /**
+     * Move a task to a new category after drag-and-drop.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function move(Request $request)
+    {
+        // Find the task by ID
+        $task = Task::findOrFail($request->task_id);
+
+        // Update the category_id to the new category
+        $task->category_id = $request->category_id;
+        $task->save();
+
+        // Respond with success
+        return response()->json(['status' => 'success']);
+    }
 }

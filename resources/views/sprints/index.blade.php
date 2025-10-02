@@ -9,18 +9,31 @@
             @foreach($categories as $category)
                 <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4">
                     <h2 class="text-lg font-bold mb-4 text-center">{{ $category->name }}</h2>
-                    <div class="flex-1 flex flex-col gap-4">
-                        {{-- Only "To Do" column gets tasks for now --}}
+                    <div class="flex-1 flex flex-col gap-4 task-dropzone" data-category="{{ $category->id }}">
                         @if($category->name === 'To Do')
+                            @php
+                                $todoTasks = auth()->user()->tasks()
+                                    ->where('completed', false)
+                                    ->where(function($q) use ($category) {
+                                        $q->whereNull('category_id')
+                                          ->orWhere('category_id', $category->id);
+                                    })->get();
+                            @endphp
                             @forelse($todoTasks as $task)
-                                <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow">
+                                <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}">
                                     <div class="font-semibold">{{ $task->name }}</div>
                                 </div>
                             @empty
                                 <div class="text-gray-400 text-center">No tasks to do.</div>
                             @endforelse
                         @else
-                            <div class="text-gray-400 text-center">No tasks yet.</div>
+                            @forelse($category->tasks as $task)
+                                <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}">
+                                    <div class="font-semibold">{{ $task->name }}</div>
+                                </div>
+                            @empty
+                                <div class="text-gray-400 text-center">No tasks in this category.</div>
+                            @endforelse
                         @endif
                     </div>
                 </div>
@@ -28,4 +41,25 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+    document.querySelectorAll('.task-dropzone').forEach(function(dropzone) {
+        Sortable.create(dropzone, {
+            group: 'tasks',
+            animation: 150,
+            onAdd: function (evt) {
+                let taskId = evt.item.getAttribute('data-id');
+                let newCategoryId = evt.to.getAttribute('data-category');
+                fetch("{{ route('tasks.move') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    body: JSON.stringify({ task_id: taskId, category_id: newCategoryId })
+                });
+            }
+        });
+    });
+</script>
 @endsection

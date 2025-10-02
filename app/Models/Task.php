@@ -14,7 +14,7 @@ class Task extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'user_id', 'completed', 'order'];
+    protected $fillable = ['name', 'user_id', 'completed', 'order', 'category_id'];
 
     /**
      * Get the user that owns the task.
@@ -24,5 +24,15 @@ class Task extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the category that the task belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
