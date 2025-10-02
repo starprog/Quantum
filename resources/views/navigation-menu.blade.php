@@ -21,6 +21,9 @@
                     <x-nav-link href="{{ route('time-tracker.index') }}" :active="request()->routeIs('time-tracker.index')">
                         {{ __('Time Tracker') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('sprints.index') }}" :active="request()->routeIs('sprints.index')">
+                        {{ __('Sprint Manager') }}
+                    </x-nav-link>
                 </div>
             </div>
 
