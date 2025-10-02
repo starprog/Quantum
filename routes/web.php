@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeEntryController;
+use App\Http\Controllers\CategoryController;
 use App\Models\Category;
 
 // Routes that require authentication
@@ -51,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
 
         return view('sprints.index', compact('categories', 'todoTasks'));
     })->name('sprints.index');
+
+    // Category routes
+    Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 });
 
 // Public home page route
