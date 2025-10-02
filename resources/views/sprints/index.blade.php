@@ -82,6 +82,9 @@
         Sortable.create(dropzone, {
             group: 'tasks',
             animation: 150,
+            scroll: true, // Enable auto-scroll
+            scrollSensitivity: 60,
+            scrollSpeed: 20,
             onAdd: function (evt) {
                 let taskId = evt.item.getAttribute('data-id');
                 let newCategoryId = evt.to.getAttribute('data-category');
@@ -115,7 +118,10 @@
     // Enable drag-and-drop for categories
     Sortable.create(document.getElementById('category-list'), {
         animation: 150,
-        handle: '.category-header', // Add this class to your category header for drag handle
+        handle: '.category-header',
+        scroll: true, // Enable auto-scroll
+        scrollSensitivity: 60, // px from edge to start scrolling
+        scrollSpeed: 20, // px per frame
         onEnd: function (evt) {
             let order = [];
             document.querySelectorAll('#category-list > [data-id]').forEach((el) => {
