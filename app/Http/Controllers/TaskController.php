@@ -42,15 +42,19 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        $request->validate(['name' => 'required|string|max:255']);
+        $user = auth()->user();
 
-        auth()->user()->tasks()->create([
+        // Find the "To Do" category for this user
+        $todoCategory = $user->categories()->where('name', 'To Do')->first();
+
+        $task = $user->tasks()->create([
             'name' => $request->name,
+            'completed' => false,
+            'category_id' => $todoCategory ? $todoCategory->id : null,
         ]);
 
-        return redirect()->route('tasks.index');
+        return response()->json(['status' => 'success', 'task' => $task]);
     }
 
     /**

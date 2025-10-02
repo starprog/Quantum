@@ -3,10 +3,15 @@
 @section('content')
 <div class="flex justify-center pt-12">
     <div class="w-full max-w-7xl bg-white p-6 rounded shadow">
-        <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center justify-between mb-8 relative">
             <h1 class="text-2xl font-bold text-center flex-1">Project Sprint Manager</h1>
-            <!-- + Button for adding a new category, top right -->
-            <button id="add-category-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Add Category">+</button>
+            <div class="relative">
+                <button id="add-menu-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Add">+</button>
+                <div id="add-menu-dropdown" class="absolute right-0 mt-2 bg-white border rounded shadow p-2 hidden z-10">
+                    <button id="add-category-btn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Add Category</button>
+                    <button id="add-task-btn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Add Task</button>
+                </div>
+            </div>
         </div>
         <div class="flex items-center">
             <!-- Left Arrow Button -->
@@ -76,6 +81,17 @@
                 <div class="flex justify-end gap-2">
                     <button id="cancel-category-btn" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
                     <button id="confirm-category-btn" class="px-4 py-2 bg-blue-600 text-white rounded">Create</button>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for creating a new task -->
+        <div id="add-task-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center hidden">
+            <div class="bg-white p-6 rounded shadow w-80">
+                <h2 class="text-lg font-bold mb-4">Create New Task</h2>
+                <input type="text" id="new-task-name" class="w-full border rounded px-3 py-2 mb-4" placeholder="Task name">
+                <div class="flex justify-end gap-2">
+                    <button id="cancel-task-btn" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                    <button id="confirm-task-btn" class="px-4 py-2 bg-blue-600 text-white rounded">Create</button>
                 </div>
             </div>
         </div>
@@ -190,6 +206,49 @@
               }
           });
     };
+
+    // Show modal when "Add Task" is clicked
+    document.getElementById('add-task-btn').onclick = function() {
+        document.getElementById('add-task-modal').style.display = 'flex';
+        document.getElementById('add-menu-dropdown').style.display = 'none';
+    };
+    // Hide modal when cancel is clicked
+    document.getElementById('cancel-task-btn').onclick = function() {
+        document.getElementById('add-task-modal').style.display = 'none';
+        document.getElementById('new-task-name').value = '';
+    };
+
+    // Handle task creation
+    document.getElementById('confirm-task-btn').onclick = function() {
+        let name = document.getElementById('new-task-name').value.trim();
+        if (name.length === 0) return;
+
+        fetch("{{ route('tasks.store') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ name: name })
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  location.reload();
+              }
+          });
+    };
+
+    // Show/hide the add menu dropdown
+    document.getElementById('add-menu-btn').onclick = function() {
+        const dropdown = document.getElementById('add-menu-dropdown');
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    };
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#add-menu-btn') && !e.target.closest('#add-menu-dropdown')) {
+            document.getElementById('add-menu-dropdown').style.display = 'none';
+        }
+    });
 
     /**
      * Show the actions dropdown for the selected category.
