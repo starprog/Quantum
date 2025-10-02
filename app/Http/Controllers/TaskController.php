@@ -27,8 +27,11 @@ class TaskController extends Controller
         $completedTasks = $tasks->where('completed', true)->count();
         $incompleteTasks = $tasks->where('completed', false)->count();
 
+        // Calculate percentage completed
+        $percentComplete = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+
         // Pass tasks and metrics to the view
-        return view('tasks.index', compact('tasks', 'totalTasks', 'completedTasks', 'incompleteTasks'));
+        return view('tasks.index', compact('tasks', 'totalTasks', 'completedTasks', 'incompleteTasks', 'percentComplete'));
     }
 
     /**

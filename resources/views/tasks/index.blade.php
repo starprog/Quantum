@@ -14,6 +14,27 @@
             <span class="text-blue-600 font-bold">To Do:</span> {{ $incompleteTasks }}
         </div>
 
+        {{-- Percentage completed progress bar --}}
+        {{-- Green for completed portion, red for incomplete portion --}}
+        <div class="mb-4">
+            <div class="w-full bg-red-200 rounded-full h-6 flex overflow-hidden">
+                <div
+                    class="h-6 bg-green-500 flex items-center justify-center"
+                    style="width: {{ $percentComplete }}%;">
+                    @if($percentComplete > 10)
+                        <span class="text-white font-bold px-2">{{ $percentComplete }}%</span>
+                    @endif
+                </div>
+                <div
+                    class="h-6 bg-red-500 flex items-center justify-center"
+                    style="width: {{ 100 - $percentComplete }}%;">
+                    @if($percentComplete <= 90)
+                        <span class="text-white font-bold px-2">{{ 100 - $percentComplete }}% left</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+
         <form method="POST" action="{{ route('tasks.store') }}" class="mb-4 flex gap-2">
             @csrf
             <input 
