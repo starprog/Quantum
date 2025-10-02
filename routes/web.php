@@ -29,13 +29,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/time-tracker/clock-out', [TimeEntryController::class, 'clockOut'])->name('time-tracker.clock-out');
 
     // Sprint Manager page route
-    Route::get('/sprints', function () {
+    Route::middleware(['auth'])->get('/sprints', function () {
         $user = auth()->user();
+        $defaultNames = ['To Do', 'In Progress', 'Done'];
 
-        // Check if user has any categories; if not, create defaults
-        if ($user->categories()->count() === 0) {
-            $defaults = ['To Do', 'In Progress', 'Done'];
-            foreach ($defaults as $i => $name) {
+        // Ensure each default category exists for the user
+        foreach ($defaultNames as $i => $name) {
+            if (!$user->categories()->where('name', $name)->exists()) {
                 Category::create([
                     'user_id' => $user->id,
                     'name' => $name,
@@ -47,16 +47,15 @@ Route::middleware(['auth'])->group(function () {
         // Fetch all categories for the user, ordered by 'order'
         $categories = $user->categories()->orderBy('order')->get();
 
-        // Fetch incomplete tasks for "To Do" column
-        $todoTasks = $user->tasks()->where('completed', false)->get();
-
-        return view('sprints.index', compact('categories', 'todoTasks'));
+        return view('sprints.index', compact('categories'));
     })->name('sprints.index');
 
     // Category routes
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     // Route to delete a category via AJAX from the Sprint Manager
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    // Route to handle drag-and-drop resequencing of categories
+    Route::post('/categories/reorder', [CategoryController::class, 'reorder'])->name('categories.reorder');
 });
 
 // Public home page route

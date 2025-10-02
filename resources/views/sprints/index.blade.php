@@ -5,10 +5,12 @@
     <div class="w-full max-w-6xl bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-8 text-center">Project Sprint Manager</h1>
         {{-- Horizontal scrollable board for categories --}}
-        <div class="flex gap-6 overflow-x-auto items-start">
+        <div id="category-list" class="flex gap-6 overflow-x-auto items-start">
             @foreach($categories as $category)
-                <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4 relative group">
-                    <h2 class="text-lg font-bold mb-4 text-center">{{ $category->name }}</h2>
+                <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4 relative group" data-id="{{ $category->id }}">
+                    <h2 class="category-header text-lg font-bold mb-4 text-center cursor-move">
+                        {{ $category->name }}
+                    </h2>
                     {{-- More actions button, only visible when hovering over the category pane --}}
                     <button
                         class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
@@ -108,6 +110,34 @@
                 }
             }
         });
+    });
+
+    // Enable drag-and-drop for categories
+    Sortable.create(document.getElementById('category-list'), {
+        animation: 150,
+        handle: '.category-header', // Add this class to your category header for drag handle
+        onEnd: function (evt) {
+            let order = [];
+            document.querySelectorAll('#category-list > [data-id]').forEach((el) => {
+                order.push(el.getAttribute('data-id'));
+            });
+
+            // Send new order to backend
+            fetch("{{ route('categories.reorder') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ order: order })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status !== 'success') {
+                      alert(data.message);
+                      location.reload();
+                  }
+              });
+        }
     });
 
     // Show modal when "+" button is clicked
