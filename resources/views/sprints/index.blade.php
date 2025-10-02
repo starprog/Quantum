@@ -7,8 +7,21 @@
         {{-- Horizontal scrollable board for categories --}}
         <div class="flex gap-6 overflow-x-auto items-start">
             @foreach($categories as $category)
-                <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4">
+                <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4 relative group">
                     <h2 class="text-lg font-bold mb-4 text-center">{{ $category->name }}</h2>
+                    {{-- More actions button, only visible when hovering over the category pane --}}
+                    <button
+                        class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
+                        title="More actions"
+                        onclick="showCategoryActions({{ $category->id }})"
+                    >&#x2026;</button>
+                    {{-- Actions dropdown menu, hidden by default --}}
+                    <div id="category-actions-{{ $category->id }}" class="absolute top-10 right-2 bg-white border rounded shadow p-2 hidden z-10">
+                        <button
+                            class="text-red-600 hover:underline"
+                            onclick="deleteCategory({{ $category->id }})"
+                        >Delete Category</button>
+                    </div>
                     <div class="flex-1 flex flex-col gap-4 task-dropzone" data-category="{{ $category->id }}">
                         @if($category->name === 'To Do')
                             @php
@@ -127,5 +140,48 @@
               }
           });
     };
+
+    /**
+     * Show the actions dropdown for the selected category.
+     * Hides all other action menus before showing the selected one.
+     *
+     * @param {number} categoryId - The ID of the category to show actions for.
+     */
+    function showCategoryActions(categoryId) {
+        // Hide all other action menus
+        document.querySelectorAll('[id^="category-actions-"]').forEach(el => el.style.display = 'none');
+        // Show the selected category's actions menu
+        document.getElementById('category-actions-' + categoryId).style.display = 'block';
+    }
+
+    /**
+     * Hide all actions menus when clicking outside of any category pane or actions menu.
+     */
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.group') && !e.target.closest('[id^="category-actions-"]')) {
+            document.querySelectorAll('[id^="category-actions-"]').forEach(el => el.style.display = 'none');
+        }
+    });
+
+    /**
+     * Delete a category via AJAX.
+     * Prompts for confirmation before sending the delete request.
+     *
+     * @param {number} categoryId - The ID of the category to delete.
+     */
+    function deleteCategory(categoryId) {
+        if (!confirm('Are you sure you want to delete this category?')) return;
+        fetch("{{ url('/categories') }}/" + categoryId, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            }
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  location.reload();
+              }
+          });
+    }
 </script>
 @endsection

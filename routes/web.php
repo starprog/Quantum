@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Category routes
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    // Route to delete a category via AJAX from the Sprint Manager
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
 // Public home page route
