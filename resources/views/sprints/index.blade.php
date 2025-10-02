@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="flex justify-center pt-12">
-    <div class="w-full max-w-6xl bg-white p-6 rounded shadow">
+    <div class="w-full max-w-7xl bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-8 text-center">Project Sprint Manager</h1>
         {{-- Horizontal scrollable board for categories --}}
         <div id="category-list" class="flex gap-6 overflow-x-auto items-start">
@@ -83,7 +83,7 @@
             group: 'tasks',
             animation: 150,
             scroll: true, // Enable auto-scroll
-            scrollSensitivity: 60,
+            scrollSensitivity: 200, // Wider margin for autoscroll activation
             scrollSpeed: 20,
             onAdd: function (evt) {
                 let taskId = evt.item.getAttribute('data-id');
