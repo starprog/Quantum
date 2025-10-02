@@ -3,7 +3,11 @@
 @section('content')
 <div class="flex justify-center pt-12">
     <div class="w-full max-w-7xl bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-8 text-center">Project Sprint Manager</h1>
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-2xl font-bold text-center flex-1">Project Sprint Manager</h1>
+            <!-- + Button for adding a new category, top right -->
+            <button id="add-category-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Add Category">+</button>
+        </div>
         <div class="flex items-center">
             <!-- Left Arrow Button -->
             <button id="scroll-left" class="mx-2 bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Scroll left">
