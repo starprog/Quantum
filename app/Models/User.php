@@ -80,6 +80,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the categories for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    /**
      * Get the URL to the user's profile photo.
      *
      * @return string

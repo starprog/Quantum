@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TimeEntryController;
+use App\Models\Category;
 
 // Routes that require authentication
 Route::middleware(['auth'])->group(function () {
@@ -27,7 +28,27 @@ Route::middleware(['auth'])->group(function () {
 
     // Sprint Manager page route
     Route::get('/sprints', function () {
-        return view('sprints.index');
+        $user = auth()->user();
+
+        // Check if user has any categories; if not, create defaults
+        if ($user->categories()->count() === 0) {
+            $defaults = ['To Do', 'In Progress', 'Done'];
+            foreach ($defaults as $i => $name) {
+                Category::create([
+                    'user_id' => $user->id,
+                    'name' => $name,
+                    'order' => $i,
+                ]);
+            }
+        }
+
+        // Fetch all categories for the user, ordered by 'order'
+        $categories = $user->categories()->orderBy('order')->get();
+
+        // Fetch incomplete tasks for "To Do" column
+        $todoTasks = $user->tasks()->where('completed', false)->get();
+
+        return view('sprints.index', compact('categories', 'todoTasks'));
     })->name('sprints.index');
 });
 
