@@ -4,64 +4,65 @@
 <div class="flex justify-center pt-12">
     <div class="w-full max-w-7xl bg-white p-6 rounded shadow">
         <h1 class="text-2xl font-bold mb-8 text-center">Project Sprint Manager</h1>
-        {{-- Horizontal scrollable board for categories --}}
-        <div id="category-list" class="flex gap-6 overflow-x-auto items-start">
-            @foreach($categories as $category)
-                <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4 relative group" data-id="{{ $category->id }}">
-                    <h2 class="category-header text-lg font-bold mb-4 text-center cursor-move">
-                        {{ $category->name }}
-                    </h2>
-                    {{-- More actions button, only visible when hovering over the category pane --}}
-                    <button
-                        class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
-                        title="More actions"
-                        onclick="showCategoryActions({{ $category->id }})"
-                    >&#x2026;</button>
-                    {{-- Actions dropdown menu, hidden by default --}}
-                    <div id="category-actions-{{ $category->id }}" class="absolute top-10 right-2 bg-white border rounded shadow p-2 hidden z-10">
+        <div class="flex items-center">
+            <!-- Left Arrow Button -->
+            <button id="scroll-left" class="mx-2 bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Scroll left">
+                &#8592;
+            </button>
+            <!-- Category List -->
+            <div id="category-list" class="flex gap-6 overflow-x-auto items-start w-full">
+                @foreach($categories as $category)
+                    <div class="flex flex-col bg-gray-50 rounded-lg shadow min-w-[300px] max-w-xs p-4 relative group" data-id="{{ $category->id }}">
+                        <h2 class="category-header text-lg font-bold mb-4 text-center cursor-move">
+                            {{ $category->name }}
+                        </h2>
+                        {{-- More actions button, only visible when hovering over the category pane --}}
                         <button
-                            class="text-red-600 hover:underline"
-                            onclick="deleteCategory({{ $category->id }})"
-                        >Delete Category</button>
+                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
+                            title="More actions"
+                            onclick="showCategoryActions({{ $category->id }})"
+                        >&#x2026;</button>
+                        {{-- Actions dropdown menu, hidden by default --}}
+                        <div id="category-actions-{{ $category->id }}" class="absolute top-10 right-2 bg-white border rounded shadow p-2 hidden z-10">
+                            <button
+                                class="text-red-600 hover:underline"
+                                onclick="deleteCategory({{ $category->id }})"
+                            >Delete Category</button>
+                        </div>
+                        <div class="flex-1 flex flex-col gap-4 task-dropzone" data-category="{{ $category->id }}">
+                            @if($category->name === 'To Do')
+                                @php
+                                    $todoTasks = auth()->user()->tasks()
+                                        ->where('completed', false)
+                                        ->where(function($q) use ($category) {
+                                            $q->whereNull('category_id')
+                                              ->orWhere('category_id', $category->id);
+                                        })->get();
+                                @endphp
+                                @forelse($todoTasks as $task)
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}" draggable="true">
+                                        <div class="font-semibold">{{ $task->name }}</div>
+                                    </div>
+                                @empty
+                                    <div class="text-gray-400 text-center">No tasks to do.</div>
+                                @endforelse
+                            @else
+                                @forelse($category->tasks as $task)
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}" draggable="true">
+                                        <div class="font-semibold">{{ $task->name }}</div>
+                                    </div>
+                                @empty
+                                    <div class="text-gray-400 text-center">No tasks in this category.</div>
+                                @endforelse
+                            @endif
+                        </div>
                     </div>
-                    <div class="flex-1 flex flex-col gap-4 task-dropzone" data-category="{{ $category->id }}">
-                        @if($category->name === 'To Do')
-                            @php
-                                $todoTasks = auth()->user()->tasks()
-                                    ->where('completed', false)
-                                    ->where(function($q) use ($category) {
-                                        $q->whereNull('category_id')
-                                          ->orWhere('category_id', $category->id);
-                                    })->get();
-                            @endphp
-                            @forelse($todoTasks as $task)
-                                <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}">
-                                    <div class="font-semibold">{{ $task->name }}</div>
-                                </div>
-                            @empty
-                                <div class="text-gray-400 text-center">No tasks to do.</div>
-                            @endforelse
-                        @else
-                            @forelse($category->tasks as $task)
-                                <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}">
-                                    <div class="font-semibold">{{ $task->name }}</div>
-                                </div>
-                            @empty
-                                <div class="text-gray-400 text-center">No tasks in this category.</div>
-                            @endforelse
-                        @endif
-                    </div>
-                </div>
-            @endforeach
-
-            <!-- Add Category Button -->
-            <div class="flex flex-col justify-center items-center min-w-[100px]">
-                <button
-                    id="add-category-btn"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold"
-                    title="Add Category"
-                >+</button>
+                @endforeach
             </div>
+            <!-- Right Arrow Button -->
+            <button id="scroll-right" class="mx-2 bg-gray-200 hover:bg-gray-300 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Scroll right">
+                &#8594;
+            </button>
         </div>
         <!-- Modal for creating a new category -->
         <div id="add-category-modal" class="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center hidden">
@@ -78,6 +79,15 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
+    // Scroll left when left arrow is clicked
+    document.getElementById('scroll-left').onclick = function() {
+        document.getElementById('category-list').scrollBy({ left: -300, behavior: 'smooth' });
+    };
+    // Scroll right when right arrow is clicked
+    document.getElementById('scroll-right').onclick = function() {
+        document.getElementById('category-list').scrollBy({ left: 300, behavior: 'smooth' });
+    };
+
     document.querySelectorAll('.task-dropzone').forEach(function(dropzone) {
         Sortable.create(dropzone, {
             group: 'tasks',
@@ -120,7 +130,7 @@
         animation: 150,
         handle: '.category-header',
         scroll: true, // Enable auto-scroll
-        scrollSensitivity: 60, // px from edge to start scrolling
+        scrollSensitivity: 200, // Wider margin for autoscroll activation
         scrollSpeed: 20, // px per frame
         onEnd: function (evt) {
             let order = [];
@@ -219,5 +229,36 @@
               }
           });
     }
+
+    // Autoscroll when dragging over left/right arrow panes
+    let scrollInterval = null;
+
+    // Left pane autoscroll
+    document.getElementById('scroll-left-pane').addEventListener('dragenter', function() {
+        clearInterval(scrollInterval);
+        scrollInterval = setInterval(function() {
+            document.getElementById('category-list').scrollBy({ left: -30, behavior: 'auto' });
+        }, 50);
+    });
+    document.getElementById('scroll-left-pane').addEventListener('dragleave', function() {
+        clearInterval(scrollInterval);
+    });
+    document.getElementById('scroll-left-pane').addEventListener('drop', function() {
+        clearInterval(scrollInterval);
+    });
+
+    // Right pane autoscroll
+    document.getElementById('scroll-right-pane').addEventListener('dragenter', function() {
+        clearInterval(scrollInterval);
+        scrollInterval = setInterval(function() {
+            document.getElementById('category-list').scrollBy({ left: 30, behavior: 'auto' });
+        }, 50);
+    });
+    document.getElementById('scroll-right-pane').addEventListener('dragleave', function() {
+        clearInterval(scrollInterval);
+    });
+    document.getElementById('scroll-right-pane').addEventListener('drop', function() {
+        clearInterval(scrollInterval);
+    });
 </script>
 @endsection
