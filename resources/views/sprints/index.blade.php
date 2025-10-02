@@ -58,6 +58,21 @@
                     },
                     body: JSON.stringify({ task_id: taskId, category_id: newCategoryId })
                 });
+
+                // Hide the "No tasks in this category" watermark if present
+                let watermark = evt.to.querySelector('.text-gray-400.text-center');
+                if (watermark && evt.to.children.length > 1) {
+                    watermark.style.display = 'none';
+                }
+            },
+            onRemove: function (evt) {
+                // Show the watermark if the category is now empty
+                if (evt.from.children.length === 1) { // Only watermark remains
+                    let watermark = evt.from.querySelector('.text-gray-400.text-center');
+                    if (watermark) {
+                        watermark.style.display = '';
+                    }
+                }
             }
         });
     });
