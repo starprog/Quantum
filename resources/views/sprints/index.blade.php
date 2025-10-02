@@ -7,9 +7,9 @@
             <h1 class="text-2xl font-bold text-center flex-1">Project Sprint Manager</h1>
             <div class="relative">
                 <button id="add-menu-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold" title="Add">+</button>
-                <div id="add-menu-dropdown" class="absolute right-0 mt-2 bg-white border rounded shadow p-2 hidden z-10">
-                    <button id="add-category-btn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Add Category</button>
-                    <button id="add-task-btn" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Add Task</button>
+                <div id="add-menu-dropdown" class="absolute right-0 mt-2 bg-white border rounded shadow flex-nowrap flex z-10" style="white-space: nowrap; display: none;">
+                    <button id="add-category-btn" class="block text-left px-4 py-2 hover:bg-gray-100">Add Category</button>
+                    <button id="add-task-btn" class="block text-left px-4 py-2 hover:bg-gray-100">Add Task</button>
                 </div>
             </div>
         </div>
