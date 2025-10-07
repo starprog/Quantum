@@ -111,3 +111,20 @@
         });
     });
 </script>
+
+@php
+    // Get the "To Do" category for the current user
+    $todoCategory = auth()->user()->categories()->where('name', 'To Do')->first();
+
+    // Get all incomplete tasks that are either uncategorized or in the "To Do" category, ordered by 'order' DESC
+    $todoTasks = auth()->user()->tasks()
+        ->where('completed', false)
+        ->where(function($q) use ($todoCategory) {
+            $q->whereNull('category_id');
+            if ($todoCategory) {
+                $q->orWhere('category_id', $todoCategory->id);
+            }
+        })
+        ->orderBy('order', 'desc')
+        ->get();
+@endphp

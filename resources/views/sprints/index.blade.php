@@ -41,12 +41,18 @@
                         <div class="flex-1 flex flex-col gap-4 task-dropzone" data-category="{{ $category->id }}">
                             @if($category->name === 'To Do')
                                 @php
+                                    $todoCategory = auth()->user()->categories()->where('name', 'To Do')->first();
+
                                     $todoTasks = auth()->user()->tasks()
                                         ->where('completed', false)
-                                        ->where(function($q) use ($category) {
-                                            $q->whereNull('category_id')
-                                              ->orWhere('category_id', $category->id);
-                                        })->get();
+                                        ->where(function($q) use ($todoCategory) {
+                                            $q->whereNull('category_id');
+                                            if ($todoCategory) {
+                                                $q->orWhere('category_id', $todoCategory->id);
+                                            }
+                                        })
+                                        ->orderBy('order', 'asc')
+                                        ->get();
                                 @endphp
                                 @forelse($todoTasks as $task)
                                     <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}" draggable="true">
