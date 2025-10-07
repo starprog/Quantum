@@ -99,8 +99,9 @@ class TaskController extends Controller
      */
     public function reorder(Request $request)
     {
-        foreach ($request->order as $index => $id) {
-            Task::where('id', $id)->update(['order' => $index]);
+        $order = $request->order; // array of task IDs in new order
+        foreach ($order as $index => $taskId) {
+            Task::where('id', $taskId)->update(['order' => $index + 1]);
         }
         return response()->json(['status' => 'success']);
     }

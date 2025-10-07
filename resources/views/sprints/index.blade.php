@@ -139,6 +139,25 @@
                     watermark.style.display = 'none';
                 }
             },
+            onEnd: function (evt) {
+            // Only update order if this is the To Do category
+            if (dropzone.getAttribute('data-category') == '{{ $todoCategory->id ?? "" }}') {
+                let order = [];
+                dropzone.querySelectorAll('.draggable-task').forEach((el) => {
+                    order.push(el.getAttribute('data-id'));
+                });
+
+                fetch("{{ route('tasks.reorder') }}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "X-Requested-With": "XMLHttpRequest"
+                    },
+                    body: JSON.stringify({ order: order })
+                });
+            }
+            },
             onRemove: function (evt) {
                 // Show the watermark if the category is now empty
                 if (evt.from.children.length === 1) { // Only watermark remains

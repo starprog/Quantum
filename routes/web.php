@@ -15,7 +15,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
-    Route::post('/tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder');
+    Route::post('/tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder')->middleware('auth');
     Route::post('/tasks/move', [TaskController::class, 'move'])->name('tasks.move');
 
     // Profile routes
