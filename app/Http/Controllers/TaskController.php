@@ -45,16 +45,24 @@ class TaskController extends Controller
         $request->validate(['name' => 'required|string|max:255']);
         $user = auth()->user();
 
-        // Find the "To Do" category for this user
         $todoCategory = $user->categories()->where('name', 'To Do')->first();
+        $maxOrder = $user->tasks()
+            ->where('category_id', $todoCategory ? $todoCategory->id : null)
+            ->max('order');
 
         $task = $user->tasks()->create([
             'name' => $request->name,
             'completed' => false,
             'category_id' => $todoCategory ? $todoCategory->id : null,
+            'order' => $maxOrder !== null ? $maxOrder + 1 : 1,
         ]);
 
-        return response()->json(['status' => 'success', 'task' => $task]);
+        // If AJAX, return JSON. Otherwise, redirect back to the ToDo list page.
+        if ($request->ajax()) {
+            return response()->json(['status' => 'success', 'task' => $task]);
+        } else {
+            return redirect()->route('tasks.index'); // or your ToDo list route
+        }
     }
 
     /**
