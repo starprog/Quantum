@@ -127,14 +127,22 @@ class TaskController extends Controller
      */
     public function move(Request $request)
     {
-        // Find the task by ID
         $task = Task::findOrFail($request->task_id);
+        $categoryId = $request->category_id;
 
-        // Update the category_id to the new category
-        $task->category_id = $request->category_id;
+        // Find the "Done" category for this user
+        $doneCategory = $task->user->categories()->where('name', 'Done')->first();
+
+        // Mark as complete if moved to Done, incomplete otherwise
+        if ($doneCategory && $categoryId == $doneCategory->id) {
+            $task->completed = true;
+        } else {
+            $task->completed = false;
+        }
+
+        $task->category_id = $categoryId;
         $task->save();
 
-        // Respond with success
         return response()->json(['status' => 'success']);
     }
 }
