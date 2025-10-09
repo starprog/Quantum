@@ -42,7 +42,6 @@
                             @if($category->name === 'To Do')
                                 @php
                                     $todoCategory = auth()->user()->categories()->where('name', 'To Do')->first();
-
                                     $todoTasks = auth()->user()->tasks()
                                         ->where('completed', false)
                                         ->where(function($q) use ($todoCategory) {
@@ -55,7 +54,12 @@
                                         ->get();
                                 @endphp
                                 @forelse($todoTasks as $task)
-                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative" data-id="{{ $task->id }}" draggable="true">
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative"
+                                         data-id="{{ $task->id }}"
+                                         data-category="{{ $category->id }}"
+                                         draggable="true"
+                                         ondblclick="moveTaskToNextCategory({{ $task->id }}, {{ $category->id }})"
+                                    >
                                         <div class="font-semibold">{{ $task->name }}</div>
                                         <!-- More actions button, only visible on hover -->
                                         <button
@@ -78,7 +82,12 @@
                                 @endforelse
                             @else
                                 @forelse($category->tasks as $task)
-                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative" data-id="{{ $task->id }}" draggable="true">
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative"
+                                         data-id="{{ $task->id }}"
+                                         data-category="{{ $category->id }}"
+                                         draggable="true"
+                                         ondblclick="moveTaskToNextCategory({{ $task->id }}, {{ $category->id }})"
+                                    >
                                         <div class="font-semibold">{{ $task->name }}</div>
                                         <!-- More actions button, only visible on hover -->
                                         <button
@@ -421,5 +430,33 @@
     document.getElementById('scroll-right-pane').addEventListener('drop', function() {
         clearInterval(scrollInterval);
     });
+
+    function moveTaskToNextCategory(taskId, currentCategoryId) {
+        // Get all category elements in order
+        const categories = Array.from(document.querySelectorAll('#category-list > [data-id]'))
+            .map(el => parseInt(el.getAttribute('data-id')));
+        const currentIdx = categories.indexOf(currentCategoryId);
+
+        // If already in the last category, do nothing
+        if (currentIdx === -1 || currentIdx === categories.length - 1) return;
+
+        const nextCategoryId = categories[currentIdx + 1];
+
+        fetch("{{ route('tasks.move') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: JSON.stringify({ task_id: taskId, category_id: nextCategoryId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            }
+        });
+    }
 </script>
 @endsection
