@@ -282,15 +282,26 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-Requested-With": "XMLHttpRequest"
             },
             body: JSON.stringify({ name: name })
-        }).then(response => response.json())
-          .then(data => {
-              if (data.status === 'success') {
-                  location.reload();
-              }
-          });
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Close the modal and clear the input
+                document.getElementById('add-task-modal').style.display = 'none';
+                document.getElementById('new-task-name').value = '';
+                // Reload the page to show the new task
+                location.reload();
+            } else {
+                alert('Failed to create task.');
+            }
+        })
+        .catch(() => {
+            alert('There was an error creating the task.');
+        });
     };
 
     // Show/hide the add menu dropdown
@@ -373,6 +384,7 @@
         }).then(response => response.json())
           .then(data => {
               if (data.status === 'success') {
+                  // Remove the task card from the DOM
                   const taskCard = document.querySelector('.draggable-task[data-id="' + taskId + '"]');
                   if (taskCard) taskCard.remove();
               }
