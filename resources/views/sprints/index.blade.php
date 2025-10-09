@@ -55,16 +55,46 @@
                                         ->get();
                                 @endphp
                                 @forelse($todoTasks as $task)
-                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}" draggable="true">
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative" data-id="{{ $task->id }}" draggable="true">
                                         <div class="font-semibold">{{ $task->name }}</div>
+                                        <!-- More actions button, only visible on hover -->
+                                        <button
+                                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
+                                            title="More actions"
+                                            onclick="showTaskActions({{ $task->id }})"
+                                            type="button"
+                                        >&#x2026;</button>
+                                        <!-- Actions dropdown menu, hidden by default -->
+                                        <div id="task-actions-{{ $task->id }}" class="absolute top-10 right-2 bg-white border rounded shadow p-2 hidden z-10">
+                                            <button
+                                                class="text-red-600 hover:underline"
+                                                onclick="deleteTask({{ $task->id }})"
+                                                type="button"
+                                            >Delete Task</button>
+                                        </div>
                                     </div>
                                 @empty
                                     <div class="text-gray-400 text-center">No tasks to do.</div>
                                 @endforelse
                             @else
                                 @forelse($category->tasks as $task)
-                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task" data-id="{{ $task->id }}" draggable="true">
+                                    <div class="bg-blue-100 border border-blue-300 rounded p-3 shadow draggable-task group relative" data-id="{{ $task->id }}" draggable="true">
                                         <div class="font-semibold">{{ $task->name }}</div>
+                                        <!-- More actions button, only visible on hover -->
+                                        <button
+                                            class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-200 hover:bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center"
+                                            title="More actions"
+                                            onclick="showTaskActions({{ $task->id }})"
+                                            type="button"
+                                        >&#x2026;</button>
+                                        <!-- Actions dropdown menu, hidden by default -->
+                                        <div id="task-actions-{{ $task->id }}" class="absolute top-10 right-2 bg-white border rounded shadow p-2 hidden z-10">
+                                            <button
+                                                class="text-red-600 hover:underline"
+                                                onclick="deleteTask({{ $task->id }})"
+                                                type="button"
+                                            >Delete Task</button>
+                                        </div>
                                     </div>
                                 @empty
                                     <div class="text-gray-400 text-center">No tasks in this category.</div>
@@ -314,6 +344,37 @@
           .then(data => {
               if (data.status === 'success') {
                   location.reload();
+              }
+          });
+    }
+
+    function showTaskActions(taskId) {
+        // Hide all other task action menus
+        document.querySelectorAll('[id^="task-actions-"]').forEach(el => el.style.display = 'none');
+        // Show the selected task's actions menu
+        document.getElementById('task-actions-' + taskId).style.display = 'block';
+    }
+
+    // Hide all task actions menus when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.draggable-task') && !e.target.closest('[id^="task-actions-"]')) {
+            document.querySelectorAll('[id^="task-actions-"]').forEach(el => el.style.display = 'none');
+        }
+    });
+
+    function deleteTask(taskId) {
+        if (!confirm('Are you sure you want to delete this task?')) return;
+        fetch("{{ url('/tasks') }}/" + taskId, {
+            method: "DELETE",
+            headers: {
+                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  const taskCard = document.querySelector('.draggable-task[data-id="' + taskId + '"]');
+                  if (taskCard) taskCard.remove();
               }
           });
     }

@@ -13,7 +13,7 @@ Route::middleware(['auth'])->group(function () {
     // Task routes
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy')->middleware('auth');
     Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
     Route::post('/tasks/reorder', [TaskController::class, 'reorder'])->name('tasks.reorder')->middleware('auth');
     Route::post('/tasks/move', [TaskController::class, 'move'])->name('tasks.move');

@@ -42,7 +42,16 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required|string|max:255']);
+        if ($request->ajax()) {
+            try {
+                $request->validate(['name' => 'required|string|max:255']);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return response()->json(['status' => 'error', 'errors' => $e->errors()], 422);
+            }
+        } else {
+            $request->validate(['name' => 'required|string|max:255']);
+        }
+
         $user = auth()->user();
 
         $todoCategory = $user->categories()->where('name', 'To Do')->first();
@@ -73,8 +82,12 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        //$this->authorize('delete', $task);
         $task->delete();
-        return redirect()->route('tasks.index');
+        if (request()->ajax()) {
+            return response()->json(['status' => 'success']);
+        }
+        return redirect()->back()->with('status', 'Task deleted!');
     }
 
     /**
