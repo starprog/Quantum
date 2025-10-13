@@ -20,15 +20,19 @@ class BibleVerseService
 
     public function getAllCategories()
     {
-        return VerseCategory::all();
+        return VerseCategory::select(['id', 'name', 'description'])
+            ->orderBy('name')
+            ->get();
     }
 
-    public function getRandomVerse($categoryId = null)
+    public function getRandomVerse($category = null)
     {
         $query = Verse::with('category');
         
-        if ($categoryId) {
-            $query->where('category_id', $categoryId);
+        if ($category) {
+            $query->whereHas('category', function($q) use ($category) {
+                $q->where('name', $category);
+            });
         }
         
         return $query->inRandomOrder()->first();
