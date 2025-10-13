@@ -4,7 +4,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<<<<<<< HEAD
         <title>{{ config('app.name', 'Laravel') }}</title>
+=======
+        <title>Laravel</title>
+>>>>>>> origin/Spencer-Verses
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

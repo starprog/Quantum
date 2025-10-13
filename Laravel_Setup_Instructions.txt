@@ -1,0 +1,31 @@
+Laravel Project Setup Instructions
+==================================
+
+Follow these steps after pulling the repository to get the Laravel app working locally:
+
+1. Install Composer dependencies:
+   composer install
+
+2. Install NPM dependencies:
+   npm install
+
+3. Copy and configure the .env file:
+   - If .env is missing, copy .env.example to .env
+   - Update DB_DATABASE, DB_USERNAME, DB_PASSWORD for your MySQL setup
+
+4. Generate application key:
+   php artisan key:generate
+
+5. Run migrations:
+   php artisan migrate
+
+6. Build frontend assets:
+   npm run build
+
+7. Start the development server:
+   php artisan serve
+
+Notes:
+- Ensure MySQL is running and the database (quantum) exists or let Laravel create it during migration.
+- Jetstream and Livewire are installed; migrations will set up necessary tables.
+- For troubleshooting, check .env settings and database connection.

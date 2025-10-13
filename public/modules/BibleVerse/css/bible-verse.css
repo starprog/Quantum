@@ -1,0 +1,92 @@
+/* Main container styles */
+.bible-verse-container {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f6f8fa 0%, #ffffff 100%);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Pattern styles */
+.pattern-cross {
+    background-image: 
+        linear-gradient(currentColor 1px, transparent 1px),
+        linear-gradient(to right, currentColor 1px, transparent 1px);
+}
+
+.pattern-size-8 {
+    background-size: 32px 32px;
+}
+
+/* Grid background */
+.bg-grid-slate-100 {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(241 245 249 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+}
+
+/* Verse text styles */
+.bible-verse-text {
+    position: relative;
+    z-index: 1;
+    font-size: 1.25rem;
+    line-height: 1.75;
+    color: #1a202c;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.bible-verse-reference {
+    position: relative;
+    z-index: 1;
+    font-size: 1rem;
+    color: #4a5568;
+    text-align: right;
+    font-style: italic;
+}
+
+/* Refresh button styles */
+.bible-verse-refresh {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 0.2s ease-in-out;
+}
+
+.bible-verse-refresh:hover {
+    transform: rotate(180deg);
+}
+
+/* Animation utilities */
+.delay-1000 {
+    animation-delay: 1000ms;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Transition animations */
+.verse-enter-active, .verse-leave-active {
+    transition: all 0.5s ease;
+}
+
+.verse-enter-from, .verse-leave-to {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.bible-verse-animate {
+    animation: fadeIn 0.5s ease-out forwards;
+}

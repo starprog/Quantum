@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HomeController;
+<<<<<<< HEAD
 use App\Http\Controllers\BibleVerseController;
 
 // Public Bible verse routes
@@ -13,6 +14,20 @@ Route::get('/verses/random', [BibleVerseController::class, 'random'])->name('ver
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 });
+=======
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/checkout', [StripeController::class, 'show'])->name('checkout.show');
+Route::post('/checkout/session', [StripeController::class, 'createCheckoutSession'])->name('checkout.session');
+Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
+
+// Public route for hello module demo
+Route::get('/hello', function () {
+    return view('hello::index');
+})->name('hello');
+>>>>>>> origin/Spencer-Verses
 
 Route::middleware([
     'auth:sanctum',

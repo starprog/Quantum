@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <filter id='noise'>
+    <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feBlend in="SourceGraphic" mode="multiply"/>
+  </filter>
+  <rect width="400" height="400" fill="#ffffff" filter="url(#noise)" opacity="0.05"/>
+</svg>

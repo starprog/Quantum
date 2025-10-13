@@ -124,3 +124,9 @@ return [
     ],
 
 ];
+<<<<<<< HEAD
+=======
+
+// Register module service provider
+// Add to your providers array if you have one; we'll append dynamically to keep the file minimal
+>>>>>>> origin/Spencer-Verses
