@@ -1,72 +1,83 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-<<<<<<< HEAD
-            {{ __('Bible Verses') }}
-=======
             {{ __('Welcome to Quantum') }}
->>>>>>> origin/Spencer-Verses
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-<<<<<<< HEAD
-            <!-- Category Filter -->
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-8">
-                <div class="p-6">
-                    <form method="GET" action="{{ route('home') }}" class="space-y-4">
-                        <div class="flex items-center space-x-4">
-                            <select name="category" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                                <option value="">All Categories</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $selectedCategory == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                Filter
-                            </button>
+            <!-- Verse of the Day Section -->
+            @if($verseOfTheDay)
+            <div class="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 overflow-hidden shadow-xl sm:rounded-lg mb-8">
+                <div class="p-8 relative">
+                    <!-- Background patterns -->
+                    <div class="absolute inset-0 bg-repeat opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSIjZmZmIi8+PC9zdmc+')"></div>
+
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold text-white mb-2">Verse of the Day</h3>
+                        <div class="bg-white/90 backdrop-blur-lg rounded-xl p-6 shadow-lg">
+                            <div class="mb-4">
+                                <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
+                                    {{ $verseOfTheDay->category->name }}
+                                </span>
+                            </div>
+                            <p class="text-xl text-gray-800 mb-4">{{ $verseOfTheDay->verse }}</p>
+                            <p class="text-sm font-medium text-gray-600">— {{ $verseOfTheDay->reference }}</p>
                         </div>
-                    </form>
+                    </div>
+                </div>
+            </div>
+            @endif
+            <!-- Welcome Section -->
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to Quantum</h2>
+                    <p class="text-gray-600">Your journey to spiritual growth and enlightenment begins here.</p>
                 </div>
             </div>
 
-            <!-- Verses Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($verses as $verse)
-                    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                        <div class="p-6">
-                            <div class="flex justify-between items-start mb-4">
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $verse->reference }}</h3>
-                                <span class="px-2 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded">
-                                    {{ $verse->category->name }}
-                                </span>
-                            </div>
-                            <p class="text-gray-700">{{ $verse->verse }}</p>
-                        </div>
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                <!-- Bible Verse Feature -->
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Daily Verses</h3>
+                        <p class="text-gray-600 mb-4">Explore our collection of inspiring Bible verses for daily guidance and reflection.</p>
+                        <a href="{{ route('daily-verse') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                            View More
+                        </a>
                     </div>
-                @endforeach
+                </div>
+
+                <!-- Services Feature -->
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Our Services</h3>
+                        <p class="text-gray-600 mb-4">Discover the range of spiritual services and resources we offer.</p>
+                        <a href="{{ route('services') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Settings Feature -->
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Personalize</h3>
+                        <p class="text-gray-600 mb-4">Customize your experience and manage your preferences.</p>
+                        <a href="{{ route('settings') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                            Settings
+                        </a>
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
     </div>
 </x-app-layout>
 
-=======
-            <!-- Hero Section -->
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-8">
-                <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-                    <h1 class="text-2xl font-medium text-gray-900">
-                        Hello, {{ Auth::user()->name }}!
-                    </h1>
-                    <p class="mt-6 text-gray-500 leading-relaxed">
-                        Welcome to Quantum - your powerful modular application platform. Explore the features below to get started.
-                    </p>
-                </div>
-            </div>
 
->>>>>>> origin/Spencer-Verses
             <!-- Feature Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Dashboard Card -->

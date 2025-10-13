@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Verse;
 use App\Models\VerseCategory;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class BibleVerseService
 {
@@ -40,20 +40,25 @@ class BibleVerseService
 
     public function getVerseOfTheDay()
     {
-        // Use the current date as a seed to get a consistent verse for the whole day
-        $dayOfYear = now()->dayOfYear;
-        $year = now()->year;
-        
-        // Get total number of verses
-        $totalVerses = Verse::count();
-        
-        // Use the day and year to deterministically select a verse
-        // This ensures the same verse is shown all day, but changes daily
-        $index = (($dayOfYear + $year) % $totalVerses) + 1;
-        
-        return Verse::with('category')
-            ->skip($index - 1)
-            ->take(1)
-            ->first();
+        try {
+            // Get the total number of verses
+            $count = Verse::count();
+            if ($count === 0) {
+                return null;
+            }
+
+            // Get today's date components
+            $date = Carbon::now();
+            $seed = ($date->year * 1000) + $date->dayOfYear;
+            
+            // Get a verse based on today's date
+            $verse = Verse::with('category')
+                ->offset($seed % $count)
+                ->first();
+                
+            return $verse ?: $this->getRandomVerse();
+        } catch (\Exception $e) {
+            return $this->getRandomVerse();
+        }
     }
 }

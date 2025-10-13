@@ -2,44 +2,31 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
 use App\Models\Verse;
 use App\Models\VerseCategory;
-=======
->>>>>>> origin/Spencer-Verses
 use Illuminate\Http\Request;
+use App\Services\BibleVerseService;
 
 class HomeController extends Controller
 {
-<<<<<<< HEAD
-    public function index(Request $request)
+    protected $bibleVerseService;
+
+    public function __construct(BibleVerseService $bibleVerseService)
     {
-        $categories = VerseCategory::all();
-        $selectedCategory = $request->input('category');
-        
-        $versesQuery = Verse::query();
-        
-        if ($selectedCategory) {
-            $versesQuery->where('category_id', $selectedCategory);
-        }
-        
-        $verses = $versesQuery->get();
-        
-        return view('home', [
-            'verses' => $verses,
-            'categories' => $categories,
-            'selectedCategory' => $selectedCategory
-        ]);
-=======
+        $this->bibleVerseService = $bibleVerseService;
+    }
+
     public function index()
     {
-        return view('home');
+        $verseOfTheDay = $this->bibleVerseService->getVerseOfTheDay();
+        return view('home', [
+            'verseOfTheDay' => $verseOfTheDay
+        ]);
     }
 
     public function services()
     {
         return view('services');
->>>>>>> origin/Spencer-Verses
     }
 
     public function settings()

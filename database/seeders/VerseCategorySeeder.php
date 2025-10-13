@@ -28,6 +28,10 @@ class VerseCategorySeeder extends Seeder
                 'description' => 'Verses about finding peace and comfort in God'
             ],
             [
+                'name' => 'Love & Compassion',
+                'description' => 'Verses about love, compassion, and caring for others'
+            ],
+            [
                 'name' => 'Love & Relationships',
                 'description' => 'Verses about love and relationships'
             ],

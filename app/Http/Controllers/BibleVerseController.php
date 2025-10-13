@@ -49,7 +49,7 @@ class BibleVerseController extends Controller
         return view('bible-verse.verse-of-day', [
             'verse' => $verse,
             'categories' => $this->bibleVerseService->getAllCategories(),
-            'selectedCategoryId' => $categoryId
+            'selectedCategoryId' => null
         ]);
     }
 }

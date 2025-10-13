@@ -7,15 +7,16 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BibleVerseController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 // Bible verse routes
 Route::get('/bible-verse', function () {
     return view('vendor.bible-verse.verse');
 })->name('bible-verse');
 
-Route::get('/verse-of-the-day', [BibleVerseController::class, 'verseOfTheDay'])->name('verse-of-the-day');
-
-Route::get('/daily-verse', [BibleVerseController::class, 'verseOfTheDay'])->name('daily-verse');
+// Other routes
+Route::get('/services', [HomeController::class, 'services'])->name('services');
+Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
 
 // Modules routes
 Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');

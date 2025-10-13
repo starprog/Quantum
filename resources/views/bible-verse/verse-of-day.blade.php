@@ -4,10 +4,16 @@
         <div class="absolute inset-0 bg-repeat opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSIjZmZmIi8+PC9zdmc+')"></div>
 
         <div class="max-w-2xl mx-auto">
-            <!-- Date display -->
+            <!-- Date display and Navigation -->
             <div class="text-center mb-6">
-                <h2 class="text-white text-xl font-medium">Verse of the Day</h2>
-                <p class="text-blue-200 text-sm">{{ now()->format('F j, Y') }}</p>
+                <h2 class="text-white text-xl font-medium mb-2">Verse of the Day</h2>
+                <p class="text-blue-200 text-sm mb-4">{{ now()->format('F j, Y') }}</p>
+                <a href="{{ route('bible-verse') }}" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all duration-200 backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                    </svg>
+                    Browse All Verses
+                </a>
             </div>
 
             <!-- Verse card -->
