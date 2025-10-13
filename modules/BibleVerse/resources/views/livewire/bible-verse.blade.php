@@ -14,6 +14,28 @@
 
         <!-- Content container -->
         <div class="relative z-10 space-y-6">
+            <!-- Debug output -->
+            <div class="text-white text-sm mb-4">
+                Categories count: {{ count($categories) }}
+                @if(count($categories) > 0)
+                    <pre class="mt-2">{{ print_r($categories->toArray(), true) }}</pre>
+                @endif
+            </div>
+
+            <!-- Category buttons -->
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button wire:click="$set('selectedCategory', null)" 
+                        class="px-4 py-2 rounded-full text-sm {{ is_null($selectedCategory) ? 'bg-white text-blue-900' : 'bg-white/10 text-white hover:bg-white/20' }} transition-colors">
+                    All Categories
+                </button>
+                @foreach($categories as $category)
+                    <button wire:click="$set('selectedCategory', '{{ $category->name }}')" 
+                            class="px-4 py-2 rounded-full text-sm {{ $selectedCategory === $category->name ? 'bg-white text-blue-900' : 'bg-white/10 text-white hover:bg-white/20' }} transition-colors">
+                        {{ $category->name }}
+                    </button>
+                @endforeach
+            </div>
+
             <!-- Verse content -->
             <div class="relative text-white">
                 <!-- Decorative quote marks -->
@@ -22,21 +44,41 @@
                 
                 <!-- Verse text -->
                 <blockquote class="relative z-10 text-2xl md:text-3xl font-serif leading-relaxed px-4">
-                    {{ $verse['verse'] }}
+                    @if($verse)
+                        {{ $verse->verse }}
+                    @endif
                 </blockquote>
 
                 <!-- Verse reference -->
                 <div class="text-right mt-6">
                     <span class="inline-block border-t border-white/20 pt-4 text-white/80 font-medium tracking-wide">
-                        {{ $verse['reference'] }}
+                        @if($verse)
+                            {{ $verse->reference }}
+                        @endif
                     </span>
+                </div>
+
+                <!-- Category selection -->
+                <div class="mt-6 flex flex-wrap justify-center gap-2">
+                    <button 
+                        wire:click="selectCategory(null)"
+                        class="px-4 py-2 rounded-lg {{ !$selectedCategory ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white hover:bg-white/10' }} transition-all">
+                        All Categories
+                    </button>
+                    @foreach($categories as $category)
+                        <button 
+                            wire:click="selectCategory('{{ $category->name }}')"
+                            class="px-4 py-2 rounded-lg {{ $selectedCategory === $category->name ? 'bg-white/20 text-white' : 'text-white/60 hover:text-white hover:bg-white/10' }} transition-all">
+                            {{ $category->name }}
+                        </button>
+                    @endforeach
                 </div>
 
                 <!-- Share buttons -->
                 <div class="mt-6 flex justify-end">
                     <x-bible-verse::share-buttons 
-                        :verse="$verse['verse']"
-                        :reference="$verse['reference']"
+                        :verse="$verse->verse"
+                        :reference="$verse->reference"
                     />
                 </div>
             </div>

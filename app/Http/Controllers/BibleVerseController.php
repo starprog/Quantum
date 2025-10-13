@@ -41,4 +41,15 @@ class BibleVerseController extends Controller
             'selectedCategoryId' => $categoryId
         ]);
     }
+
+    public function verseOfTheDay()
+    {
+        $verse = $this->bibleVerseService->getVerseOfTheDay();
+        
+        return view('bible-verse.verse-of-day', [
+            'verse' => $verse,
+            'categories' => $this->bibleVerseService->getAllCategories(),
+            'selectedCategoryId' => $categoryId
+        ]);
+    }
 }

@@ -11,12 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-<<<<<<< HEAD
-        //
-=======
-    // Register the module service provider so modules in /modules are loaded
-    $this->app->register(\App\Providers\ModuleServiceProvider::class);
->>>>>>> origin/Spencer-Verses
+        // Register the module service provider so modules in /modules are loaded
+        $this->app->register(\App\Providers\ModuleServiceProvider::class);
     }
 
     /**
@@ -24,10 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-<<<<<<< HEAD
-        \Illuminate\Support\Facades\Blade::component('layouts.public', 'public-layout');
-=======
         //
->>>>>>> origin/Spencer-Verses
     }
 }

@@ -9,14 +9,15 @@ class BibleVerseServiceProvider extends ServiceProvider
     public function register()
     {
         // Register the BibleVerseService
-        $this->app->singleton('bible-verse', function ($app) {
-            return new BibleVerseService();
-        });
+        $this->app->bind(BibleVerseService::class, \App\Services\BibleVerseService::class);
     }
 
     public function boot()
     {
         $modulePath = dirname(__DIR__);
+
+        // Register views
+        $this->loadViewsFrom($modulePath . '/resources/views', 'bible-verse');
 
         // Register Blade components
         $this->loadViewComponentsAs('bible-verse', [

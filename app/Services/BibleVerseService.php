@@ -37,4 +37,23 @@ class BibleVerseService
         
         return $query->inRandomOrder()->first();
     }
+
+    public function getVerseOfTheDay()
+    {
+        // Use the current date as a seed to get a consistent verse for the whole day
+        $dayOfYear = now()->dayOfYear;
+        $year = now()->year;
+        
+        // Get total number of verses
+        $totalVerses = Verse::count();
+        
+        // Use the day and year to deterministically select a verse
+        // This ensures the same verse is shown all day, but changes daily
+        $index = (($dayOfYear + $year) % $totalVerses) + 1;
+        
+        return Verse::with('category')
+            ->skip($index - 1)
+            ->take(1)
+            ->first();
+    }
 }
