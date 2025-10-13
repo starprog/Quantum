@@ -53,7 +53,7 @@
             <div class="mt-6 relative">
                 <!-- Share buttons label -->
                 <div class="text-center mb-4">
-                    <h3 class="text-gray-900 text-lg font-bold bg-white inline-block px-6 py-2 rounded-full shadow-lg border-2 border-gray-200">Share This Verse</h3>
+                    <h3 class="text-gray-600 text-sm font-medium uppercase tracking-wider">Share via links below</h3>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-3 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl relative z-20 border-2 border-gray-200">
