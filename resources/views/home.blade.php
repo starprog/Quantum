@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Welcome to Quantum') }}
         </h2>
     </x-slot>
@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Verse of the Day Section -->
             @if($verseOfTheDay)
-            <div class="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 overflow-hidden shadow-xl sm:rounded-lg mb-8">
+            <div class="bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 overflow-hidden shadow-xl sm:rounded-lg mb-8">
                 <div class="p-8 relative">
                     <!-- Background patterns -->
                     <div class="absolute inset-0 bg-repeat opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSIjZmZmIi8+PC9zdmc+')"></div>
@@ -30,53 +30,66 @@
             </div>
             @endif
             <!-- Welcome Section -->
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg transition-colors duration-200">
                 <div class="p-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to Quantum</h2>
-                    <p class="text-gray-600">Your journey to spiritual growth and enlightenment begins here.</p>
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">Welcome to Quantum</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Your journey to spiritual growth and enlightenment begins here.</p>
                 </div>
             </div>
 
             <!-- Features Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                 <!-- Bible Verse Feature -->
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg transition-colors duration-200">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Daily Verses</h3>
-                        <p class="text-gray-600 mb-4">Explore our collection of inspiring Bible verses for daily guidance and reflection.</p>
-                        <a href="{{ route('bible-verse') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Daily Verses</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Explore our collection of inspiring Bible verses for daily guidance and reflection.</p>
+                        <a href="{{ route('bible-verse') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200">
                             View More
                         </a>
                     </div>
                 </div>
 
                 <!-- Services Feature -->
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg transition-colors duration-200">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Our Services</h3>
-                        <p class="text-gray-600 mb-4">Discover the range of spiritual services and resources we offer.</p>
-                        <a href="{{ route('services') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Our Services</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Discover the range of spiritual services and resources we offer.</p>
+                        <a href="{{ route('services') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200">
                             Learn More
                         </a>
                     </div>
                 </div>
 
                 <!-- Settings Feature -->
-                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg transition-colors duration-200">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Personalize</h3>
-                        <p class="text-gray-600 mb-4">Customize your experience and manage your preferences.</p>
-                        <a href="{{ route('settings') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Personalize</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Customize your experience and manage your preferences.</p>
+                        <a href="{{ route('settings') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors duration-200">
                             Settings
                         </a>
                     </div>
                 </div>
-            </div>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
 
+                @auth
+                <!-- Favorites Feature -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg transition-colors duration-200">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">My Favorites</h3>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">View and manage your favorite Bible verses collection.</p>
+                        <a href="{{ route('favorites.index') }}" class="inline-flex items-center px-4 py-2 bg-red-600 dark:bg-red-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 dark:hover:bg-red-600 transition-colors duration-200">
+                            View Favorites
+                        </a>
+                    </div>
+                </div>
+                @endauth
+            </div>
 
             <!-- Feature Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

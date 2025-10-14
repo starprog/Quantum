@@ -1,147 +1,273 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-900 p-8 relative">
-    <!-- Background patterns -->
-    <div class="absolute inset-0 bg-repeat opacity-10" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSIjZmZmIi8+PC9zdmc+')"></div>
-
-    <div class="max-w-2xl mx-auto bg-white/90 backdrop-blur-lg rounded-xl p-8 shadow-2xl border border-white/20 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 p-8">
+    <div class="max-w-4xl mx-auto">
         <!-- Loading overlay -->
-        <div wire:loading class="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/20 border-t-white"></div>
+        <div wire:loading class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div class="bg-white/95 dark:bg-gray-800/95 rounded-2xl p-8 shadow-2xl">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400 mx-auto"></div>
+                <p class="mt-4 text-gray-700 dark:text-gray-300 font-medium text-center">Loading verse...</p>
+            </div>
         </div>
 
-        <!-- Decorative elements -->
-        <div class="absolute top-0 left-0 w-32 h-32 bg-blue-500/20 rounded-full filter blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full filter blur-3xl translate-x-1/2 translate-y-1/2"></div>
-
         <!-- Categories -->
-        <div class="relative z-10 mb-8">
-            <div class="flex flex-wrap gap-2 justify-center bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl">
+                <!-- Categories -->
+        <div style="margin-bottom: 2rem;">
+            <h2 style="text-align: center; color: #374151; font-weight: 600; margin-bottom: 1rem;">CHOOSE A CATEGORY</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;">
                 <button wire:click="refreshVerse(null)" 
                         wire:loading.class="opacity-50"
-                        class="px-4 py-2 rounded-full text-sm font-bold {{ is_null($selectedCategory) ? 'bg-blue-100 text-gray-900 border-2 border-blue-500 shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-white/90' : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border-2 border-gray-300 hover:shadow-md' }} transition-all duration-200">
+                        style="padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 600; color: white; background-color: #0066FF; border-radius: 0.375rem; 
+                               border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                               {{ is_null($selectedCategory) ? 'outline: 2px solid #0066FF; outline-offset: 2px;' : '' }}"
+                        onmouseover="this.style.backgroundColor='#0052CC'"
+                        onmouseout="this.style.backgroundColor='#0066FF'">
                     All Categories
                 </button>
                 @foreach($categories as $category)
                     <button wire:click="refreshVerse('{{ $category->name }}')" 
                             wire:loading.class="opacity-50"
-                            class="px-4 py-2 rounded-full text-sm font-bold {{ $selectedCategory === $category->name ? 'bg-blue-100 text-gray-900 border-2 border-blue-500 shadow-lg ring-2 ring-blue-400 ring-offset-2 ring-offset-white/90' : 'bg-gray-100 text-gray-900 hover:bg-gray-200 border-2 border-gray-300 hover:shadow-md' }} transition-all duration-200">
+                            style="padding: 0.75rem 1rem; font-size: 0.875rem; font-weight: 600; color: white; background-color: #0066FF; border-radius: 0.375rem; 
+                                   border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+                                   {{ $selectedCategory === $category->name ? 'outline: 2px solid #0066FF; outline-offset: 2px;' : '' }}"
+                            onmouseover="this.style.backgroundColor='#0052CC'"
+                            onmouseout="this.style.backgroundColor='#0066FF'">
                         {{ $category->name }}
                     </button>
                 @endforeach
             </div>
         </div>
 
-        <!-- Content container -->
-        <div class="relative z-10 space-y-6">
-            <!-- Verse content -->
-            <div class="relative">
-                <!-- Decorative quote marks -->
-                <div class="absolute -top-6 -left-6 text-8xl text-blue-200/50 font-serif">"</div>
-                <div class="absolute -bottom-6 -right-6 text-8xl text-blue-200/50 font-serif rotate-180">"</div>
+        <!-- Verse Card -->
+        <div class="mb-8">
+            <!-- Verse Text -->
+            <div style="max-width: 800px; margin: 0 auto; padding: 2rem; background: white; border-radius: 1rem; 
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); border: 1px solid #e5e7eb;
+                        position: relative; overflow: hidden;">
+                <!-- Quote decoration -->
+                <div style="position: absolute; top: 1rem; left: 1rem; font-size: 4rem; color: #f3f4f6; font-family: serif; line-height: 1;">"</div>
                 
-                <blockquote class="relative z-10 text-2xl md:text-3xl font-serif leading-relaxed px-4 text-gray-900">
-                    {{ $verse->verse }}
-                </blockquote>
-                
-                <div class="mt-6 text-right">
-                    <span class="inline-block border-t border-blue-200/30 pt-4 text-gray-700 font-semibold tracking-wide">
+                <div style="position: relative;">
+                    <p style="font-size: 1.5rem; line-height: 1.75; color: #1f2937; text-align: center; margin-bottom: 1.5rem;">
+                        {{ $verse->verse }}
+                    </p>
+                    
+                    <p style="font-size: 1.125rem; color: #6b7280; text-align: right; font-style: italic;">
                         {{ $verse->reference }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Reference and Favorite -->
+            <div class="flex justify-center items-center">
+                <div class="text-center">
+                
+                @auth
+                <!-- Favorite Button -->
+                <button 
+                    onclick="toggleFavorite({{ $verse->id }}, this)"
+                    data-verse-id="{{ $verse->id }}"
+                    data-is-favorited="{{ auth()->user()->favoriteVerses()->where('verse_id', $verse->id)->exists() ? 'true' : 'false' }}"
+                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full transition-all duration-200 transform hover:scale-105
+                           {{ auth()->user()->favoriteVerses()->where('verse_id', $verse->id)->exists() 
+                              ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white' 
+                              : 'bg-white/95 dark:bg-gray-800/95 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-red-500 hover:to-pink-500 hover:text-white' }}
+                           shadow-lg hover:shadow-xl backdrop-blur-sm border border-white/20"
+                    title="{{ auth()->user()->favoriteVerses()->where('verse_id', $verse->id)->exists() ? 'Remove from favorites' : 'Add to favorites' }}">
+                    <div class="bg-white/10 rounded-full p-1 transition-transform group-hover:scale-110 group-hover:bg-white/20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 {{ auth()->user()->favoriteVerses()->where('verse_id', $verse->id)->exists() ? 'fill-current' : 'fill-none' }}" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                    <span class="text-sm font-medium">
+                        {{ auth()->user()->favoriteVerses()->where('verse_id', $verse->id)->exists() ? 'Saved' : 'Save' }}
                     </span>
-                </div>
+                </button>
+                @endauth
             </div>
+        </div>
 
-            <!-- Share buttons -->
-            <div class="mt-6 relative">
-                <!-- Share buttons label -->
-                <div class="text-center mb-4">
-                    <h3 class="text-gray-600 text-sm font-medium uppercase tracking-wider">Share via links below</h3>
-                </div>
+        <!-- Share Section -->
+        <div style="margin: 2rem auto; max-width: 800px; text-align: center;">
+            <h3 style="color: #374151; font-weight: 600; margin-bottom: 1rem; font-size: 0.875rem; letter-spacing: 0.05em;">SHARE THIS VERSE</h3>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1rem;">
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}&quote={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #1877f2; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+                    </svg>
+                </a>
 
-                <div class="flex flex-wrap justify-center gap-3 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl relative z-20 border-2 border-gray-200">
-                    <!-- X (Twitter) Share -->
-                    <a href="https://twitter.com/intent/tweet?text={{ urlencode($verse->verse . ' - ' . $verse->reference) }}&via=QuantumBible"
-                       target="_blank"
-                       class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all duration-200 
-                              transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-bold text-base tracking-wide
-                              border-2 border-gray-300">
-                        <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                        <span>Share on X</span>
-                    </a>
+                <!-- Twitter -->
+                <a href="https://twitter.com/intent/tweet?text={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #1da1f2; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                    </svg>
+                </a>
 
-                    <!-- Facebook Share -->
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}&quote={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
-                       target="_blank"
-                       class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all duration-200 
-                              transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-bold text-base tracking-wide
-                              border-2 border-gray-300">
-                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                        <span>Share on Facebook</span>
-                    </a>
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #0a66c2; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
+                    </svg>
+                </a>
 
-                    <!-- LinkedIn Share -->
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode(url()->current()) }}"
-                       target="_blank"
-                       class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all duration-200 
-                              transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-bold text-base tracking-wide
-                              border-2 border-gray-300">
-                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                        </svg>
-                        <span>Share on LinkedIn</span>
-                    </a>
+                <!-- WhatsApp -->
+                <a href="https://wa.me/?text={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #25d366; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                    </svg>
+                </a>
 
-                    <!-- WhatsApp Share -->
-                    <a href="https://wa.me/?text={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
-                       target="_blank"
-                       class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all duration-200 
-                              transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-bold text-base tracking-wide
-                              border-2 border-gray-300">
-                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        <span>Share on WhatsApp</span>
-                    </a>
+                <!-- Telegram -->
+                <a href="https://t.me/share/url?url={{ urlencode(url()->current()) }}&text={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #0088cc; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19l-9.5 5.83-4.11-1.25c-.89-.27-.85-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+                    </svg>
+                </a>
 
-                    <!-- Email Share -->
-                    <a href="mailto:?subject=Bible%20Verse&body={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
-                       class="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-900 rounded-full hover:bg-gray-200 transition-all duration-200 
-                              transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl font-bold text-base tracking-wide
-                              border-2 border-gray-300">
-                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        <span>Share via Email</span>
-                    </a>
-                </div>
+                <!-- Pinterest -->
+                <a href="https://pinterest.com/pin/create/button/?url={{ urlencode(url()->current()) }}&description={{ urlencode($verse->verse . ' - ' . $verse->reference) }}"
+                   target="_blank"
+                   style="display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; 
+                          background-color: #e60023; color: white; border-radius: 9999px; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='scale(1.1)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/>
+                    </svg>
+                </a>
             </div>
+        </div>
+        </div>
 
             <!-- Button container -->
             
 
-            <!-- Button container -->
-            <div class="mt-8 flex justify-center">
-                <button wire:click="refreshVerse('{{ $selectedCategory }}')"
-                        wire:loading.attr="disabled"
-                        class="group relative inline-flex items-center px-8 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 text-gray-800 font-medium 
-                               rounded-full shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 
-                               transform hover:-translate-y-0.5 transition-all duration-200 border border-blue-200
-                               focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400
-                               disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-50 hover:to-indigo-50">
-                    <span class="flex items-center space-x-2">
-                        <span>New Verse</span>
-                        <svg wire:loading.remove class="w-5 h-5 text-blue-600 transition-transform group-hover:rotate-180 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        <svg wire:loading class="animate-spin w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </span>
-                </button>
-            </div>
+        <!-- New Verse Button -->
+                <!-- New Verse Button -->
+        <div style="margin-top: 2rem; text-align: center;">
+            <button wire:click="refreshVerse('{{ $selectedCategory }}')"
+                    wire:loading.attr="disabled"
+                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.5rem; font-size: 1rem; font-weight: 600; 
+                           color: white; background-color: #0066FF; border-radius: 0.375rem; border: none; cursor: pointer; 
+                           transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                    onmouseover="this.style.backgroundColor='#0052CC'"
+                    onmouseout="this.style.backgroundColor='#0066FF'">
+                <svg wire:loading.remove style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <svg wire:loading style="width: 1.25rem; height: 1.25rem; animation: spin 1s linear infinite;" fill="none" viewBox="0 0 24 24">
+                    <circle style="opacity: 0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path style="opacity: 0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Get New Verse</span>
+            </button>
         </div>
+
+        <style>
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        </style>
     </div>
 </div>
+
+@auth
+<script>
+    function toggleFavorite(verseId, button) {
+        const icon = button.querySelector('svg');
+        const isFavorited = button.dataset.isFavorited === 'true';
+        
+        fetch(`/favorites/toggle/${verseId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Toggle the visual state
+                button.dataset.isFavorited = data.isFavorited ? 'true' : 'false';
+                
+                if (data.isFavorited) {
+                    // Add to favorites - fill the heart
+                    icon.classList.remove('fill-none', 'text-gray-400', 'dark:text-gray-500', 'hover:text-red-400');
+                    icon.classList.add('fill-red-500', 'text-red-500');
+                    button.title = 'Remove from favorites';
+                    
+                    // Show success message
+                    showNotification('Added to favorites!', 'success');
+                } else {
+                    // Remove from favorites - unfill the heart
+                    icon.classList.remove('fill-red-500', 'text-red-500');
+                    icon.classList.add('fill-none', 'text-gray-400', 'dark:text-gray-500', 'hover:text-red-400');
+                    button.title = 'Add to favorites';
+                    
+                    // Show success message
+                    showNotification('Removed from favorites!', 'info');
+                }
+                
+                // Animate button
+                button.classList.add('animate-ping');
+                setTimeout(() => button.classList.remove('animate-ping'), 300);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Something went wrong!', 'error');
+        });
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+        
+        notification.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 ease-in-out`;
+        notification.textContent = message;
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(-20px)';
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(-20px)';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+</script>
+@endauth

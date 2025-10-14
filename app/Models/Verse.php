@@ -17,4 +17,13 @@ class Verse extends Model
     {
         return $this->belongsTo(VerseCategory::class);
     }
+
+    /**
+     * The users who have favorited this verse.
+     */
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'user_favorite_verses')
+            ->withTimestamps();
+    }
 }
