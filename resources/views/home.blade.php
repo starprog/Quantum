@@ -44,7 +44,7 @@
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Daily Verses</h3>
                         <p class="text-gray-600 mb-4">Explore our collection of inspiring Bible verses for daily guidance and reflection.</p>
-                        <a href="{{ route('daily-verse') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
+                        <a href="{{ route('bible-verse') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">
                             View More
                         </a>
                     </div>
@@ -161,11 +161,11 @@
                 <div class="p-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <a href="{{ route('checkout.show') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <a href="{{ route('dashboard') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <svg class="h-6 w-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0V19a2 2 0 002 2v0a2 2 0 002-2v0"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-900">Test Checkout</span>
+                            <span class="text-sm font-medium text-gray-900">Dashboard</span>
                         </a>
 
                         <a href="{{ route('settings') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
@@ -176,11 +176,11 @@
                             <span class="text-sm font-medium text-gray-900">Settings</span>
                         </a>
 
-                        <a href="{{ route('hello') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                        <a href="{{ route('modules.index') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <svg class="h-6 w-6 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-900">Hello Module</span>
+                            <span class="text-sm font-medium text-gray-900">Modules</span>
                         </a>
 
                         <a href="{{ route('dashboard') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
