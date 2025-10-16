@@ -4,9 +4,6 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "aa4225d55dcc05067a22af9e3f1796b5",
-=======
     "content-hash": "a8d891a710e7e4425ec83fcd040e5b9c",
 >>>>>>> origin/Spencer-Verses
     "packages": [

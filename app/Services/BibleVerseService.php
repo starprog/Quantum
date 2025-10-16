@@ -25,13 +25,13 @@ class BibleVerseService
             ->get();
     }
 
-    public function getRandomVerse($category = null)
+    public function getRandomVerse($categoryName = null)
     {
         $query = Verse::with('category');
         
-        if ($category) {
-            $query->whereHas('category', function($q) use ($category) {
-                $q->where('name', $category);
+        if ($categoryName) {
+            $query->whereHas('category', function($q) use ($categoryName) {
+                $q->where('name', $categoryName);
             });
         }
         
