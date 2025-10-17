@@ -19,6 +19,9 @@
                     <x-nav-link href="{{ route('bible-verse') }}" :active="request()->routeIs('bible-verse')">
                         {{ __('Bible Verses') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('church-finder') }}" :active="request()->routeIs('church-finder')">
+                        {{ __('Find Churches') }}
+                    </x-nav-link>
                     
                     <!-- Auth Links -->
                     @if (Auth::check())
@@ -85,6 +88,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('bible-verse') }}" :active="request()->routeIs('bible-verse')">
                 {{ __('Bible Verses') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('church-finder') }}" :active="request()->routeIs('church-finder')">
+                {{ __('Find Churches') }}
             </x-responsive-nav-link>
 
             <!-- Auth Links -->

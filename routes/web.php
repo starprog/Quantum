@@ -6,6 +6,7 @@ use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BibleVerseController;
 use App\Http\Controllers\FavoriteVerseController;
+use App\Http\Controllers\ChurchFinderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -24,6 +25,15 @@ Route::middleware(['auth'])->group(function () {
 // Other routes
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
+
+// Church Finder routes
+Route::get('/church-finder', [ChurchFinderController::class, 'index'])->name('church-finder');
+Route::post('/church-finder/search', [ChurchFinderController::class, 'search'])->name('church-finder.search');
+Route::get('/church-finder/details/{placeId}', [ChurchFinderController::class, 'details'])->name('church-finder.details');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/church-finder/favorite', [ChurchFinderController::class, 'toggleFavorite'])->name('church-finder.favorite');
+    Route::get('/church-finder/favorites', [ChurchFinderController::class, 'favorites'])->name('church-finder.favorites');
+});
 
 // Modules routes
 Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');

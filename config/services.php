@@ -30,4 +30,8 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
+
+    'google' => [
+        'places_api_key' => env('GOOGLE_PLACES_API_KEY'),
+    ],
 ];
