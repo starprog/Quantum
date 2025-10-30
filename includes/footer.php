@@ -36,7 +36,7 @@
                     <h3>Recipe Categories</h3>
                     <div class="recipe-stats">
                         <div class="stat-item">
-                            <span class="stat-number">15</span>
+                            <span class="stat-number">40</span>
                             <span class="stat-label">Total Recipes</span>
                         </div>
                         <div class="stat-item">

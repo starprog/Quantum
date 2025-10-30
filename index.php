@@ -19,7 +19,12 @@ include 'includes/header.php';
 <main class="container">
     <section class="hero">
         <h1>🌍 World Recipes</h1>
-        <p>Discover authentic recipes from around the globe. From Japanese comfort food to Italian classics, explore the world through flavors.</p>
+    </section>
+    
+    <section class="hero-description">
+        <div class="container">
+            <p>Discover authentic recipes from around the globe. From Japanese comfort food to Italian classics, explore the world through flavors.</p>
+        </div>
     </section>
 
     <?php if (isset($error)): ?>
@@ -39,11 +44,11 @@ include 'includes/header.php';
         <div class="country-cards">
             <?php
             $countryData = [
-                'Japan' => ['flag' => '🇯🇵', 'color' => '#e74c3c', 'description' => 'Traditional Japanese cuisine with fresh ingredients'],
-                'India' => ['flag' => '🇮🇳', 'color' => '#f39c12', 'description' => 'Aromatic spices and rich curries from India'],
-                'Mexico' => ['flag' => '🇲🇽', 'color' => '#27ae60', 'description' => 'Bold flavors and vibrant Mexican dishes'],
-                'America' => ['flag' => '🇺🇸', 'color' => '#3498db', 'description' => 'Classic American comfort foods and favorites'],
-                'Italy' => ['flag' => '🇮🇹', 'color' => '#9b59b6', 'description' => 'Authentic Italian pasta and traditional recipes']
+                'Japan' => ['flag' => '🇯🇵', 'color' => '#ff6b6b', 'description' => 'Traditional Japanese cuisine with fresh ingredients'],
+                'India' => ['flag' => '🇮🇳', 'color' => '#ffd43b', 'description' => 'Aromatic spices and rich curries from India'],
+                'Mexico' => ['flag' => '🇲🇽', 'color' => '#51cf66', 'description' => 'Bold flavors and vibrant Mexican dishes'],
+                'America' => ['flag' => '🇺🇸', 'color' => '#74c0fc', 'description' => 'Classic American comfort foods and favorites'],
+                'Italy' => ['flag' => '🇮🇹', 'color' => '#cc5de8', 'description' => 'Authentic Italian pasta and traditional recipes']
             ];
             
             foreach ($countryData as $countryName => $data):

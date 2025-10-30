@@ -7,7 +7,7 @@ include 'includes/header.php';
 <main class="container">
     <section class="about-hero">
         <h1>About World Recipes</h1>
-        <p class="lead">Connecting cultures through the universal language of food</p>
+        <p class="lead orange-text">Connecting cultures through the universal language of food</p>
     </section>
 
     <section class="about-content">
