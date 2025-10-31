@@ -14,6 +14,12 @@ Route::get('/bible-verse', function () {
     return view('bible-verse.verse');
 })->name('bible-verse');
 
+Route::get('/daily-verse', function () {
+    $bibleVerseService = app(\App\Services\BibleVerseService::class);
+    $verseOfTheDay = $bibleVerseService->getVerseOfTheDay();
+    return view('daily-verse', ['verseOfTheDay' => $verseOfTheDay]);
+})->name('daily-verse');
+
 // Favorite verses routes (protected by auth middleware)
 Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteVerseController::class, 'index'])->name('favorites.index');
