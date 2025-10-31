@@ -11,7 +11,7 @@ Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
 // Bible verse routes
 Route::get('/bible-verse', function () {
-    return view('vendor.bible-verse.verse');
+    return view('bible-verse.verse');
 })->name('bible-verse');
 
 // Favorite verses routes (protected by auth middleware)

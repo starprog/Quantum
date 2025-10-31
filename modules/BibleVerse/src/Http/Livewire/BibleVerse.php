@@ -31,6 +31,6 @@ class BibleVerse extends Component
 
     public function render()
     {
-        return view('vendor.bible-verse.livewire.bible-verse');
+        return view('bible-verse.livewire.bible-verse');
     }
 }
