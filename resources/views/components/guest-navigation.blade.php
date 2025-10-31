@@ -3,7 +3,7 @@
     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
         {{ __('Home') }}
     </x-nav-link>
-    <x-nav-link href="{{ route('daily-verse.index') }}" :active="request()->routeIs('daily-verse.*')">
+    <x-nav-link href="{{ route('daily-verse') }}" :active="request()->routeIs('daily-verse')">
         {{ __('Verse of the Day') }}
     </x-nav-link>
     <x-nav-link href="{{ route('bible-verse') }}" :active="request()->routeIs('bible-verse')">
@@ -17,7 +17,7 @@
         <x-responsive-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
             {{ __('Home') }}
         </x-responsive-nav-link>
-        <x-responsive-nav-link href="{{ route('daily-verse.index') }}" :active="request()->routeIs('daily-verse.*')">
+        <x-responsive-nav-link href="{{ route('daily-verse') }}" :active="request()->routeIs('daily-verse')">
             {{ __('Verse of the Day') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link href="{{ route('bible-verse') }}" :active="request()->routeIs('bible-verse')">

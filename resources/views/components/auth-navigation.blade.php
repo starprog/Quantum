@@ -3,9 +3,6 @@
     <x-nav-link href="{{ route('services') }}" :active="request()->routeIs('services')">
         {{ __('Services') }}
     </x-nav-link>
-    <x-nav-link href="{{ route('live-streams.index') }}" :active="request()->routeIs('live-streams.*')">
-        {{ __('Live Streams') }}
-    </x-nav-link>
     <x-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
         {{ __('Settings') }}
     </x-nav-link>
@@ -99,9 +96,6 @@
     <div class="pt-2 pb-3 space-y-1">
         <x-responsive-nav-link href="{{ route('services') }}" :active="request()->routeIs('services')">
             {{ __('Services') }}
-        </x-responsive-nav-link>
-        <x-responsive-nav-link href="{{ route('live-streams.index') }}" :active="request()->routeIs('live-streams.*')">
-            {{ __('Live Streams') }}
         </x-responsive-nav-link>
         <x-responsive-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
             {{ __('Settings') }}

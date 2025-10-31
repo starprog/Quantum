@@ -3,26 +3,34 @@
 namespace Modules\BibleVerse\src\Http\Livewire;
 
 use Livewire\Component;
-use Modules\BibleVerse\src\BibleVerseService;
+use App\Services\BibleVerseService;
 
 class BibleVerse extends Component
 {
     public $verse;
     public $loading = false;
-    public $lastVerseIndex = -1;
+    public $selectedCategory = null;
+    public $categories = [];
 
     public function mount(BibleVerseService $bibleVerseService)
     {
+        $this->categories = $bibleVerseService->getAllCategories();
         $this->verse = $bibleVerseService->getRandomVerse();
     }
 
-    public function refreshVerse(BibleVerseService $bibleVerseService)
+    public function refreshVerse($category = null)
     {
-        $this->verse = $bibleVerseService->getRandomVerse();
+        $this->loading = true;
+        $this->selectedCategory = $category;
+        
+        $bibleVerseService = app(BibleVerseService::class);
+        $this->verse = $bibleVerseService->getRandomVerse($category);
+        
+        $this->loading = false;
     }
 
     public function render()
     {
-        return view('bible-verse::livewire.bible-verse');
+        return view('vendor.bible-verse.livewire.bible-verse');
     }
 }

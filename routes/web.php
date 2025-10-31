@@ -4,34 +4,42 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BibleVerseController;
+use App\Http\Controllers\FavoriteVerseController;
+use App\Http\Controllers\ChurchFinderController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-Route::get('/checkout', [StripeController::class, 'show'])->name('checkout.show');
-Route::post('/checkout/session', [StripeController::class, 'createCheckoutSession'])->name('checkout.session');
+// Bible verse routes
+Route::get('/bible-verse', function () {
+    return view('vendor.bible-verse.verse');
+})->name('bible-verse');
+
+// Favorite verses routes (protected by auth middleware)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [FavoriteVerseController::class, 'index'])->name('favorites.index');
+    Route::post('/favorites/toggle/{verse}', [FavoriteVerseController::class, 'toggle'])->name('favorites.toggle');
+});
+
+// Other routes
+Route::get('/services', [HomeController::class, 'services'])->name('services');
+Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
+
+// Church Finder routes
+Route::get('/church-finder', [ChurchFinderController::class, 'index'])->name('church-finder');
+Route::post('/church-finder/search', [ChurchFinderController::class, 'search'])->name('church-finder.search');
+Route::get('/church-finder/details/{placeId}', [ChurchFinderController::class, 'details'])->name('church-finder.details');
+Route::middleware(['auth'])->group(function () {
+    Route::post('/church-finder/favorite', [ChurchFinderController::class, 'toggleFavorite'])->name('church-finder.favorite');
+    Route::get('/church-finder/favorites', [ChurchFinderController::class, 'favorites'])->name('church-finder.favorites');
+});
+
+// Modules routes
+Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
+Route::get('/modules/{module}', [ModuleController::class, 'show'])->name('modules.show');
+
+// Stripe routes
+Route::get('/checkout/{module}', [StripeController::class, 'checkout'])->name('checkout');
 Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
 Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');
-
-// Public route for hello module demo
-Route::get('/hello', function () {
-    return view('hello::index');
-})->name('hello');
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    Route::get('/services', [HomeController::class, 'services'])->name('services');
-    Route::get('/settings', [HomeController::class, 'settings'])->name('settings');
-
-    // Module management routes (Admin)
-    Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
-    Route::patch('/modules/{module}/toggle', [ModuleController::class, 'toggle'])->name('modules.toggle');
-    Route::post('/modules/scan', [ModuleController::class, 'scan'])->name('modules.scan');
-    Route::post('/modules/upload', [ModuleController::class, 'upload'])->name('modules.upload');
-});

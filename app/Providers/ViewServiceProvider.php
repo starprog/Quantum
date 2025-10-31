@@ -10,6 +10,5 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::component('layouts.public', 'public-layout');
-        Blade::component('admin.layout', 'admin-layout');
     }
 }

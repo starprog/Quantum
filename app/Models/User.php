@@ -64,4 +64,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * The verses that the user has favorited.
+     */
+    public function favoriteVerses()
+    {
+        return $this->belongsToMany(Verse::class, 'user_favorite_verses')
+            ->withTimestamps();
+    }
+
+    /**
+     * The churches that the user has favorited.
+     */
+    public function favoriteChurches()
+    {
+        return $this->belongsToMany(Church::class, 'user_churches')
+            ->withTimestamps();
+    }
 }

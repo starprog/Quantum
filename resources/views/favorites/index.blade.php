@@ -48,57 +48,26 @@
                                 </p>
                             </div>
 
-                            <!-- Reference -->
-                            <div style="padding-top: 1rem; border-top: 2px solid #f3f4f6;">
-                                <p style="font-size: 0.875rem; font-weight: 700; color: #667eea; margin-bottom: 1rem;">
+                            <!-- Reference and Actions -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; 
+                                        border-top: 2px solid #f3f4f6;">
+                                <p style="font-size: 0.875rem; font-weight: 700; color: #667eea;">
                                     📖 {{ $verse->reference }}
                                 </p>
 
-                                <!-- Actions -->
-                                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-                                    <!-- Audio Button -->
-                                    <button 
-                                        id="audioBtn{{ $verse->id }}"
-                                        onclick="toggleAudioFav{{ $verse->id }}()"
-                                        style="padding: 0.5rem; background: rgba(16, 185, 129, 0.1); color: #10b981; 
-                                               border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;
-                                               display: flex; align-items: center; justify-content: center;"
-                                        onmouseover="this.style.background='#10b981'; this.style.color='white'; this.style.transform='scale(1.1)'"
-                                        onmouseout="this.style.background='rgba(16, 185, 129, 0.1)'; this.style.color='#10b981'; this.style.transform='scale(1)'"
-                                        title="Listen to verse">
-                                        <svg style="width: 1.5rem; height: 1.5rem;" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                        </svg>
-                                    </button>
-                                    
-                                    <!-- Add to Collection -->
-                                    @if($collections->count() > 0)
-                                        <select onchange="addToCollection({{ $verse->id }}, this.value, this)" 
-                                                style="flex: 1; padding: 0.5rem; background: rgba(102, 126, 234, 0.1); color: #667eea; 
-                                                       border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 0.5rem; cursor: pointer; font-size: 0.875rem; font-weight: 600;"
-                                                onmouseover="this.style.background='rgba(102, 126, 234, 0.2)'"
-                                                onmouseout="this.style.background='rgba(102, 126, 234, 0.1)'">
-                                            <option value="">➕ Add to Collection...</option>
-                                            @foreach($collections as $collection)
-                                                <option value="{{ $collection->id }}">{{ $collection->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    @endif
-                                    
-                                    <!-- Remove from Favorites Button -->
-                                    <button 
-                                        onclick="toggleFavorite({{ $verse->id }}, this)"
-                                        style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; 
-                                               border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;
-                                               display: flex; align-items: center; justify-content: center;"
-                                        onmouseover="this.style.background='#ef4444'; this.style.color='white'; this.style.transform='scale(1.1)'"
-                                        onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444'; this.style.transform='scale(1)'"
-                                        title="Remove from favorites">
-                                        <svg style="width: 1.5rem; height: 1.5rem;" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                <!-- Remove from Favorites Button -->
+                                <button 
+                                    onclick="toggleFavorite({{ $verse->id }}, this)"
+                                    style="padding: 0.5rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; 
+                                           border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s;
+                                           display: flex; align-items: center; justify-content: center;"
+                                    onmouseover="this.style.background='#ef4444'; this.style.color='white'; this.style.transform='scale(1.1)'"
+                                    onmouseout="this.style.background='rgba(239, 68, 68, 0.1)'; this.style.color='#ef4444'; this.style.transform='scale(1)'"
+                                    title="Remove from favorites">
+                                    <svg style="width: 1.5rem; height: 1.5rem;" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     @endforeach
@@ -139,36 +108,6 @@
     </div>
 
     <script>
-        function addToCollection(verseId, collectionId, selectElement) {
-            if (!collectionId) return;
-
-            fetch(`/collections/${collectionId}/verses`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ verse_id: verseId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success || data.message) {
-                    // Show success message
-                    const message = data.message || 'Verse added to collection!';
-                    alert(message);
-                    selectElement.value = '';
-                } else if (data.error) {
-                    alert(data.error);
-                    selectElement.value = '';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding verse to collection');
-                selectElement.value = '';
-            });
-        }
-
         function toggleFavorite(verseId, button) {
             fetch(`/favorites/toggle/${verseId}`, {
                 method: 'POST',
@@ -201,92 +140,5 @@
             })
             .catch(error => console.error('Error:', error));
         }
-        
-        // Audio Bible Functions for Favorites
-        const audioPlayers = {};
-        
-        @foreach($favoriteVerses as $verse)
-            audioPlayers[{{ $verse->id }}] = {
-                utterance: null,
-                isPlaying: false
-            };
-            
-            function toggleAudioFav{{ $verse->id }}() {
-                if (!('speechSynthesis' in window)) {
-                    alert('Text-to-speech is not supported in your browser.');
-                    return;
-                }
-                
-                if (audioPlayers[{{ $verse->id }}].isPlaying) {
-                    stopAudioFav{{ $verse->id }}();
-                } else {
-                    playAudioFav{{ $verse->id }}();
-                }
-            }
-            
-            function playAudioFav{{ $verse->id }}() {
-                // Stop all other playing audio
-                @foreach($favoriteVerses as $otherVerse)
-                    @if($otherVerse->id !== $verse->id)
-                        if (audioPlayers[{{ $otherVerse->id }}] && audioPlayers[{{ $otherVerse->id }}].isPlaying) {
-                            stopAudioFav{{ $otherVerse->id }}();
-                        }
-                    @endif
-                @endforeach
-                
-                window.speechSynthesis.cancel();
-                
-                const verseText = `{{ addslashes($verse->verse) }}`;
-                const reference = "{{ $verse->reference }}";
-                const fullText = `${verseText}. ${reference}`;
-                
-                const utterance = new SpeechSynthesisUtterance(fullText);
-                const savedRate = localStorage.getItem('audioRate') || 1.0;
-                const savedVolume = localStorage.getItem('audioVolume') || 1.0;
-                
-                utterance.rate = parseFloat(savedRate);
-                utterance.volume = parseFloat(savedVolume);
-                utterance.pitch = 1.0;
-                
-                utterance.onstart = () => {
-                    audioPlayers[{{ $verse->id }}].isPlaying = true;
-                    updateAudioButtonFav{{ $verse->id }}(true);
-                };
-                
-                utterance.onend = () => {
-                    audioPlayers[{{ $verse->id }}].isPlaying = false;
-                    updateAudioButtonFav{{ $verse->id }}(false);
-                };
-                
-                utterance.onerror = () => {
-                    audioPlayers[{{ $verse->id }}].isPlaying = false;
-                    updateAudioButtonFav{{ $verse->id }}(false);
-                };
-                
-                audioPlayers[{{ $verse->id }}].utterance = utterance;
-                window.speechSynthesis.speak(utterance);
-            }
-            
-            function stopAudioFav{{ $verse->id }}() {
-                window.speechSynthesis.cancel();
-                audioPlayers[{{ $verse->id }}].isPlaying = false;
-                updateAudioButtonFav{{ $verse->id }}(false);
-            }
-            
-            function updateAudioButtonFav{{ $verse->id }}(playing) {
-                const btn = document.getElementById('audioBtn{{ $verse->id }}');
-                const icon = btn.querySelector('svg');
-                
-                if (playing) {
-                    btn.style.background = 'rgba(239, 68, 68, 0.1)';
-                    btn.style.color = '#ef4444';
-                    icon.innerHTML = '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"/>';
-                } else {
-                    btn.style.background = 'rgba(16, 185, 129, 0.1)';
-                    btn.style.color = '#10b981';
-                    icon.innerHTML = '<path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>';
-                }
-            }
-        @endforeach
     </script>
 </x-app-layout>

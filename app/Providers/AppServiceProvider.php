@@ -11,8 +11,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-    // Register the module service provider so modules in /modules are loaded
-    $this->app->register(\App\Providers\ModuleServiceProvider::class);
+        // Register the module service provider so modules in /modules are loaded
+        $this->app->register(\App\Providers\ModuleServiceProvider::class);
     }
 
     /**

@@ -1,0 +1,9 @@
+.share-button {
+    @apply p-2 rounded-full transition-all duration-200 ease-in-out;
+    @apply hover:bg-white/10 hover:scale-110;
+    @apply focus:outline-none focus:ring-2 focus:ring-white/20;
+}
+
+.share-button svg {
+    @apply w-6 h-6;
+}

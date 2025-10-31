@@ -8,20 +8,50 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Pattern styles */
-.pattern-cross {
-    background-image: 
-        linear-gradient(currentColor 1px, transparent 1px),
-        linear-gradient(to right, currentColor 1px, transparent 1px);
+/* Button Styles */
+.category-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    background-color: #0066FF;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.pattern-size-8 {
-    background-size: 32px 32px;
+.category-button:hover {
+    background-color: #0052CC;
 }
 
-/* Grid background */
-.bg-grid-slate-100 {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(241 245 249 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+.category-button.active {
+    position: relative;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #0066FF;
+}
+
+.refresh-verse-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background-color: #0066FF;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.refresh-verse-button:hover {
+    background-color: #0052CC;
+}
+
+.refresh-verse-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Verse text styles */
@@ -42,23 +72,6 @@
     color: #4a5568;
     text-align: right;
     font-style: italic;
-}
-
-/* Refresh button styles */
-.bible-verse-refresh {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 2;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0.5rem;
-    transition: transform 0.2s ease-in-out;
-}
-
-.bible-verse-refresh:hover {
-    transform: rotate(180deg);
 }
 
 /* Animation utilities */

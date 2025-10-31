@@ -1,7 +1,74 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind directives removed for standard CSS compatibility */
 
 [x-cloak] {
     display: none;
 }
+
+/* Social Share Buttons */
+.share-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem;
+        border-radius: 9999px;
+        color: #fff;
+        transition-property: all;
+        transition-duration: 200ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    }
+    .share-button:hover {
+        transform: scale(1.10);
+    }
+.share-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+}
+
+.share-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.share-button.facebook {
+    background-color: #3b5998;
+}
+.share-button.facebook:hover {
+    background-color: #324b81;
+}
+
+.share-button.twitter {
+    background-color: #1DA1F2;
+}
+.share-button.twitter:hover {
+    background-color: #1991da;
+}
+
+.share-button.linkedin {
+    background-color: #0077b5;
+}
+.share-button.linkedin:hover {
+    background-color: #00669c;
+}
+
+.share-button.whatsapp {
+    background-color: #25D366;
+}
+.share-button.whatsapp:hover {
+    background-color: #20b358;
+}
+
+.share-button.telegram {
+    background-color: #0088cc;
+}
+.share-button.telegram:hover {
+    background-color: #0077b3;
+}
+
+.share-button.pinterest {
+    background-color: #E60023;
+}
+.share-button.pinterest:hover {
+    background-color: #bf001c;
+}
+/* Removed @apply directive and used standard CSS properties above */
