@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StripeController;
-use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BibleVerseController;
 use App\Http\Controllers\FavoriteVerseController;
@@ -34,12 +32,3 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/church-finder/favorite', [ChurchFinderController::class, 'toggleFavorite'])->name('church-finder.favorite');
     Route::get('/church-finder/favorites', [ChurchFinderController::class, 'favorites'])->name('church-finder.favorites');
 });
-
-// Modules routes
-Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index');
-Route::get('/modules/{module}', [ModuleController::class, 'show'])->name('modules.show');
-
-// Stripe routes
-Route::get('/checkout/{module}', [StripeController::class, 'checkout'])->name('checkout');
-Route::get('/checkout/success', [StripeController::class, 'success'])->name('checkout.success');
-Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('checkout.cancel');

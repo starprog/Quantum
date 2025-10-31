@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
 
         // Run other seeders
         $this->call([
-            ModuleSeeder::class,
             VerseCategorySeeder::class,
             VerseSeeder::class,
         ]);
