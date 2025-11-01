@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Verse;
 use App\Models\VerseCategory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class BibleVerseService
 {
@@ -40,26 +41,34 @@ class BibleVerseService
 
     public function getVerseOfTheDay()
     {
-        try {
-            // Get the total number of verses
-            $count = Verse::count();
-            if ($count === 0) {
-                return null;
-            }
+        // Cache key based on today's date
+        $cacheKey = 'verse_of_the_day_' . Carbon::now()->format('Y-m-d');
+        
+        // Get cache expiry at midnight
+        $expiresAt = Carbon::now()->endOfDay();
+        
+        return Cache::remember($cacheKey, $expiresAt, function () {
+            try {
+                // Get the total number of verses
+                $count = Verse::count();
+                if ($count === 0) {
+                    return null;
+                }
 
-            // Get today's date components
-            $date = Carbon::now();
-            $seed = ($date->year * 1000) + $date->dayOfYear;
-            
-            // Get a verse based on today's date
-            $verse = Verse::with('category')
-                ->offset($seed % $count)
-                ->first();
+                // Get today's date components
+                $date = Carbon::now();
+                $seed = ($date->year * 1000) + $date->dayOfYear;
                 
-            return $verse ?: $this->getRandomVerse();
-        } catch (\Exception $e) {
-            return $this->getRandomVerse();
-        }
+                // Get a verse based on today's date
+                $verse = Verse::with('category')
+                    ->offset($seed % $count)
+                    ->first();
+                    
+                return $verse ?: $this->getRandomVerse();
+            } catch (\Exception $e) {
+                return $this->getRandomVerse();
+            }
+        });
     }
 
     /**
@@ -85,5 +94,17 @@ class BibleVerseService
         }
 
         return $query->orderBy('reference')->get();
+    }
+
+    /**
+     * Clear the cached verse of the day
+     * Useful after seeding or updating verses
+     * 
+     * @return bool
+     */
+    public function clearDailyVerseCache()
+    {
+        $cacheKey = 'verse_of_the_day_' . Carbon::now()->format('Y-m-d');
+        return Cache::forget($cacheKey);
     }
 }
