@@ -1,55 +1,7 @@
 <div class="widget-card fade-in" style="background: var(--widget-bg); border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); transition: background 0.3s;">
     @if($verse)
-        <!-- Keyboard shortcuts hint -->
-        <div style="margin-bottom: 1rem; padding: 0.5rem 1rem; background: var(--widget-bg); border: 1px solid var(--text-secondary); 
-                    border-radius: 0.5rem; font-size: 0.75rem; color: var(--text-secondary); text-align: center;">
-            ⌨️ Shortcuts: <strong>N</strong> - New Verse | <strong>C</strong> - Copy | <strong>1-0</strong> - Categories
-        </div>
-        
-        <!-- Category Filter Buttons -->
-        <div style="margin-bottom: 1.5rem; text-align: center;">
-            <button 
-                wire:click="refreshVerse(null)"
-                wire:loading.attr="disabled"
-                data-shortcut="0"
-                style="display: inline-block; padding: 0.5rem 1rem; margin: 0.25rem; font-size: 0.75rem; font-weight: 600; 
-                       border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.3s;
-                       {{ is_null($selectedCategory) 
-                          ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;' 
-                          : 'background: var(--widget-bg); color: var(--text-secondary); border: 1px solid var(--text-secondary);' }}"
-                onmouseover="this.style.transform='translateY(-2px)';"
-                onmouseout="this.style.transform='translateY(0)';">
-                All (0)
-            </button>
-            @foreach($categories as $index => $category)
-                <button 
-                    wire:click="refreshVerse('{{ $category->name }}')"
-                    wire:loading.attr="disabled"
-                    data-shortcut="{{ ($index + 1) % 10 }}"
-                    style="display: inline-block; padding: 0.5rem 1rem; margin: 0.25rem; font-size: 0.75rem; font-weight: 600; 
-                           border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.3s;
-                           {{ $selectedCategory === $category->name 
-                              ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;' 
-                              : 'background: var(--widget-bg); color: var(--text-secondary); border: 1px solid var(--text-secondary);' }}"
-                    onmouseover="this.style.transform='translateY(-2px)';"
-                    onmouseout="this.style.transform='translateY(0)';">
-                    {{ $category->name }} ({{ ($index + 1) % 10 }})
-                </button>
-            @endforeach
-        </div>
-        
-        <hr style="border: none; border-top: 1px solid var(--text-secondary); opacity: 0.3; margin: 1.5rem 0;">
-        
-        <!-- Category Badge -->
-        <div style="margin-bottom: 1.5rem;">
-            <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                       color: white; padding: 0.5rem 1rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 600;">
-                {{ $verse->category->name }}
-            </span>
-        </div>
-        
         <!-- Verse Text -->
-        <div wire:key="verse-{{ $verse->id }}" class="verse-content" style="margin-bottom: 1.5rem;">
+        <div wire:key="verse-{{ $verse->id }}" class="verse-content" style="margin-bottom: 2rem;">
             <p style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500;">
                 "{{ $verse->verse }}"
             </p>
@@ -76,12 +28,12 @@
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
-                <span>Copy (C)</span>
+                <span>Copy Verse</span>
             </button>
             
             <!-- New Verse Button -->
             <button 
-                wire:click="refreshVerse({{ $selectedCategory ? "'".$selectedCategory."'" : 'null' }})"
+                wire:click="refreshVerse(null)"
                 wire:loading.attr="disabled"
                 id="newVerseBtn"
                 style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; 
@@ -94,7 +46,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span wire:loading.remove>New Verse (N)</span>
+                <span wire:loading.remove>New Verse</span>
                 <span wire:loading>Loading...</span>
             </button>
         </div>
@@ -187,7 +139,7 @@
                 window.open(url, '_blank');
             }
             
-            // Keyboard shortcuts
+            // Keyboard shortcuts (simplified)
             document.addEventListener('keydown', function(e) {
                 // Ignore if typing in input field
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -206,13 +158,6 @@
                     e.preventDefault();
                     const copyBtn = document.getElementById('copyBtn');
                     if (copyBtn) copyBtn.click();
-                }
-                
-                // 0-9 - Category filters
-                if (/^[0-9]$/.test(key)) {
-                    e.preventDefault();
-                    const categoryBtn = document.querySelector(`[data-shortcut="${key}"]`);
-                    if (categoryBtn) categoryBtn.click();
                 }
             });
         </script>

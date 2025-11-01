@@ -9,22 +9,18 @@ class BibleVerseEmbed extends Component
 {
     public $verse;
     public $loading = false;
-    public $selectedCategory = null;
-    public $categories = [];
 
     public function mount(BibleVerseService $bibleVerseService)
     {
-        $this->categories = $bibleVerseService->getAllCategories();
         $this->verse = $bibleVerseService->getVerseOfTheDay();
     }
 
-    public function refreshVerse($category = null)
+    public function refreshVerse()
     {
         $this->loading = true;
-        $this->selectedCategory = $category;
         
         $bibleVerseService = app(BibleVerseService::class);
-        $this->verse = $bibleVerseService->getRandomVerse($category);
+        $this->verse = $bibleVerseService->getRandomVerse();
         
         $this->loading = false;
     }
@@ -34,3 +30,4 @@ class BibleVerseEmbed extends Component
         return view('bible-verse.livewire.bible-verse-embed');
     }
 }
+
