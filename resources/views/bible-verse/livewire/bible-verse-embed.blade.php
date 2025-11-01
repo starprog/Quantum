@@ -1,5 +1,37 @@
 <div style="background: white; border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
     @if($verse)
+        <!-- Category Filter Buttons -->
+        <div style="margin-bottom: 1.5rem; text-align: center;">
+            <button 
+                wire:click="refreshVerse(null)"
+                wire:loading.attr="disabled"
+                style="display: inline-block; padding: 0.5rem 1rem; margin: 0.25rem; font-size: 0.75rem; font-weight: 600; 
+                       border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.3s;
+                       {{ is_null($selectedCategory) 
+                          ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;' 
+                          : 'background: #f3f4f6; color: #6b7280;' }}"
+                onmouseover="this.style.transform='translateY(-2px)';"
+                onmouseout="this.style.transform='translateY(0)';">
+                All
+            </button>
+            @foreach($categories as $category)
+                <button 
+                    wire:click="refreshVerse('{{ $category->name }}')"
+                    wire:loading.attr="disabled"
+                    style="display: inline-block; padding: 0.5rem 1rem; margin: 0.25rem; font-size: 0.75rem; font-weight: 600; 
+                           border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.3s;
+                           {{ $selectedCategory === $category->name 
+                              ? 'background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;' 
+                              : 'background: #f3f4f6; color: #6b7280;' }}"
+                    onmouseover="this.style.transform='translateY(-2px)';"
+                    onmouseout="this.style.transform='translateY(0)';">
+                    {{ $category->name }}
+                </button>
+            @endforeach
+        </div>
+        
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 1.5rem 0;">
+        
         <!-- Category Badge -->
         <div style="margin-bottom: 1.5rem;">
             <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
@@ -22,7 +54,7 @@
         <!-- New Verse Button -->
         <div style="text-align: center;">
             <button 
-                wire:click="refreshVerse"
+                wire:click="refreshVerse({{ $selectedCategory ? "'".$selectedCategory."'" : 'null' }})"
                 wire:loading.attr="disabled"
                 style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; 
                        font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; border: none; 

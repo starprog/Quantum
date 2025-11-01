@@ -9,18 +9,22 @@ class BibleVerseEmbed extends Component
 {
     public $verse;
     public $loading = false;
+    public $selectedCategory = null;
+    public $categories = [];
 
     public function mount(BibleVerseService $bibleVerseService)
     {
+        $this->categories = $bibleVerseService->getAllCategories();
         $this->verse = $bibleVerseService->getVerseOfTheDay();
     }
 
-    public function refreshVerse()
+    public function refreshVerse($category = null)
     {
         $this->loading = true;
+        $this->selectedCategory = $category;
         
         $bibleVerseService = app(BibleVerseService::class);
-        $this->verse = $bibleVerseService->getRandomVerse();
+        $this->verse = $bibleVerseService->getRandomVerse($category);
         
         $this->loading = false;
     }
