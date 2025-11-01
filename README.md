@@ -1,334 +1,665 @@
-# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
+# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
 
 
-
-<p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
-
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
-
-  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
-
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
-
-</p>
-
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 
 <p align="center">
 
-  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
+
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+
+  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
 
 </p>
 
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+
+<p align="center">
+
+  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+
+</p>
+
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
 
 ## ✨ Features
 
-</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
 ### 📖 Bible Verse Management
 
-- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)</p>
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+
+- **100 Curated Verses** - Hand-picked impactful verses organized across 10 categories
+
+- **10 Categories**: Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness<p align="center">
 
 - **Daily Verse** - Fresh verse each day using date-based selection
 
-- **Random Verse** - Get random verses by category or all verses<p align="center">
+- **Random Verse** - Get random verses by category or all verses  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
 
-- **Verse Display** - Beautiful, responsive verse presentation
+- **Verse Search** - Real-time search by text or reference with 500ms debounce
 
-- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
+- **Category Filtering** - Filter verses by category</p>
 
+- **Beautiful Display** - Responsive verse presentation with modern UI
 
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 
-### ⭐ User Features</p>
-
-- **Favorites System** - Save and manage favorite verses
-
-- **User Authentication** - Secure login with Laravel JetstreamLaravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- **Personal Dashboard** - View your saved verses and activity
+### ⭐ User Features
 
 ## ✨ Features
 
-### 🔍 Church Finder
+- **Favorites System** - Save and manage favorite verses
 
-- **Google Places Integration** - Find nearby churches- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- **User Authentication** - Secure login with Laravel Jetstream</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+
+- **Personal Dashboard** - View your saved verses and activity
+
+- **Livewire Integration** - Real-time updates without page refresh### 📖 Bible Verse Management
+
+
+
+### 🔍 Church Finder- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)</p>
+
+
+
+- **Google Places Integration** - Find nearby churches- **Daily Verse** - Fresh verse each day using date-based selection
 
 - **Location Search** - Search churches by address or current location
 
-- **Church Details** - View church information and directions### 📖 Bible Verse Management- [Powerful dependency injection container](https://laravel.com/docs/container).
+- **Church Details** - View church information and directions- **Random Verse** - Get random verses by category or all verses<p align="center">
 
 - **Favorites** - Save favorite churches for quick access
 
-- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- **Verse Display** - Beautiful, responsive verse presentation
 
 ### 🎨 Modern UI
 
-- **Responsive Design** - Works on desktop, tablet, and mobile- **Daily Verse** - Fresh verse each day using date-based selection- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
+
+- **Responsive Design** - Works on desktop, tablet, and mobile
 
 - **Tailwind CSS** - Clean, modern interface
 
-- **Purple Gradient Theme** - Beautiful, consistent design- **Random Verse** - Get random verses by category or all verses- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- **Purple Gradient Theme** - Beautiful, consistent design
 
-- **Social Sharing** - Share verses on social media
+- **Social Sharing** - Share verses on social media### ⭐ User Features</p>
 
-- **Verse Display** - Beautiful, responsive verse presentation- [Robust background job processing](https://laravel.com/docs/queues).
 
-## 🚀 Quick Start
 
-- **Livewire Integration** - Real-time verse updates without page refresh- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start- **Favorites System** - Save and manage favorite verses
 
-### Prerequisites
 
-- PHP 8.2 or higher
+
+### Prerequisites- **User Authentication** - Secure login with Laravel JetstreamLaravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+
+
+
+- PHP 8.2 or higher- **Personal Dashboard** - View your saved verses and activity
 
 - Composer
 
-- Node.js & NPM### ⭐ User FeaturesLaravel is accessible, powerful, and provides tools required for large, robust applications.
+- Node.js & NPM## ✨ Features
 
 - MySQL 8.0+
 
-- XAMPP (recommended for local development)- **Favorites System** - Save and manage favorite verses
+- XAMPP (recommended for local development)### 🔍 Church Finder
 
 
 
-### Installation- **User Authentication** - Secure login with Laravel Jetstream## Learning Laravel
+### Installation- **Google Places Integration** - Find nearby churches- [Simple, fast routing engine](https://laravel.com/docs/routing).
 
 
 
-1. **Clone the repository**- **Personal Collections** - Organize verses into custom collections
+1. **Clone the repository**- **Location Search** - Search churches by address or current location
+
+
+
+   ```bash- **Church Details** - View church information and directions### 📖 Bible Verse Management- [Powerful dependency injection container](https://laravel.com/docs/container).
+
+   git clone https://github.com/starprog/Quantum.git
+
+   cd Quantum- **Favorites** - Save favorite churches for quick access
+
+   ```
+
+- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+
+2. **Install dependencies**
+
+### 🎨 Modern UI
 
    ```bash
 
-   git clone https://github.com/starprog/Quantum.gitLaravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-   cd Quantum
-
-   ```### 🔍 Church Finder
-
-
-
-2. **Install dependencies**- **Google Places Integration** - Find nearby churchesYou may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-   ```bash
-
-   composer install- **Location Search** - Search churches by address or current location
+   composer install- **Responsive Design** - Works on desktop, tablet, and mobile- **Daily Verse** - Fresh verse each day using date-based selection- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
 
    npm install
 
-   ```- **Church Details** - View church information and directionsIf you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   ```- **Tailwind CSS** - Clean, modern interface
 
 
 
-3. **Environment setup**- **Favorites** - Save favorite churches for quick access
-
-   ```bash
-
-   cp .env.example .env## Laravel Sponsors
-
-   php artisan key:generate
-
-   ```### 🎨 Modern UI
+3. **Environment setup**- **Purple Gradient Theme** - Beautiful, consistent design- **Random Verse** - Get random verses by category or all verses- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
 
 
 
-4. **Configure database in `.env`**- **Responsive Design** - Works on desktop, tablet, and mobileWe would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+   ```bash- **Social Sharing** - Share verses on social media
+
+   cp .env.example .env
+
+   php artisan key:generate- **Verse Display** - Beautiful, responsive verse presentation- [Robust background job processing](https://laravel.com/docs/queues).
+
+   ```
+
+## 🚀 Quick Start
+
+4. **Configure database in `.env`**
+
+- **Livewire Integration** - Real-time verse updates without page refresh- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
    ```env
 
-   DB_CONNECTION=mysql- **Tailwind CSS** - Clean, modern interface
+   DB_CONNECTION=mysql### Prerequisites
 
    DB_HOST=127.0.0.1
 
-   DB_PORT=3306- **Purple Gradient Theme** - Beautiful, consistent design### Premium Partners
+   DB_PORT=3306- PHP 8.2 or higher
 
    DB_DATABASE=quantum
 
-   DB_USERNAME=root- **Social Sharing** - Share verses on social media
+   DB_USERNAME=root- Composer
 
    DB_PASSWORD=
 
-   ```- **[Vehikl](https://vehikl.com)**
+   ```- Node.js & NPM### ⭐ User FeaturesLaravel is accessible, powerful, and provides tools required for large, robust applications.
 
 
 
-5. **Configure Google Places API (for Church Finder)**## 🚀 Quick Start- **[Tighten Co.](https://tighten.co)**
-
-   ```env
-
-   GOOGLE_PLACES_API_KEY=your_api_key_here- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-
-   ```
-
-   Get your API key from [Google Cloud Console](https://console.cloud.google.com/)### Prerequisites- **[64 Robots](https://64robots.com)**
+5. **Configure Google Places API (optional for Church Finder)**- MySQL 8.0+
 
 
 
-6. **Run migrations and seed database**- PHP 8.2 or higher- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+   ```env- XAMPP (recommended for local development)- **Favorites System** - Save and manage favorite verses
 
-   ```bash
-
-   php artisan migrate- Composer- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-
-   php artisan db:seed
-
-   ```- Node.js & NPM- **[Redberry](https://redberry.international/laravel-development)**
-
-   This will seed:
-
-   - 6 verse categories- MySQL 8.0+- **[Active Logic](https://activelogic.com)**
-
-   - 78 Bible verses
-
-   - Sample user accounts- XAMPP (recommended for local development)
-
-
-
-7. **Build frontend assets**## Contributing
-
-   ```bash
-
-   npm run build### Installation
+   GOOGLE_PLACES_API_KEY=your_api_key_here
 
    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-8. **Start development server**
 
-   ```bash1. **Clone the repository**
+6. **Run migrations and seeders**### Installation- **User Authentication** - Secure login with Laravel Jetstream## Learning Laravel
+
+
+
+   ```bash
+
+   php artisan migrate
+
+   php artisan db:seed --class=VerseCategorySeeder1. **Clone the repository**- **Personal Collections** - Organize verses into custom collections
+
+   php artisan db:seed --class=VerseSeeder
+
+   ```   ```bash
+
+
+
+7. **Build assets**   git clone https://github.com/starprog/Quantum.gitLaravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+
+
+   ```bash   cd Quantum
+
+   npm run dev
+
+   # Or for production:   ```### 🔍 Church Finder
+
+   npm run build
+
+   ```
+
+
+
+8. **Start the development server**2. **Install dependencies**- **Google Places Integration** - Find nearby churchesYou may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+
+
+
+   ```bash   ```bash
 
    php artisan serve
 
-   ```   ```bash## Code of Conduct
+   ```   composer install- **Location Search** - Search churches by address or current location
 
 
 
-Visit `http://localhost:8000` to see your application!   git clone https://github.com/starprog/Quantum.git
+9. **Visit the application**   npm install
 
 
 
-## 📱 User Interface   cd QuantumIn order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   Open [http://localhost:8000](http://localhost:8000) in your browser   ```- **Church Details** - View church information and directionsIf you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
 
 
-### Public Pages   ```
-
-- **Home** (`/`) - Landing page with verse of the day
-
-- **Bible Verses** (`/bible-verse`) - Interactive verse browser with Livewire## Security Vulnerabilities
-
-- **Daily Verse** (`/daily-verse`) - Today's featured verse
-
-- **Church Finder** (`/church-finder`) - Find nearby churches2. **Install dependencies**
-
-- **Services** (`/services`) - Features overview
-
-- **Settings** (`/settings`) - Application information   ```bashIf you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📁 Project Structure
 
 
 
-### Authenticated Pages   composer install
+```3. **Environment setup**- **Favorites** - Save favorite churches for quick access
 
-- **Dashboard** (`/dashboard`) - User dashboard with verse of the day
+Quantum/
 
-- **Favorites** (`/favorites`) - Manage saved verses   npm install## License
+├── app/   ```bash
 
-- **Profile** (`/user/profile`) - User profile management
+│   ├── Models/
+
+│   │   ├── Verse.php              # Bible verse model   cp .env.example .env## Laravel Sponsors
+
+│   │   ├── VerseCategory.php     # Category model
+
+│   │   └── Church.php            # Church model   php artisan key:generate
+
+│   ├── Services/
+
+│   │   ├── BibleVerseService.php  # Verse business logic   ```### 🎨 Modern UI
+
+│   │   └── ChurchFinderService.php # Church search logic
+
+│   └── Http/
+
+│       └── Livewire/              # Livewire components
+
+├── modules/4. **Configure database in `.env`**- **Responsive Design** - Works on desktop, tablet, and mobileWe would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+
+│   └── BibleVerse/               # Bible verse module
+
+│       ├── src/   ```env
+
+│       │   └── Http/Livewire/    # BibleVerse Livewire component
+
+│       └── resources/views/      # Blade templates   DB_CONNECTION=mysql- **Tailwind CSS** - Clean, modern interface
+
+├── database/
+
+│   ├── migrations/               # Database migrations   DB_HOST=127.0.0.1
+
+│   └── seeders/
+
+│       ├── VerseCategorySeeder.php # Seed 10 categories   DB_PORT=3306- **Purple Gradient Theme** - Beautiful, consistent design### Premium Partners
+
+│       └── VerseSeeder.php       # Seed 100 verses
+
+├── tests/   DB_DATABASE=quantum
+
+│   └── Feature/                  # Feature tests (30 tests)
+
+└── routes/   DB_USERNAME=root- **Social Sharing** - Share verses on social media
+
+    └── web.php                   # Application routes
+
+```   DB_PASSWORD=
+
+
+
+## 🧪 Testing   ```- **[Vehikl](https://vehikl.com)**
+
+
+
+Run the test suite:
+
+
+
+```bash5. **Configure Google Places API (for Church Finder)**## 🚀 Quick Start- **[Tighten Co.](https://tighten.co)**
+
+php artisan test
+
+```   ```env
+
+
+
+The project includes comprehensive tests:   GOOGLE_PLACES_API_KEY=your_api_key_here- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+
+- **BibleVerseServiceTest** - 12 tests for service methods
+
+- **BibleVerseLivewireTest** - 9 tests for Livewire interactions     ```
+
+- **FavoriteVerseTest** - 9 tests for favorites functionality
+
+   Get your API key from [Google Cloud Console](https://console.cloud.google.com/)### Prerequisites- **[64 Robots](https://64robots.com)**
+
+## 🗃️ Database Schema
+
+
+
+### Verses Table
+
+- `id` - Primary key6. **Run migrations and seed database**- PHP 8.2 or higher- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+
+- `reference` - Bible reference (e.g., "John 3:16")
+
+- `verse` - Verse text   ```bash
+
+- `category_id` - Foreign key to categories
+
+- `timestamps`   php artisan migrate- Composer- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+
+
+
+### Verse Categories Table   php artisan db:seed
+
+- `id` - Primary key
+
+- `name` - Category name   ```- Node.js & NPM- **[Redberry](https://redberry.international/laravel-development)**
+
+- `description` - Category description
+
+- `timestamps`   This will seed:
+
+
+
+### User Favorite Verses Table   - 6 verse categories- MySQL 8.0+- **[Active Logic](https://activelogic.com)**
+
+- `id` - Primary key
+
+- `user_id` - Foreign key to users   - 78 Bible verses
+
+- `verse_id` - Foreign key to verses
+
+- `timestamps`   - Sample user accounts- XAMPP (recommended for local development)
+
+
+
+## 🎯 Key Routes
+
+
+
+- `/` - Homepage7. **Build frontend assets**## Contributing
+
+- `/bible-verse` - Bible verse display with search and categories
+
+- `/dashboard` - User dashboard (authenticated)   ```bash
+
+- `/church-finder` - Find nearby churches
+
+   npm run build### Installation
+
+## 🛠️ Technology Stack
 
    ```
 
-## 🏗️ Architecture
+- **Backend**: Laravel 11.x
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **Frontend**: Livewire 3.x, Tailwind CSS, Alpine.jsThank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-### Technology Stack
+- **Database**: MySQL 8.0+
 
-- **Backend**: Laravel 11.x, PHP 8.2+3. **Environment setup**=======
+- **Authentication**: Laravel Jetstream8. **Start development server**
 
-- **Frontend**: Livewire 3.x, Alpine.js, Tailwind CSS
+- **APIs**: Google Places API
 
-- **Database**: MySQL 8.0+   ```bash# 🚀 Quantum - Modular Laravel Application Platform
+   ```bash1. **Clone the repository**
 
-- **Authentication**: Laravel Jetstream with Livewire
+## 📊 Verse Statistics
 
-- **External APIs**: Google Places API   cp .env.example .env
+   php artisan serve
 
+Check verse database statistics:
 
+   ```   ```bash## Code of Conduct
 
-### Project Structure   php artisan key:generate<p align="center">
+```bash
+
+php scripts/check-verses.php
 
 ```
 
+Visit `http://localhost:8000` to see your application!   git clone https://github.com/starprog/Quantum.git
+
+Output example:
+
+```
+
+=== Bible Verse Database Statistics ===
+
+Total Categories: 10## 📱 User Interface   cd QuantumIn order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+Total Verses: 100
+
+
+
+Breakdown by Category:
+
+Faith & Trust                   10 verses### Public Pages   ```
+
+Gospel & Salvation              10 verses
+
+Grace & Forgiveness             10 verses- **Home** (`/`) - Landing page with verse of the day
+
+Hope & Encouragement            10 verses
+
+Love & Compassion               10 verses- **Bible Verses** (`/bible-verse`) - Interactive verse browser with Livewire## Security Vulnerabilities
+
+Love & Relationships            10 verses
+
+Peace & Comfort                 10 verses- **Daily Verse** (`/daily-verse`) - Today's featured verse
+
+Prayer & Worship                10 verses
+
+Strength & Courage              10 verses- **Church Finder** (`/church-finder`) - Find nearby churches2. **Install dependencies**
+
+Wisdom & Guidance               10 verses
+
+```- **Services** (`/services`) - Features overview
+
+
+
+## 🔧 Development- **Settings** (`/settings`) - Application information   ```bashIf you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+
+
+### Code Style
+
+
+
+Follow PSR-12 coding standards:### Authenticated Pages   composer install
+
+
+
+```bash- **Dashboard** (`/dashboard`) - User dashboard with verse of the day
+
+./vendor/bin/pint
+
+```- **Favorites** (`/favorites`) - Manage saved verses   npm install## License
+
+
+
+### Database Refresh- **Profile** (`/user/profile`) - User profile management
+
+
+
+To refresh the database with clean data:   ```
+
+
+
+```bash## 🏗️ Architecture
+
+php artisan migrate:fresh --seed
+
+```The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+### Clear Caches### Technology Stack
+
+
+
+```bash- **Backend**: Laravel 11.x, PHP 8.2+3. **Environment setup**=======
+
+php artisan cache:clear
+
+php artisan config:clear- **Frontend**: Livewire 3.x, Alpine.js, Tailwind CSS
+
+php artisan view:clear
+
+```- **Database**: MySQL 8.0+   ```bash# 🚀 Quantum - Modular Laravel Application Platform
+
+
+
+## 📝 API Documentation- **Authentication**: Laravel Jetstream with Livewire
+
+
+
+### BibleVerseService Methods- **External APIs**: Google Places API   cp .env.example .env
+
+
+
+```php
+
+// Get all verses
+
+$verses = BibleVerseService::getAllVerses();### Project Structure   php artisan key:generate<p align="center">
+
+
+
+// Get verse of the day```
+
+$verse = BibleVerseService::getVerseOfTheDay();
+
 app/   ```  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
 
-├── Http/Controllers/
+// Get random verse
 
-│   ├── BibleVerseController.php    # Verse display logic  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+">
+$verse = BibleVerseService::getRandomVerse($categoryId = null);├── Http/Controllers/
+
+
+
+// Search verses│   ├── BibleVerseController.php    # Verse display logic  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+">
+
+$verses = BibleVerseService::searchVerses($searchTerm, $categoryId = null);
 
 │   ├── FavoriteVerseController.php # Favorites management
 
-│   ├── ChurchFinderController.php  # Church search4. **Configure database in `.env`**  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+// Get categories
+
+$categories = BibleVerseService::getCategories();│   ├── ChurchFinderController.php  # Church search4. **Configure database in `.env`**  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+
+```
 
 │   └── HomeController.php          # Home & info pages
 
+## 🗺️ Roadmap
+
 ├── Models/   ```env  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
 
-│   ├── User.php                    # User model
+### Phase 1 - Core Features ✅
 
-│   ├── Verse.php                   # Bible verse model   DB_CONNECTION=mysql</p>
+- [x] Bible verse display│   ├── User.php                    # User model
 
-│   ├── VerseCategory.php           # Verse categories
+- [x] Daily verse rotation
+
+- [x] Category organization│   ├── Verse.php                   # Bible verse model   DB_CONNECTION=mysql</p>
+
+- [x] Favorites system
+
+- [x] Verse search functionality│   ├── VerseCategory.php           # Verse categories
+
+- [x] Comprehensive test suite
 
 │   └── Church.php                  # Church model   DB_HOST=127.0.0.1
 
-└── Services/
+### Phase 2 - Enhancements 🚧
 
-    ├── BibleVerseService.php       # Verse business logic   DB_PORT=3306<p align="center">
+- [ ] Verse caching for performance└── Services/
 
-    └── ChurchFinderService.php     # Google Places integration
+- [ ] Reading plans
 
-   DB_DATABASE=quantum  <strong>A powerful, modular Laravel application with dynamic module loading, payment processing, and modern UI</strong>
+- [ ] Verse sharing with images    ├── BibleVerseService.php       # Verse business logic   DB_PORT=3306<p align="center">
 
-modules/BibleVerse/
+- [ ] Multiple Bible translations
 
-├── resources/   DB_USERNAME=root</p>
+- [ ] Verse memorization tools    └── ChurchFinderService.php     # Google Places integration
+
+
+
+### Phase 3 - Community Features 📋   DB_DATABASE=quantum  <strong>A powerful, modular Laravel application with dynamic module loading, payment processing, and modern UI</strong>
+
+- [ ] User verse collections
+
+- [ ] Community discussionsmodules/BibleVerse/
+
+- [ ] Prayer requests
+
+- [ ] Devotional content├── resources/   DB_USERNAME=root</p>
+
+- [ ] Mobile app (React Native)
 
 │   ├── css/                        # Module styles
 
+## 🤝 Contributing
+
 │   ├── images/                     # Module assets   DB_PASSWORD=
+
+Contributions are welcome! Please follow these steps:
 
 │   └── views/                      # Module views
 
-├── src/   ```## ✨ Features
+1. Fork the repository
 
-│   ├── Http/Livewire/             # Livewire components
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)├── src/   ```## ✨ Features
+
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+
+4. Push to the branch (`git push origin feature/AmazingFeature`)│   ├── Http/Livewire/             # Livewire components
+
+5. Open a Pull Request
 
 │   └── BibleVerseServiceProvider.php
 
+## 📄 License
+
 └── View/Components/                # Blade components
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 5. **Configure Google Places API (for Church Finder)**### 🎯 Core Features
 
+## 👥 Authors
+
 database/
+
+- **Spencer** - *Initial work* - [starprog](https://github.com/starprog)
 
 ├── migrations/                     # Database schema   ```env- **Modular Architecture** - Database-driven module system with hot-loading
 
+## 🙏 Acknowledgments
+
 └── seeders/
 
-    ├── VerseCategorySeeder.php    # Seed categories   GOOGLE_PLACES_API_KEY=your_google_places_api_key- **Payment Processing** - Integrated Stripe checkout and payment handling
+- Laravel Framework Team
 
-    └── VerseSeeder.php            # Seed 78 verses
+- Livewire Team    ├── VerseCategorySeeder.php    # Seed categories   GOOGLE_PLACES_API_KEY=your_google_places_api_key- **Payment Processing** - Integrated Stripe checkout and payment handling
 
-   ```- **User Management** - Complete authentication with Laravel Jetstream
+- Tailwind CSS Team
 
-resources/views/
+- All contributors to the Bible verse content    └── VerseSeeder.php            # Seed 78 verses
 
-├── bible-verse/                    # Verse views   See [CHURCH_FINDER_SETUP.md](CHURCH_FINDER_SETUP.md) for detailed setup instructions.- **Modern UI** - Clean, responsive interface with Tailwind CSS
 
-├── church-finder.blade.php         # Church finder UI
+
+## 📞 Support   ```- **User Management** - Complete authentication with Laravel Jetstream
+
+
+
+For support, email spencer@example.com or open an issue in the GitHub repository.resources/views/
+
+
+
+---├── bible-verse/                    # Verse views   See [CHURCH_FINDER_SETUP.md](CHURCH_FINDER_SETUP.md) for detailed setup instructions.- **Modern UI** - Clean, responsive interface with Tailwind CSS
+
+
+
+<p align="center">Made with ❤️ for spreading God's Word</p>├── church-finder.blade.php         # Church finder UI
+
 
 ├── daily-verse.blade.php           # Daily verse page- **Admin Dashboard** - Module management and system administration
 
