@@ -14,14 +14,6 @@
 
         <!-- Content container -->
         <div class="relative z-10 space-y-6">
-            <!-- Debug output -->
-            <div class="text-white text-sm mb-4">
-                Categories count: {{ count($categories) }}
-                @if(count($categories) > 0)
-                    <pre class="mt-2">{{ print_r($categories->toArray(), true) }}</pre>
-                @endif
-            </div>
-
             <!-- Category buttons -->
             <div class="flex flex-wrap gap-2 justify-center">
                 <button wire:click="$set('selectedCategory', null)" 
