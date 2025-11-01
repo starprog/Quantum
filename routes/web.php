@@ -14,6 +14,11 @@ Route::get('/bible-verse', function () {
     return view('bible-verse.verse');
 })->name('bible-verse');
 
+// Embeddable widget version (minimal UI, no auth)
+Route::get('/bible-verse/embed', function () {
+    return view('bible-verse.embed');
+})->name('bible-verse.embed');
+
 Route::get('/daily-verse', function () {
     $bibleVerseService = app(\App\Services\BibleVerseService::class);
     $verseOfTheDay = $bibleVerseService->getVerseOfTheDay();

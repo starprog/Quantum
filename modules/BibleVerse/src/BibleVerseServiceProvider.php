@@ -48,6 +48,7 @@ class BibleVerseServiceProvider extends ServiceProvider
         // Register Livewire Components
         if (class_exists(\Livewire\Livewire::class)) {
             \Livewire\Livewire::component('bible-verse', \Modules\BibleVerse\src\Http\Livewire\BibleVerse::class);
+            \Livewire\Livewire::component('bible-verse-embed', \Modules\BibleVerse\src\Http\Livewire\BibleVerseEmbed::class);
         }
 
         // Publish assets
