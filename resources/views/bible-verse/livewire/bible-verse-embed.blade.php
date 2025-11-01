@@ -51,8 +51,26 @@
             </p>
         </div>
         
-        <!-- New Verse Button -->
-        <div style="text-align: center;">
+        <!-- Action Buttons -->
+        <div style="text-align: center; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <!-- Copy Button -->
+            <button 
+                onclick="copyVerse('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                id="copyBtn"
+                style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; 
+                       font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; border: none; 
+                       cursor: pointer; transition: all 0.3s; 
+                       background: #f3f4f6; color: #374151;
+                       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.15)';"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.1)';">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copy Verse</span>
+            </button>
+            
+            <!-- New Verse Button -->
             <button 
                 wire:click="refreshVerse({{ $selectedCategory ? "'".$selectedCategory."'" : 'null' }})"
                 wire:loading.attr="disabled"
@@ -70,6 +88,27 @@
                 <span wire:loading>Loading...</span>
             </button>
         </div>
+        
+        <!-- Copy notification -->
+        <div id="copyNotification" style="display: none; margin-top: 1rem; padding: 0.75rem; background: #10b981; color: white; 
+                                           border-radius: 0.5rem; text-align: center; font-size: 0.875rem; font-weight: 600;">
+            ✓ Verse copied to clipboard!
+        </div>
+        
+        <script>
+            function copyVerse(verse, reference) {
+                const text = `"${verse}" — ${reference}`;
+                navigator.clipboard.writeText(text).then(() => {
+                    const notification = document.getElementById('copyNotification');
+                    notification.style.display = 'block';
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+            }
+        </script>
     @else
         <p style="text-align: center; color: #6b7280;">No verses available</p>
     @endif
