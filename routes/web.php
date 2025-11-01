@@ -19,6 +19,11 @@ Route::get('/bible-verse/embed', function () {
     return view('bible-verse.embed');
 })->name('bible-verse.embed');
 
+// Demo page with documentation
+Route::get('/bible-verse/demo', function () {
+    return view('bible-verse.demo');
+})->name('bible-verse.demo');
+
 Route::get('/daily-verse', function () {
     $bibleVerseService = app(\App\Services\BibleVerseService::class);
     $verseOfTheDay = $bibleVerseService->getVerseOfTheDay();
