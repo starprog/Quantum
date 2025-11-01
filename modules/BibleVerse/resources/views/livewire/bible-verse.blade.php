@@ -28,6 +28,63 @@
                 @endforeach
             </div>
 
+            <!-- Search bar -->
+            <div class="flex gap-2">
+                <div class="flex-1 relative">
+                    <input 
+                        type="text" 
+                        wire:model.live.debounce.500ms="searchTerm"
+                        placeholder="Search verses by text or reference..." 
+                        class="w-full px-4 py-3 pl-12 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
+                    >
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                @if(!empty($searchTerm))
+                    <button 
+                        wire:click="clearSearch"
+                        class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+                        title="Clear search"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                @endif
+            </div>
+
+            @if($isSearching && count($verses) > 0)
+                <!-- Search results -->
+                <div class="space-y-3 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                    <div class="text-white/70 text-sm mb-2">
+                        Found {{ count($verses) }} verse{{ count($verses) !== 1 ? 's' : '' }}
+                    </div>
+                    @foreach($verses as $result)
+                        <button 
+                            wire:click="selectVerse({{ $result->id }})"
+                            class="w-full text-left p-4 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all group"
+                        >
+                            <div class="text-white/90 font-medium mb-1">{{ $result->reference }}</div>
+                            <div class="text-white/60 text-sm line-clamp-2 group-hover:text-white/80 transition-colors">
+                                {{ Str::limit($result->verse, 150) }}
+                            </div>
+                            <div class="text-xs text-white/40 mt-2">{{ $result->category->name }}</div>
+                        </button>
+                    @endforeach
+                </div>
+            @elseif($isSearching && count($verses) === 0)
+                <!-- No results -->
+                <div class="text-center py-8 text-white/60">
+                    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <p class="text-lg">No verses found matching "{{ $searchTerm }}"</p>
+                    <p class="text-sm mt-2">Try a different search term or clear the search to browse all verses.</p>
+                </div>
+            @endif
+
+            @if(!$isSearching && $verse)
             <!-- Verse content -->
             <div class="relative text-white">
                 <!-- Decorative quote marks -->
@@ -36,17 +93,13 @@
                 
                 <!-- Verse text -->
                 <blockquote class="relative z-10 text-2xl md:text-3xl font-serif leading-relaxed px-4">
-                    @if($verse)
-                        {{ $verse->verse }}
-                    @endif
+                    {{ $verse->verse }}
                 </blockquote>
 
                 <!-- Verse reference -->
                 <div class="text-right mt-6">
                     <span class="inline-block border-t border-white/20 pt-4 text-white/80 font-medium tracking-wide">
-                        @if($verse)
-                            {{ $verse->reference }}
-                        @endif
+                        {{ $verse->reference }}
                     </span>
                 </div>
 
@@ -74,7 +127,9 @@
                     />
                 </div>
             </div>
+            @endif
 
+            @if(!$isSearching)
             <!-- New Verse Button -->
             <div class="mt-8 flex justify-center">
                 <button wire:click="refreshVerse" 
@@ -95,6 +150,7 @@
                     </svg>
                 </button>
             </div>
+            @endif
         </div>
     </div>
 </div>

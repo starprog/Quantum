@@ -61,4 +61,29 @@ class BibleVerseService
             return $this->getRandomVerse();
         }
     }
+
+    /**
+     * Search verses by text or reference
+     * 
+     * @param string $searchTerm
+     * @param int|null $categoryId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function searchVerses($searchTerm, $categoryId = null)
+    {
+        $query = Verse::with('category');
+
+        if (!empty($searchTerm)) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('verse', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('reference', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+
+        if ($categoryId) {
+            $query->where('category_id', $categoryId);
+        }
+
+        return $query->orderBy('reference')->get();
+    }
 }
