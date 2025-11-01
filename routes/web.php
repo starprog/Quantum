@@ -9,12 +9,12 @@ use App\Http\Controllers\ChurchFinderController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
-// Bible verse routes
+// Bible verse routes - Using minimal embeddable widget
 Route::get('/bible-verse', function () {
-    return view('bible-verse.verse');
+    return view('bible-verse.embed');
 })->name('bible-verse');
 
-// Embeddable widget version (minimal UI, no auth)
+// Also available at /embed for iframe usage
 Route::get('/bible-verse/embed', function () {
     return view('bible-verse.embed');
 })->name('bible-verse.embed');
