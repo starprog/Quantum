@@ -9,10 +9,12 @@ class BibleVerseEmbed extends Component
 {
     public $verse;
     public $loading = false;
+    public $isVerseOfTheDay = true;
 
     public function mount(BibleVerseService $bibleVerseService)
     {
         $this->verse = $bibleVerseService->getVerseOfTheDay();
+        $this->isVerseOfTheDay = true;
     }
 
     public function refreshVerse()
@@ -21,6 +23,7 @@ class BibleVerseEmbed extends Component
         
         $bibleVerseService = app(BibleVerseService::class);
         $this->verse = $bibleVerseService->getRandomVerse();
+        $this->isVerseOfTheDay = false;
         
         $this->loading = false;
     }

@@ -1,5 +1,22 @@
 <div class="widget-card fade-in" style="background: var(--widget-bg); border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); transition: background 0.3s;">
     @if($verse)
+        <!-- Verse of the Day Badge -->
+        @if($isVerseOfTheDay)
+        <div style="margin-bottom: 1.5rem; text-align: center;">
+            <span style="display: inline-flex; align-items: center; gap: 0.5rem; 
+                       background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); 
+                       color: white; padding: 0.5rem 1rem; border-radius: 9999px; 
+                       font-size: 0.875rem; font-weight: 700; text-transform: uppercase; 
+                       letter-spacing: 0.05em; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.3);
+                       animation: fadeIn 0.5s ease-in;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 20 20">
+                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                </svg>
+                ✨ Verse of the Day
+            </span>
+        </div>
+        @endif
+        
         <!-- Verse Text -->
         <div wire:key="verse-{{ $verse->id }}" class="verse-content" style="margin-bottom: 2rem;">
             <p style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500;">
