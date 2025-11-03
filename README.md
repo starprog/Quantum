@@ -50,17 +50,17 @@
 
 ### Social Features
 
-- 🐦 **Twitter Share** - Share verses on Twitter---
-
+- 🐦 **Twitter Share** - Share verses on Twitter
 - 📘 **Facebook Share** - Share verses on Facebook
+- 💬 **WhatsApp Share** - Share verses on WhatsApp
+- 📧 **Email Share** - Share verses via email with pre-formatted message
 
-- 💬 **WhatsApp Share** - Share verses on WhatsApp</p>
+### User Experience
 
-
-
-### User Experience## ✨ Features
-
-- ⌨️ **Keyboard Shortcuts** - Press `N` for new verse, `C` to copy
+- ⌨️ **Keyboard Shortcuts** - Press `N` for new verse, `C` to copy, `P` to print, `E` to email, `H` for history
+- 🕒 **Verse History** - Track and revisit your last 10 viewed verses with timestamps
+- 🔤 **Font Size Controls** - Toggle between small, medium, and large text for accessibility
+- 🖨️ **Print-Optimized** - Clean print layout removes UI elements and optimizes typography
 
 - 🎨 **Beautiful UI** - Modern gradient design with smooth animations  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
 
@@ -318,23 +318,42 @@ The widget automatically saves your theme preference:
 
 ### Keyboard Shortcuts
 
-- **N** - Get a new random verse- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
-
+- **N** - Get a new random verse
 - **C** - Copy current verse to clipboard
+- **P** - Print current verse (print-optimized layout)
+- **E** - Share current verse via email
+- **H** - Toggle verse history (view last 10 verses)
 
-7. **Start development server**
+### Verse History
+
+- Automatically tracks your last 10 viewed verses
+- View history dropdown with timestamps
+- Click any verse to revisit it
+- Clear all history option
+- Persisted in browser localStorage
+
+### Font Size Controls
+
+- Three size options: Small, Medium (default), Large
+- Instant toggle with visual active state
+- Persisted preference in localStorage
+- Improves accessibility for all users
+
+### Print Functionality
+
+- Clean, print-optimized layout
+- Hides all UI buttons and controls
+- Optimized typography for paper (1.75rem verse text, 1.25rem reference)
+- Adds "Bible Verse" header and attribution footer
+- Triggered via button click or `P` keyboard shortcut
 
 ### Social Sharing
 
-Share verses directly to:   ```bash- **Responsive Design** - Works on desktop, tablet, and mobile
-
+Share verses directly to:
 - Twitter (opens popup)
-
-- Facebook (opens popup)   php artisan serve
-
+- Facebook (opens popup)
 - WhatsApp (opens chat)
-
-   ```- **Tailwind CSS** - Clean, modern interface
+- Email (opens mail client with pre-formatted message)
 
 ---
 
