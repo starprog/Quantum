@@ -166,6 +166,20 @@
                     </svg>
                     WhatsApp
                 </button>
+                
+                <!-- Email -->
+                <button 
+                    onclick="shareViaEmail('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                    style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; 
+                           background: #6366f1; color: white; font-size: 0.75rem; font-weight: 600;
+                           display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.3s;"
+                    onmouseover="this.style.transform='scale(1.05)';"
+                    onmouseout="this.style.transform='scale(1)';">
+                    <svg style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    Email
+                </button>
             </div>
         </div>
         
@@ -214,6 +228,13 @@
                 window.open(url, '_blank');
             }
             
+            function shareViaEmail(verse, reference) {
+                const subject = encodeURIComponent('Bible Verse to Share');
+                const body = encodeURIComponent(`"${verse}"\n\n— ${reference}\n\nShared from Bible Verse Widget`);
+                const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+                window.location.href = mailtoUrl;
+            }
+            
             // Keyboard shortcuts (simplified)
             document.addEventListener('keydown', function(e) {
                 // Ignore if typing in input field
@@ -239,6 +260,16 @@
                 if (key === 'p') {
                     e.preventDefault();
                     printVerse();
+                }
+                
+                // E - Email
+                if (key === 'e') {
+                    e.preventDefault();
+                    const verseText = document.getElementById('verseText')?.innerText;
+                    const verseRef = document.getElementById('verseReference')?.innerText;
+                    if (verseText && verseRef) {
+                        shareViaEmail(verseText, verseRef);
+                    }
                 }
             });
         </script>
