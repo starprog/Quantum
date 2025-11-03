@@ -85,6 +85,38 @@
         .fade-in {
             animation: fadeIn 0.5s ease-out;
         }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 640px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .widget-container {
+                max-width: 100%;
+            }
+            
+            .theme-toggle {
+                top: -2.5rem;
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 0.25rem;
+                align-items: flex-start;
+                padding-top: 3rem;
+            }
+            
+            .theme-toggle {
+                position: fixed;
+                top: 0.5rem;
+                right: 0.5rem;
+                z-index: 1000;
+            }
+        }
     </style>
     
     <script>

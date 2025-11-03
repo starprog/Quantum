@@ -1,9 +1,62 @@
+<style>
+    /* Mobile-specific improvements */
+    @media (max-width: 640px) {
+        .widget-card {
+            padding: 1.5rem !important;
+            border-radius: 0.75rem !important;
+        }
+        
+        .verse-content p:first-child {
+            font-size: 1.25rem !important;
+        }
+        
+        .verse-content p:last-child {
+            font-size: 1rem !important;
+        }
+        
+        button {
+            padding: 0.65rem 1.25rem !important;
+            font-size: 0.8rem !important;
+        }
+        
+        button svg {
+            width: 1rem !important;
+            height: 1rem !important;
+        }
+        
+        .votd-badge {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.8rem !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .widget-card {
+            padding: 1.25rem !important;
+        }
+        
+        .verse-content p:first-child {
+            font-size: 1.125rem !important;
+        }
+        
+        button span:not([wire\\:loading]) {
+            display: none !important;
+        }
+        
+        button {
+            padding: 0.6rem !important;
+            min-width: 44px;
+            min-height: 44px;
+        }
+    }
+</style>
+
 <div class="widget-card fade-in" style="background: var(--widget-bg); border-radius: 1rem; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); transition: background 0.3s;">
     @if($verse)
         <!-- Verse of the Day Badge -->
         @if($isVerseOfTheDay)
         <div style="margin-bottom: 1.5rem; text-align: center;">
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem; 
+            <span class="votd-badge" style="display: inline-flex; align-items: center; gap: 0.5rem; 
                        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); 
                        color: white; padding: 0.5rem 1rem; border-radius: 9999px; 
                        font-size: 0.875rem; font-weight: 700; text-transform: uppercase; 

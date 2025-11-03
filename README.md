@@ -1,4 +1,4 @@
-# 📖 Quantum - Bible Verse Widget# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
+# 📖 Bible Verse Widget# 📖 Quantum - Bible Verse Widget# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
 
 
 
@@ -14,11 +14,11 @@
 
 </p>
 
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
 
 <p align="center">
 
-  <strong>A beautiful, embeddable Bible verse widget with 100 curated verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+  <strong>A beautiful, embeddable Bible verse widget powered by Laravel & Livewire</strong>  <img src="https://img.shields.io/badge/Livewire-3.x-purple?style=for-the-badge" alt="Livewire 3.x">
 
 </p>
 
@@ -30,405 +30,837 @@
 
 ## ✨ Features
 
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-### 📖 Bible Verse Widget
+### Core Features
+
+- 📖 **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
+
+- ⭐ **Verse of the Day Badge** - Golden badge highlights today's featured verse
+
+- 🌙 **Dark Mode** - Toggle between light and dark themes with localStorage persistence  <strong>A beautiful, embeddable Bible verse widget with 100 curated verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+
+- 📋 **One-Click Copy** - Copy verses to clipboard with visual feedback
+
+- 🔄 **Random Verses** - Get a new random verse instantly</p>
+
+- ⚡ **Daily Caching** - Verse of the day cached until midnight for optimal performance
+
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
+
+### Social Features
+
+- 🐦 **Twitter Share** - Share verses on Twitter---
+
+- 📘 **Facebook Share** - Share verses on Facebook
+
+- 💬 **WhatsApp Share** - Share verses on WhatsApp</p>
+
+
+
+### User Experience## ✨ Features
+
+- ⌨️ **Keyboard Shortcuts** - Press `N` for new verse, `C` to copy
+
+- 🎨 **Beautiful UI** - Modern gradient design with smooth animations  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+
+- 📱 **Fully Responsive** - Works perfectly on mobile, tablet, and desktop
+
+- 🚀 **Livewire Powered** - Real-time updates without page refresh### 📖 Bible Verse Widget
+
+- 🔌 **Embeddable** - Perfect for iframes, can be embedded in any website
 
 - **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
 
+---
+
 - **Category Filtering** - Filter by Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness
+
+## 📦 Installation
 
 - **Daily Verse with Caching** - Verse of the day cached until midnight for optimal performance  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
 
-- **One-Click Copy** - Copy verses to clipboard with visual feedback
+### Requirements
 
-- **Fully Embeddable** - Perfect for iframes, can be embedded in any website</p>
-
-- **Livewire Powered** - Real-time updates without page refresh
-
-- **Modern UI** - Beautiful gradient design with smooth animations  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
-
-
-
-### ⚡ Performance## ✨ Features
-
-- **Smart Caching** - Daily verse cached to reduce database queries
-
-- **Optimized Queries** - Efficient database operations with eager loading</p>
-
-- **Fast Response Times** - Sub-second page loads
-
-### 📖 Bible Verse Management
-
----
-
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-
-## 🚀 Quick Start
-
-- **100 Curated Verses** - Hand-picked impactful verses organized across 10 categories
-
-### Prerequisites
-
-- PHP 8.2 or higher- **10 Categories**: Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness<p align="center">
+- PHP 8.2 or higher- **One-Click Copy** - Copy verses to clipboard with visual feedback
 
 - Composer
 
+- MySQL 8.0 or higher- **Fully Embeddable** - Perfect for iframes, can be embedded in any website</p>
+
+- Node.js & NPM (for asset compilation)
+
+- **Livewire Powered** - Real-time updates without page refresh
+
+### Quick Start
+
+- **Modern UI** - Beautiful gradient design with smooth animations  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
+
+```bash
+
+# Clone the repository
+
+git clone https://github.com/starprog/Quantum.git
+
+cd Quantum### ⚡ Performance## ✨ Features
+
+
+
+# Install PHP dependencies- **Smart Caching** - Daily verse cached to reduce database queries
+
+composer install
+
+- **Optimized Queries** - Efficient database operations with eager loading</p>
+
+# Install JavaScript dependencies
+
+npm install- **Fast Response Times** - Sub-second page loads
+
+
+
+# Copy environment file### 📖 Bible Verse Management
+
+cp .env.example .env
+
+---
+
+# Generate application key
+
+php artisan key:generate  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+
+
+
+# Configure your database in .env## 🚀 Quick Start
+
+# DB_CONNECTION=mysql
+
+# DB_HOST=127.0.0.1- **100 Curated Verses** - Hand-picked impactful verses organized across 10 categories
+
+# DB_PORT=3306
+
+# DB_DATABASE=quantum### Prerequisites
+
+# DB_USERNAME=root
+
+# DB_PASSWORD=- PHP 8.2 or higher- **10 Categories**: Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness<p align="center">
+
+
+
+# Run migrations and seed the database- Composer
+
+php artisan migrate --seed
+
 - MySQL 8.0 or higher- **Daily Verse** - Fresh verse each day using date-based selection
 
-- Node.js & NPM
+# Build assets
 
-- **Random Verse** - Get random verses by category or all verses  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+npm run build- Node.js & NPM
 
-### Installation
 
-- **Verse Search** - Real-time search by text or reference with 500ms debounce
 
-1. **Clone the repository**
+# Start the development server- **Random Verse** - Get random verses by category or all verses  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
 
-   ```bash- **Category Filtering** - Filter verses by category</p>
+php artisan serve
 
-   git clone https://github.com/starprog/Quantum.git
+```### Installation
+
+
+
+Visit `http://127.0.0.1:8000/bible-verse` to see your widget!- **Verse Search** - Real-time search by text or reference with 500ms debounce
+
+
+
+---1. **Clone the repository**
+
+
+
+## 🎯 Usage   ```bash- **Category Filtering** - Filter verses by category</p>
+
+
+
+### Direct Access   git clone https://github.com/starprog/Quantum.git
+
+Simply visit `/bible-verse` in your browser to see the widget.
 
    cd Quantum- **Beautiful Display** - Responsive verse presentation with modern UI
 
-   ```
-
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-
-2. **Install dependencies**
-
-   ```bash### ⭐ User Features
-
-   composer install
-
-   npm install## ✨ Features
+### Embed in Your Website
 
    ```
 
-- **Favorites System** - Save and manage favorite verses
+#### Basic Iframe Embed
 
-3. **Environment setup**
+```html  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
 
-   ```bash- **User Authentication** - Secure login with Laravel Jetstream</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+<iframe 
 
-   cp .env.example .env
+    src="http://your-domain.com/bible-verse" 2. **Install dependencies**
 
-   php artisan key:generate- **Personal Dashboard** - View your saved verses and activity
+    width="600" 
 
-   ```
+    height="500"    ```bash### ⭐ User Features
 
-- **Livewire Integration** - Real-time updates without page refresh### 📖 Bible Verse Management
+    frameborder="0"
 
-4. **Configure database** in `.env`
+    style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">   composer install
 
-   ```env
+</iframe>
+
+```   npm install## ✨ Features
+
+
+
+#### Responsive Iframe Embed   ```
+
+```html
+
+<div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; max-width: 600px; margin: 0 auto;">- **Favorites System** - Save and manage favorite verses
+
+    <iframe 
+
+        src="http://your-domain.com/bible-verse"3. **Environment setup**
+
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 1rem;">
+
+    </iframe>   ```bash- **User Authentication** - Secure login with Laravel Jetstream</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+
+</div>
+
+```   cp .env.example .env
+
+
+
+#### WordPress Shortcode   php artisan key:generate- **Personal Dashboard** - View your saved verses and activity
+
+```html
+
+<iframe    ```
+
+    src="http://your-domain.com/bible-verse" 
+
+    width="100%" - **Livewire Integration** - Real-time updates without page refresh### 📖 Bible Verse Management
+
+    height="600" 
+
+    frameborder="0"4. **Configure database** in `.env`
+
+    scrolling="no">
+
+</iframe>   ```env
+
+```
 
    DB_CONNECTION=mysql
 
+---
+
    DB_HOST=127.0.0.1### 🔍 Church Finder- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)</p>
+
+## 📚 Bible Verse Categories
 
    DB_PORT=3306
 
+The widget includes 100 verses across 10 meaningful categories:
+
    DB_DATABASE=quantum
 
-   DB_USERNAME=root
+1. **Gospel & Salvation** - Core messages of salvation and grace
 
-   DB_PASSWORD=- **Google Places Integration** - Find nearby churches- **Daily Verse** - Fresh verse each day using date-based selection
+2. **Faith & Trust** - Building faith and trust in God   DB_USERNAME=root
+
+3. **Love & Compassion** - God's love and loving others
+
+4. **Hope & Encouragement** - Finding hope in difficult times   DB_PASSWORD=- **Google Places Integration** - Find nearby churches- **Daily Verse** - Fresh verse each day using date-based selection
+
+5. **Strength & Courage** - Gaining strength through faith
+
+6. **Wisdom & Guidance** - Seeking God's wisdom and direction   ```
+
+7. **Love & Relationships** - Building godly relationships
+
+8. **Prayer & Worship** - Deepening prayer life and worship- **Location Search** - Search churches by address or current location
+
+9. **Peace & Comfort** - Finding peace in God's presence
+
+10. **Grace & Forgiveness** - Understanding grace and forgiveness5. **Run migrations and seed data**
+
+
+
+---   ```bash- **Church Details** - View church information and directions- **Random Verse** - Get random verses by category or all verses<p align="center">
+
+
+
+## 🎨 Widget Features   php artisan migrate:fresh --seed
+
+
+
+### Dark Mode Toggle   ```- **Favorites** - Save favorite churches for quick access
+
+The widget automatically saves your theme preference:
+
+- Click the theme toggle button (top right)
+
+- Preference stored in localStorage
+
+- Smooth transitions between light and dark modes6. **Build assets**- **Verse Display** - Beautiful, responsive verse presentation
+
+
+
+### Verse of the Day Badge   ```bash
+
+- Golden badge appears when showing the daily verse
+
+- Disappears when viewing random verses   npm run build### 🎨 Modern UI
+
+- Cached daily for performance
 
    ```
 
-- **Location Search** - Search churches by address or current location
+### Keyboard Shortcuts
 
-5. **Run migrations and seed data**
+- **N** - Get a new random verse- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
 
-   ```bash- **Church Details** - View church information and directions- **Random Verse** - Get random verses by category or all verses<p align="center">
-
-   php artisan migrate:fresh --seed
-
-   ```- **Favorites** - Save favorite churches for quick access
-
-
-
-6. **Build assets**- **Verse Display** - Beautiful, responsive verse presentation
-
-   ```bash
-
-   npm run build### 🎨 Modern UI
-
-   ```
-
-- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
+- **C** - Copy current verse to clipboard
 
 7. **Start development server**
 
-   ```bash- **Responsive Design** - Works on desktop, tablet, and mobile
+### Social Sharing
 
-   php artisan serve
+Share verses directly to:   ```bash- **Responsive Design** - Works on desktop, tablet, and mobile
+
+- Twitter (opens popup)
+
+- Facebook (opens popup)   php artisan serve
+
+- WhatsApp (opens chat)
 
    ```- **Tailwind CSS** - Clean, modern interface
 
+---
 
+
+
+## 🔧 Configuration
 
 Visit `http://127.0.0.1:8000/bible-verse` to see the widget!- **Purple Gradient Theme** - Beautiful, consistent design
 
+### Caching
+
+The verse of the day is cached until midnight for optimal performance. To manually clear the cache:
 
 
----- **Social Sharing** - Share verses on social media### ⭐ User Features</p>
+
+```bash---- **Social Sharing** - Share verses on social media### ⭐ User Features</p>
+
+php artisan cache:clear
+
+```
 
 
 
-## 🎯 Usage
+### Customizing the Widget## 🎯 Usage
 
 
+
+#### Change Gradient Colors
+
+Edit `resources/views/bible-verse/embed.blade.php`:
 
 ### Direct Access## 🚀 Quick Start- **Favorites System** - Save and manage favorite verses
 
-Simply visit the route in your browser:
+```css
+
+:root {Simply visit the route in your browser:
+
+    --bg-gradient-1: #667eea;  /* Change these colors */
+
+    --bg-gradient-2: #764ba2;```
+
+}
+
+```http://127.0.0.1:8000/bible-verse
+
+
+
+#### Modify Verse Count```### Prerequisites- **User Authentication** - Secure login with Laravel JetstreamLaravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+
+To change the number of verses, edit `database/seeders/VerseSeeder.php` and re-seed:
+
+
+
+```bash
+
+php artisan migrate:fresh --seed### Embed as Widget (iframe)
 
 ```
-
-http://127.0.0.1:8000/bible-verse
-
-```### Prerequisites- **User Authentication** - Secure login with Laravel JetstreamLaravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-
-
-### Embed as Widget (iframe)
 
 Embed the widget in any website using an iframe:
 
+---
+
 - PHP 8.2 or higher- **Personal Dashboard** - View your saved verses and activity
 
+## 🛠️ Development
+
 ```html
+
+### Project Structure
 
 <iframe - Composer
 
-  src="http://127.0.0.1:8000/bible-verse/embed" 
-
-  width="600" - Node.js & NPM## ✨ Features
-
-  height="500" 
-
-  frameborder="0"- MySQL 8.0+
-
-  style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-
-</iframe>- XAMPP (recommended for local development)### 🔍 Church Finder
-
 ```
 
+app/  src="http://127.0.0.1:8000/bible-verse/embed" 
+
+├── Services/
+
+│   └── BibleVerseService.php      # Core business logic  width="600" - Node.js & NPM## ✨ Features
+
+├── Models/
+
+│   ├── Verse.php                  # Verse model  height="500" 
+
+│   └── VerseCategory.php          # Category model
+
+modules/  frameborder="0"- MySQL 8.0+
+
+└── BibleVerse/
+
+    └── src/  style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+
+        ├── Http/
+
+        │   └── Livewire/</iframe>- XAMPP (recommended for local development)### 🔍 Church Finder
+
+        │       └── BibleVerseEmbed.php  # Main Livewire component
+
+        └── Providers/```
+
+            └── BibleVerseServiceProvider.php
+
+resources/
+
+└── views/
+
+    └── bible-verse/### Responsive Embed
+
+        ├── embed.blade.php              # Main layout
+
+        ├── demo.blade.php               # Demo pageFor responsive design, wrap the iframe:### Installation- **Google Places Integration** - Find nearby churches- [Simple, fast routing engine](https://laravel.com/docs/routing).
+
+        └── livewire/
+
+            └── bible-verse-embed.blade.php  # Widget view
+
+database/
+
+└── seeders/```html
+
+    └── VerseSeeder.php                  # 100 curated verses
+
+```<div style="position: relative; padding-bottom: 83.33%; height: 0; overflow: hidden; max-width: 600px;">
 
 
-### Responsive Embed
 
-For responsive design, wrap the iframe:### Installation- **Google Places Integration** - Find nearby churches- [Simple, fast routing engine](https://laravel.com/docs/routing).
-
+### Running Tests  <iframe 1. **Clone the repository**- **Location Search** - Search churches by address or current location
 
 
-```html
 
-<div style="position: relative; padding-bottom: 83.33%; height: 0; overflow: hidden; max-width: 600px;">
+```bash    src="http://127.0.0.1:8000/bible-verse/embed" 
 
-  <iframe 1. **Clone the repository**- **Location Search** - Search churches by address or current location
+# Run all tests
 
-    src="http://127.0.0.1:8000/bible-verse/embed" 
+php artisan test    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 1rem;">
 
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; border-radius: 1rem;">
 
-  </iframe>
+
+# Run specific test file  </iframe>
+
+php artisan test tests/Feature/BibleVerseTest.php
 
 </div>   ```bash- **Church Details** - View church information and directions### 📖 Bible Verse Management- [Powerful dependency injection container](https://laravel.com/docs/container).
+
+# Run with coverage
+
+php artisan test --coverage```
 
 ```
 
    git clone https://github.com/starprog/Quantum.git
 
+### Code Quality
+
 ### WordPress Integration
 
-Add to your WordPress site using the HTML widget or shortcode:   cd Quantum- **Favorites** - Save favorite churches for quick access
+```bash
+
+# Fix code styleAdd to your WordPress site using the HTML widget or shortcode:   cd Quantum- **Favorites** - Save favorite churches for quick access
+
+./vendor/bin/pint
 
 
 
-```html   ```
+# Run static analysis
+
+./vendor/bin/phpstan analyse```html   ```
+
+```
 
 <!-- In HTML Widget -->
 
+---
+
 <iframe src="http://your-domain.com/bible-verse/embed" width="100%" height="500" frameborder="0"></iframe>- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
 
+## 🚀 Deployment
+
 ```
+
+### Production Checklist
 
 2. **Install dependencies**
 
----
+- [ ] Set `APP_ENV=production` in `.env`
 
-### 🎨 Modern UI
+- [ ] Set `APP_DEBUG=false` in `.env`---
 
-## 📚 Widget Features
+- [ ] Configure proper `APP_URL` in `.env`
 
-   ```bash
+- [ ] Set up database with proper credentials### 🎨 Modern UI
 
-### Interactive Category Filters
+- [ ] Run `composer install --optimize-autoloader --no-dev`
 
-Click any category button to filter verses:   composer install- **Responsive Design** - Works on desktop, tablet, and mobile- **Daily Verse** - Fresh verse each day using date-based selection- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- [ ] Run `php artisan migrate --force`## 📚 Widget Features
 
-- **All** - Show verses from all categories (default)
+- [ ] Run `php artisan db:seed --force`
+
+- [ ] Run `npm run build`   ```bash
+
+- [ ] Run `php artisan config:cache`
+
+- [ ] Run `php artisan route:cache`### Interactive Category Filters
+
+- [ ] Run `php artisan view:cache`
+
+- [ ] Set up SSL certificate (HTTPS)Click any category button to filter verses:   composer install- **Responsive Design** - Works on desktop, tablet, and mobile- **Daily Verse** - Fresh verse each day using date-based selection- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+
+- [ ] Configure proper file permissions
+
+- [ ] Set up cron job for scheduled tasks- **All** - Show verses from all categories (default)
+
+- [ ] Configure backup system
 
 - **Gospel & Salvation** - Core salvation messages   npm install
 
+### Performance Optimization
+
 - **Faith & Trust** - Building faith and trust in God
 
-- **Love & Compassion** - God's love and caring for others   ```- **Tailwind CSS** - Clean, modern interface
+```bash
+
+# Cache configuration- **Love & Compassion** - God's love and caring for others   ```- **Tailwind CSS** - Clean, modern interface
+
+php artisan config:cache
 
 - **Hope & Encouragement** - Messages of hope and encouragement
 
-- **Strength & Courage** - Finding strength in difficult times
+# Cache routes
 
-- **Wisdom & Guidance** - Seeking God's wisdom
+php artisan route:cache- **Strength & Courage** - Finding strength in difficult times
+
+
+
+# Cache views- **Wisdom & Guidance** - Seeking God's wisdom
+
+php artisan view:cache
 
 - **Love & Relationships** - Biblical love and relationships3. **Environment setup**- **Purple Gradient Theme** - Beautiful, consistent design- **Random Verse** - Get random verses by category or all verses- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
 
-- **Prayer & Worship** - Prayer and worship guidance
+# Optimize autoloader
 
-- **Peace & Comfort** - Finding peace and comfort
-
-- **Grace & Forgiveness** - God's grace and forgiveness
-
-   ```bash- **Social Sharing** - Share verses on social media
-
-### Copy to Clipboard
-
-Click the "Copy Verse" button to copy the verse text and reference to your clipboard. A green success notification confirms the copy.   cp .env.example .env
-
-
-
-### New Verse   php artisan key:generate- **Verse Display** - Beautiful, responsive verse presentation- [Robust background job processing](https://laravel.com/docs/queues).
-
-Click "New Verse" to load a random verse from the selected category (or all categories if "All" is selected).
-
-   ```
-
----
-
-## 🚀 Quick Start
-
-## 🛠️ Development
-
-4. **Configure database in `.env`**
-
-### Project Structure
-
-```- **Livewire Integration** - Real-time verse updates without page refresh- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-quantum/
-
-├── app/   ```env
-
-│   ├── Models/
-
-│   │   ├── Verse.php              # Verse model   DB_CONNECTION=mysql### Prerequisites
-
-│   │   ├── VerseCategory.php      # Category model
-
-│   │   └── User.php   DB_HOST=127.0.0.1
-
-│   └── Services/
-
-│       └── BibleVerseService.php  # Core business logic with caching   DB_PORT=3306- PHP 8.2 or higher
-
-├── database/
-
-│   ├── migrations/   DB_DATABASE=quantum
-
-│   │   ├── *_create_verse_categories_table.php
-
-│   │   ├── *_create_verses_table.php   DB_USERNAME=root- Composer
-
-│   │   └── *_create_user_favorite_verses_table.php
-
-│   └── seeders/   DB_PASSWORD=
-
-│       ├── VerseCategorySeeder.php  # Seeds 10 categories
-
-│       └── VerseSeeder.php          # Seeds 100 curated verses   ```- Node.js & NPM### ⭐ User FeaturesLaravel is accessible, powerful, and provides tools required for large, robust applications.
-
-├── modules/
-
-│   └── BibleVerse/
-
-│       └── src/
-
-│           ├── Http/Livewire/5. **Configure Google Places API (optional for Church Finder)**- MySQL 8.0+
-
-│           │   ├── BibleVerse.php      # Full version component
-
-│           │   └── BibleVerseEmbed.php # Embed widget component
-
-│           └── BibleVerseServiceProvider.php
-
-├── resources/   ```env- XAMPP (recommended for local development)- **Favorites System** - Save and manage favorite verses
-
-│   └── views/
-
-│       └── bible-verse/   GOOGLE_PLACES_API_KEY=your_api_key_here
-
-│           ├── embed.blade.php         # Embed layout
-
-│           └── livewire/   ```
-
-│               └── bible-verse-embed.blade.php  # Widget view
-
-└── routes/
-
-    └── web.php                        # Routes definition
-
-```6. **Run migrations and seeders**### Installation- **User Authentication** - Secure login with Laravel Jetstream## Learning Laravel
-
-
-
-### Key Files
-
-
-
-**BibleVerseService.php** - Core service with caching   ```bash
-
-```php
-
-// Get verse of the day (cached until midnight)   php artisan migrate
-
-$verse = $bibleVerseService->getVerseOfTheDay();
-
-   php artisan db:seed --class=VerseCategorySeeder1. **Clone the repository**- **Personal Collections** - Organize verses into custom collections
-
-// Get random verse by category
-
-$verse = $bibleVerseService->getRandomVerse('Hope & Encouragement');   php artisan db:seed --class=VerseSeeder
-
-
-
-// Search verses   ```   ```bash
-
-$verses = $bibleVerseService->searchVerses('love', $categoryId);
-
-
-
-// Clear cache manually
-
-$bibleVerseService->clearDailyVerseCache();7. **Build assets**   git clone https://github.com/starprog/Quantum.gitLaravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+composer dump-autoload --optimize- **Prayer & Worship** - Prayer and worship guidance
 
 ```
 
+- **Peace & Comfort** - Finding peace and comfort
 
+---
+
+- **Grace & Forgiveness** - God's grace and forgiveness
+
+## 🎯 Roadmap
+
+   ```bash- **Social Sharing** - Share verses on social media
+
+### Upcoming Features
+
+- [ ] REST API for third-party integrations### Copy to Clipboard
+
+- [ ] Verse history (last 5-10 viewed verses)
+
+- [ ] Font size controls (S/M/L)Click the "Copy Verse" button to copy the verse text and reference to your clipboard. A green success notification confirms the copy.   cp .env.example .env
+
+- [ ] Email share functionality
+
+- [ ] Print-friendly layout
+
+- [ ] Verse search functionality
+
+- [ ] Favorite/bookmark verses### New Verse   php artisan key:generate- **Verse Display** - Beautiful, responsive verse presentation- [Robust background job processing](https://laravel.com/docs/queues).
+
+- [ ] Multi-language support
+
+- [ ] Audio playback (text-to-speech)Click "New Verse" to load a random verse from the selected category (or all categories if "All" is selected).
+
+- [ ] Verse images/graphics generation
+
+   ```
+
+### WordPress Plugin
+
+- [ ] Standalone WordPress plugin---
+
+- [ ] Shortcode support
+
+- [ ] Gutenberg block## 🚀 Quick Start
+
+- [ ] Widget customization options
+
+## 🛠️ Development
+
+### JavaScript Widget
+
+- [ ] Standalone vanilla JS widget4. **Configure database in `.env`**
+
+- [ ] NPM package
+
+- [ ] CDN distribution### Project Structure
+
+- [ ] Framework integrations (React, Vue, Angular)
+
+```- **Livewire Integration** - Real-time verse updates without page refresh- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+
+---
+
+quantum/
+
+## 🐛 Troubleshooting
+
+├── app/   ```env
+
+### Common Issues
+
+│   ├── Models/
+
+**Issue: "419 Page Expired" errors**
+
+- Solution: Livewire routes are excluded from CSRF in `bootstrap/app.php`│   │   ├── Verse.php              # Verse model   DB_CONNECTION=mysql### Prerequisites
+
+- Clear cache: `php artisan optimize:clear`
+
+│   │   ├── VerseCategory.php      # Category model
+
+**Issue: Dark mode not persisting**
+
+- Solution: Check browser localStorage is enabled│   │   └── User.php   DB_HOST=127.0.0.1
+
+- Clear browser cache and try again
+
+│   └── Services/
+
+**Issue: Verses not displaying**
+
+- Solution: Run `php artisan migrate:fresh --seed`│       └── BibleVerseService.php  # Core business logic with caching   DB_PORT=3306- PHP 8.2 or higher
+
+- Check database connection in `.env`
+
+├── database/
+
+**Issue: Livewire not working**
+
+- Solution: Run `npm run build` to compile assets│   ├── migrations/   DB_DATABASE=quantum
+
+- Check Livewire is properly loaded in browser console
+
+│   │   ├── *_create_verse_categories_table.php
+
+---
+
+│   │   ├── *_create_verses_table.php   DB_USERNAME=root- Composer
+
+## 📝 API Documentation
+
+│   │   └── *_create_user_favorite_verses_table.php
+
+### BibleVerseService Methods
+
+│   └── seeders/   DB_PASSWORD=
+
+```php
+
+// Get verse of the day (cached until midnight)│       ├── VerseCategorySeeder.php  # Seeds 10 categories
+
+$verse = $bibleVerseService->getVerseOfTheDay();
+
+│       └── VerseSeeder.php          # Seeds 100 curated verses   ```- Node.js & NPM### ⭐ User FeaturesLaravel is accessible, powerful, and provides tools required for large, robust applications.
+
+// Get random verse
+
+$verse = $bibleVerseService->getRandomVerse();├── modules/
+
+
+
+// Clear daily verse cache│   └── BibleVerse/
+
+$bibleVerseService->clearDailyVerseCache();
+
+│       └── src/
+
+// Search verses by text
+
+$verses = $bibleVerseService->searchVerses('love');│           ├── Http/Livewire/5. **Configure Google Places API (optional for Church Finder)**- MySQL 8.0+
+
+```
+
+│           │   ├── BibleVerse.php      # Full version component
+
+### Livewire Component
+
+│           │   └── BibleVerseEmbed.php # Embed widget component
+
+```php
+
+// Refresh to get a new random verse│           └── BibleVerseServiceProvider.php
+
+$this->dispatch('refreshVerse');
+
+├── resources/   ```env- XAMPP (recommended for local development)- **Favorites System** - Save and manage favorite verses
+
+// Component properties
+
+public $verse;              // Current verse│   └── views/
+
+public $loading;            // Loading state
+
+public $isVerseOfTheDay;    // Is this today's verse?│       └── bible-verse/   GOOGLE_PLACES_API_KEY=your_api_key_here
+
+```
+
+│           ├── embed.blade.php         # Embed layout
+
+---
+
+│           └── livewire/   ```
+
+## 🤝 Contributing
+
+│               └── bible-verse-embed.blade.php  # Widget view
+
+Contributions are welcome! Please follow these steps:
+
+└── routes/
+
+1. Fork the repository
+
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)    └── web.php                        # Routes definition
+
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+
+4. Push to the branch (`git push origin feature/amazing-feature`)```6. **Run migrations and seeders**### Installation- **User Authentication** - Secure login with Laravel Jetstream## Learning Laravel
+
+5. Open a Pull Request
+
+
+
+### Code Style
+
+- Follow PSR-12 coding standards### Key Files
+
+- Use Laravel best practices
+
+- Write tests for new features
+
+- Update documentation
+
+**BibleVerseService.php** - Core service with caching   ```bash
+
+---
+
+```php
+
+## 📄 License
+
+// Get verse of the day (cached until midnight)   php artisan migrate
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+$verse = $bibleVerseService->getVerseOfTheDay();
+
+---
+
+   php artisan db:seed --class=VerseCategorySeeder1. **Clone the repository**- **Personal Collections** - Organize verses into custom collections
+
+## 🙏 Acknowledgments
+
+// Get random verse by category
+
+- **Laravel** - The PHP framework for web artisans
+
+- **Livewire** - A full-stack framework for Laravel$verse = $bibleVerseService->getRandomVerse('Hope & Encouragement');   php artisan db:seed --class=VerseSeeder
+
+- **Tailwind CSS** - A utility-first CSS framework
+
+- **Bible Verses** - From various translations (KJV, NIV, ESV)
+
+
+
+---// Search verses   ```   ```bash
+
+
+
+## 📧 Contact$verses = $bibleVerseService->searchVerses('love', $categoryId);
+
+
+
+**Project Repository:** [https://github.com/starprog/Quantum](https://github.com/starprog/Quantum)
+
+
+
+**Branch:** Spencer-Verses// Clear cache manually
+
+
+
+---$bibleVerseService->clearDailyVerseCache();7. **Build assets**   git clone https://github.com/starprog/Quantum.gitLaravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+
+
+
+## 🌟 Screenshots```
+
+
+
+### Light Mode
+
+![Light Mode Widget](docs/screenshots/light-mode.png)
 
 ### Database Schema
 
-   ```bash   cd Quantum
+### Dark Mode
 
-**verse_categories**
+![Dark Mode Widget](docs/screenshots/dark-mode.png)   ```bash   cd Quantum
+
+
+
+### Verse of the Day Badge**verse_categories**
+
+![VOTD Badge](docs/screenshots/votd-badge.png)
 
 - `id` - Primary key   npm run dev
 
+---
+
 - `name` - Category name (e.g., "Hope & Encouragement")
+
+**Made with ❤️ using Laravel & Livewire**
 
 - `description` - Category description   # Or for production:   ```### 🔍 Church Finder
 
