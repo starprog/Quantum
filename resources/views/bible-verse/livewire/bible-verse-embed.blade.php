@@ -70,13 +70,28 @@
         </div>
         @endif
         
+        <!-- Font Size Controls -->
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <div style="display: inline-flex; gap: 0.25rem; background: var(--widget-bg); border: 2px solid var(--text-secondary); opacity: 0.3; border-radius: 0.5rem; padding: 0.25rem;">
+                <button onclick="setFontSize('small')" id="fontSmall" style="padding: 0.4rem 0.75rem; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;">
+                    A
+                </button>
+                <button onclick="setFontSize('medium')" id="fontMedium" style="padding: 0.4rem 0.75rem; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 600; transition: all 0.2s;">
+                    A
+                </button>
+                <button onclick="setFontSize('large')" id="fontLarge" style="padding: 0.4rem 0.75rem; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 0.375rem; font-size: 1rem; font-weight: 600; transition: all 0.2s;">
+                    A
+                </button>
+            </div>
+        </div>
+        
         <!-- Verse Text -->
-        <div wire:key="verse-{{ $verse->id }}" class="verse-content" style="margin-bottom: 2rem;">
-            <p style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500;">
+        <div wire:key="verse-{{ $verse->id }}" class="verse-content" id="verseContent" style="margin-bottom: 2rem; transition: all 0.3s ease;">
+            <p id="verseText" style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500; transition: font-size 0.3s ease;">
                 "{{ $verse->verse }}"
             </p>
             
-            <p style="font-size: 1.125rem; color: var(--text-secondary); text-align: right; font-style: italic; font-weight: 600;">
+            <p id="verseReference" style="font-size: 1.125rem; color: var(--text-secondary); text-align: right; font-style: italic; font-weight: 600; transition: font-size 0.3s ease;">
                 — {{ $verse->reference }}
             </p>
         </div>
@@ -242,6 +257,55 @@
                     console.error('Failed to copy:', err);
                 });
             }
+            
+            // Font Size Control
+            const fontSizes = {
+                small: { text: '1.25rem', reference: '1rem' },
+                medium: { text: '1.5rem', reference: '1.125rem' },
+                large: { text: '1.875rem', reference: '1.375rem' }
+            };
+            
+            function setFontSize(size) {
+                const verseText = document.getElementById('verseText');
+                const verseReference = document.getElementById('verseReference');
+                
+                if (verseText && verseReference && fontSizes[size]) {
+                    verseText.style.fontSize = fontSizes[size].text;
+                    verseReference.style.fontSize = fontSizes[size].reference;
+                    
+                    // Save preference
+                    localStorage.setItem('fontSize', size);
+                    
+                    // Update button styles
+                    updateFontSizeButtons(size);
+                }
+            }
+            
+            function updateFontSizeButtons(activeSize) {
+                const buttons = {
+                    small: document.getElementById('fontSmall'),
+                    medium: document.getElementById('fontMedium'),
+                    large: document.getElementById('fontLarge')
+                };
+                
+                Object.keys(buttons).forEach(size => {
+                    if (buttons[size]) {
+                        if (size === activeSize) {
+                            buttons[size].style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                            buttons[size].style.color = 'white';
+                        } else {
+                            buttons[size].style.background = 'transparent';
+                            buttons[size].style.color = 'var(--text-secondary)';
+                        }
+                    }
+                });
+            }
+            
+            // Load saved font size on page load
+            document.addEventListener('DOMContentLoaded', function() {
+                const savedSize = localStorage.getItem('fontSize') || 'medium';
+                setFontSize(savedSize);
+            });
             
             // Social share functions
             function shareOnTwitter(verse, reference) {
