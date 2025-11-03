@@ -70,71 +70,19 @@
         </div>
         @endif
         
-        <!-- Font Size Controls -->
-        <div style="text-align: right; margin-bottom: 1rem;">
-            <div style="display: inline-flex; gap: 0.25rem; background: var(--widget-bg); border: 2px solid var(--text-secondary); opacity: 0.3; border-radius: 0.5rem; padding: 0.25rem;">
-                <button onclick="setFontSize('small')" id="fontSmall" style="padding: 0.4rem 0.75rem; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;">
-                    A
-                </button>
-                <button onclick="setFontSize('medium')" id="fontMedium" style="padding: 0.4rem 0.75rem; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; cursor: pointer; border-radius: 0.375rem; font-size: 0.875rem; font-weight: 600; transition: all 0.2s;">
-                    A
-                </button>
-                <button onclick="setFontSize('large')" id="fontLarge" style="padding: 0.4rem 0.75rem; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 0.375rem; font-size: 1rem; font-weight: 600; transition: all 0.2s;">
-                    A
-                </button>
-            </div>
-        </div>
-        
         <!-- Verse Text -->
-        <div wire:key="verse-{{ $verse->id }}" class="verse-content" id="verseContent" style="margin-bottom: 2rem; transition: all 0.3s ease;">
-            <p id="verseText" style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500; transition: font-size 0.3s ease;">
+        <div wire:key="verse-{{ $verse->id }}" class="verse-content" style="margin-bottom: 2rem;">
+            <p style="font-size: 1.5rem; line-height: 1.6; color: var(--text-primary); margin-bottom: 1rem; font-weight: 500;">
                 "{{ $verse->verse }}"
             </p>
             
-            <p id="verseReference" style="font-size: 1.125rem; color: var(--text-secondary); text-align: right; font-style: italic; font-weight: 600; transition: font-size 0.3s ease;">
+            <p style="font-size: 1.125rem; color: var(--text-secondary); text-align: right; font-style: italic; font-weight: 600;">
                 — {{ $verse->reference }}
             </p>
         </div>
         
         <!-- Action Buttons -->
         <div style="text-align: center; display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-            <!-- History Button -->
-            <div style="position: relative; display: inline-block;">
-                <button 
-                    onclick="toggleHistory()"
-                    id="historyBtn"
-                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; 
-                           font-size: 0.875rem; font-weight: 600; border-radius: 0.5rem; border: none; 
-                           cursor: pointer; transition: all 0.3s; 
-                           background: var(--widget-bg); color: var(--text-primary);
-                           border: 2px solid var(--text-secondary);
-                           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.15)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.1)';">
-                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>History</span>
-                    <span id="historyCount" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">0</span>
-                </button>
-                
-                <!-- History Dropdown -->
-                <div id="historyDropdown" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 0.5rem; 
-                                                  background: var(--widget-bg); border-radius: 0.75rem; 
-                                                  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
-                                                  min-width: 320px; max-width: 400px; z-index: 1000;
-                                                  border: 2px solid var(--text-secondary); opacity: 0.3;
-                                                  max-height: 400px; overflow-y: auto;">
-                    <div style="padding: 1rem; border-bottom: 2px solid var(--text-secondary); opacity: 0.2; display: flex; justify-content: space-between; align-items: center;">
-                        <h4 style="margin: 0; color: var(--text-primary); font-size: 1rem; font-weight: 700;">Recent Verses</h4>
-                        <button onclick="clearHistory()" style="background: #ef4444; color: white; border: none; padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer; font-weight: 600;">Clear All</button>
-                    </div>
-                    <div id="historyList" style="padding: 0.5rem;">
-                        <!-- History items will be inserted here -->
-                    </div>
-                </div>
-            </div>
-            
             <!-- Copy Button -->
             <button 
                 onclick="copyVerse('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
@@ -228,21 +176,10 @@
         </div>
         
         <script>
-            // Livewire hooks - save verse when component updates
-            document.addEventListener('livewire:initialized', () => {
-                Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
-                    succeed(({ snapshot, effect }) => {
-                        // Save current verse to history after any update
-                        const verse = "{{ addslashes($verse->verse) }}";
-                        const reference = "{{ $verse->reference }}";
-                        const verseId = "{{ $verse->id }}";
-                        
-                        if (verse && reference) {
-                            setTimeout(() => saveToHistory(verse, reference, verseId), 100);
-                        }
-                    });
-                });
-            });
+            // Print verse function
+            function printVerse() {
+                window.print();
+            }
             
             // Copy verse function
             function copyVerse(verse, reference) {
@@ -257,55 +194,6 @@
                     console.error('Failed to copy:', err);
                 });
             }
-            
-            // Font Size Control
-            const fontSizes = {
-                small: { text: '1.25rem', reference: '1rem' },
-                medium: { text: '1.5rem', reference: '1.125rem' },
-                large: { text: '1.875rem', reference: '1.375rem' }
-            };
-            
-            function setFontSize(size) {
-                const verseText = document.getElementById('verseText');
-                const verseReference = document.getElementById('verseReference');
-                
-                if (verseText && verseReference && fontSizes[size]) {
-                    verseText.style.fontSize = fontSizes[size].text;
-                    verseReference.style.fontSize = fontSizes[size].reference;
-                    
-                    // Save preference
-                    localStorage.setItem('fontSize', size);
-                    
-                    // Update button styles
-                    updateFontSizeButtons(size);
-                }
-            }
-            
-            function updateFontSizeButtons(activeSize) {
-                const buttons = {
-                    small: document.getElementById('fontSmall'),
-                    medium: document.getElementById('fontMedium'),
-                    large: document.getElementById('fontLarge')
-                };
-                
-                Object.keys(buttons).forEach(size => {
-                    if (buttons[size]) {
-                        if (size === activeSize) {
-                            buttons[size].style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                            buttons[size].style.color = 'white';
-                        } else {
-                            buttons[size].style.background = 'transparent';
-                            buttons[size].style.color = 'var(--text-secondary)';
-                        }
-                    }
-                });
-            }
-            
-            // Load saved font size on page load
-            document.addEventListener('DOMContentLoaded', function() {
-                const savedSize = localStorage.getItem('fontSize') || 'medium';
-                setFontSize(savedSize);
-            });
             
             // Social share functions
             function shareOnTwitter(verse, reference) {
@@ -325,120 +213,6 @@
                 const url = `https://wa.me/?text=${text}`;
                 window.open(url, '_blank');
             }
-            
-            // Verse History Management
-            const MAX_HISTORY = 10;
-            
-            function saveToHistory(verse, reference, verseId) {
-                let history = JSON.parse(localStorage.getItem('verseHistory') || '[]');
-                
-                // Create history item
-                const item = {
-                    id: verseId,
-                    verse: verse,
-                    reference: reference,
-                    timestamp: Date.now(),
-                    date: new Date().toLocaleString()
-                };
-                
-                // Remove if already exists (to avoid duplicates)
-                history = history.filter(h => h.id !== verseId);
-                
-                // Add to beginning of array
-                history.unshift(item);
-                
-                // Keep only last MAX_HISTORY items
-                history = history.slice(0, MAX_HISTORY);
-                
-                // Save to localStorage
-                localStorage.setItem('verseHistory', JSON.stringify(history));
-                
-                // Update UI
-                updateHistoryUI();
-            }
-            
-            function loadFromHistory(index) {
-                const history = JSON.parse(localStorage.getItem('verseHistory') || '[]');
-                const item = history[index];
-                
-                if (item) {
-                    // Close dropdown
-                    document.getElementById('historyDropdown').style.display = 'none';
-                    
-                    // You would typically trigger Livewire to load this verse
-                    // For now, we'll just show a notification
-                    alert(`Loading: "${item.verse.substring(0, 50)}..." — ${item.reference}`);
-                    
-                    // In a real implementation, you'd call Livewire to load this specific verse
-                    // @this.loadSpecificVerse(item.id);
-                }
-            }
-            
-            function toggleHistory() {
-                const dropdown = document.getElementById('historyDropdown');
-                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                
-                if (dropdown.style.display === 'block') {
-                    updateHistoryUI();
-                }
-            }
-            
-            function clearHistory() {
-                if (confirm('Are you sure you want to clear all verse history?')) {
-                    localStorage.removeItem('verseHistory');
-                    updateHistoryUI();
-                    document.getElementById('historyDropdown').style.display = 'none';
-                }
-            }
-            
-            function updateHistoryUI() {
-                const history = JSON.parse(localStorage.getItem('verseHistory') || '[]');
-                const historyList = document.getElementById('historyList');
-                const historyCount = document.getElementById('historyCount');
-                
-                // Update count badge
-                historyCount.textContent = history.length;
-                
-                // Update list
-                if (history.length === 0) {
-                    historyList.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-secondary); font-size: 0.875rem;">No verses viewed yet</p>';
-                } else {
-                    historyList.innerHTML = history.map((item, index) => `
-                        <div onclick="loadFromHistory(${index})" style="padding: 0.75rem; margin: 0.5rem; background: var(--widget-bg); 
-                                                                          border: 1px solid var(--text-secondary); opacity: 0.3; border-radius: 0.5rem; 
-                                                                          cursor: pointer; transition: all 0.2s;"
-                             onmouseover="this.style.background='rgba(102, 126, 234, 0.1)'; this.style.borderColor='#667eea';"
-                             onmouseout="this.style.background='var(--widget-bg)'; this.style.borderColor='var(--text-secondary)'; this.style.opacity='0.3';">
-                            <p style="color: var(--text-primary); font-size: 0.875rem; margin-bottom: 0.25rem; font-weight: 600;">${item.reference}</p>
-                            <p style="color: var(--text-secondary); font-size: 0.75rem; margin-bottom: 0.25rem; line-height: 1.4;">
-                                "${item.verse.substring(0, 80)}${item.verse.length > 80 ? '...' : ''}"
-                            </p>
-                            <p style="color: var(--text-secondary); font-size: 0.65rem; opacity: 0.7;">${new Date(item.timestamp).toLocaleString()}</p>
-                        </div>
-                    `).join('');
-                }
-            }
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                const dropdown = document.getElementById('historyDropdown');
-                const historyBtn = document.getElementById('historyBtn');
-                
-                if (dropdown && historyBtn && !historyBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-            
-            // Save current verse to history on page load
-            document.addEventListener('DOMContentLoaded', function() {
-                const verse = "{{ addslashes($verse->verse) }}";
-                const reference = "{{ $verse->reference }}";
-                const verseId = "{{ $verse->id }}";
-                
-                if (verse && reference) {
-                    saveToHistory(verse, reference, verseId);
-                }
-            });
             
             // Keyboard shortcuts (simplified)
             document.addEventListener('keydown', function(e) {
@@ -461,10 +235,10 @@
                     if (copyBtn) copyBtn.click();
                 }
                 
-                // H - History
-                if (key === 'h') {
+                // P - Print
+                if (key === 'p') {
                     e.preventDefault();
-                    toggleHistory();
+                    printVerse();
                 }
             });
         </script>
