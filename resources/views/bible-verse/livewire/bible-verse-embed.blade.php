@@ -234,7 +234,7 @@
             
             <!-- New Verse Button -->
             <button 
-                wire:click="refreshVerse(null)"
+                wire:click="refreshVerse"
                 wire:loading.attr="disabled"
                 id="newVerseBtn"
                 class="btn-base btn-primary">

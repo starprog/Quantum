@@ -150,9 +150,8 @@
         <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
         @livewire('bible-verse-embed')
     </div>
-    </div>
     
     <!-- Livewire Scripts -->
-    <script src="{{ url('livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}" data-update-uri="{{ url('livewire/update') }}" defer></script>
+    @livewireScripts
 </body>
 </html>
