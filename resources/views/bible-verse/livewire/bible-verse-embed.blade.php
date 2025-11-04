@@ -27,7 +27,7 @@
         <div class="action-buttons">
             <!-- Copy Button -->
             <button 
-                onclick="copyVerse('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                onclick="copyVerseFromDOM()"
                 id="copyBtn"
                 class="btn-base btn-outline">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -56,7 +56,7 @@
             <div class="action-buttons">
                 <!-- Twitter -->
                 <button 
-                    onclick="shareOnTwitter('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                    onclick="shareFromDOM('twitter')"
                     class="btn-base btn-social"
                     style="background: #1DA1F2; color: white;">
                     <svg style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
                 
                 <!-- Facebook -->
                 <button 
-                    onclick="shareOnFacebook('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                    onclick="shareFromDOM('facebook')"
                     class="btn-base btn-social"
                     style="background: #4267B2; color: white;">
                     <svg style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
                 
                 <!-- WhatsApp -->
                 <button 
-                    onclick="shareOnWhatsApp('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                    onclick="shareFromDOM('whatsapp')"
                     class="btn-base btn-social"
                     style="background: #25D366; color: white;">
                     <svg style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                 
                 <!-- Email -->
                 <button 
-                    onclick="shareViaEmail('{{ addslashes($verse->verse) }}', '{{ $verse->reference }}')"
+                    onclick="shareFromDOM('email')"
                     class="btn-base btn-social"
                     style="background: #6366f1; color: white;">
                     <svg style="width: 1rem; height: 1rem; fill: currentColor;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -110,12 +110,26 @@
                Core Functions
                ================================= */
             
+            // Get verse data from DOM
+            function getVerseFromDOM() {
+                const verseText = document.getElementById('verseText')?.innerText.replace(/^"|"$/g, '').trim();
+                const verseRef = document.getElementById('verseReference')?.innerText.replace(/^—\s*/, '').trim();
+                return { verse: verseText, reference: verseRef };
+            }
+            
             // Print verse
             function printVerse() {
                 window.print();
             }
             
             // Copy verse to clipboard
+            function copyVerseFromDOM() {
+                const { verse, reference } = getVerseFromDOM();
+                if (verse && reference) {
+                    copyVerse(verse, reference);
+                }
+            }
+            
             function copyVerse(verse, reference) {
                 const text = `"${verse}" — ${reference}`;
                 navigator.clipboard.writeText(text).then(() => {
@@ -132,6 +146,30 @@
             /* =================================
                Social Share Functions
                ================================= */
+            
+            // Universal share handler that reads from DOM
+            function shareFromDOM(platform) {
+                const { verse, reference } = getVerseFromDOM();
+                if (!verse || !reference) {
+                    console.error('Could not read verse from DOM');
+                    return;
+                }
+                
+                switch(platform) {
+                    case 'twitter':
+                        shareOnTwitter(verse, reference);
+                        break;
+                    case 'facebook':
+                        shareOnFacebook(verse, reference);
+                        break;
+                    case 'whatsapp':
+                        shareOnWhatsApp(verse, reference);
+                        break;
+                    case 'email':
+                        shareViaEmail(verse, reference);
+                        break;
+                }
+            }
             
             function shareOnTwitter(verse, reference) {
                 const text = encodeURIComponent(`"${verse}" — ${reference}`);
@@ -178,8 +216,7 @@
                 // C - Copy
                 if (key === 'c') {
                     e.preventDefault();
-                    const copyBtn = document.getElementById('copyBtn');
-                    if (copyBtn) copyBtn.click();
+                    copyVerseFromDOM();
                 }
                 
                 // P - Print
@@ -191,11 +228,7 @@
                 // E - Email
                 if (key === 'e') {
                     e.preventDefault();
-                    const verseText = document.getElementById('verseText')?.innerText;
-                    const verseRef = document.getElementById('verseReference')?.innerText;
-                    if (verseText && verseRef) {
-                        shareViaEmail(verseText, verseRef);
-                    }
+                    shareFromDOM('email');
                 }
             });
         </script>
