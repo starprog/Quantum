@@ -338,9 +338,14 @@
         
         // Copy verse to clipboard
         function copyVerseFromDOM() {
+            console.log('copyVerseFromDOM called');
             const { verse, reference } = getVerseFromDOM();
+            console.log('Copy - Verse data:', { verse, reference });
+            
             if (verse && reference) {
                 copyVerse(verse, reference);
+            } else {
+                alert('Error: Could not read verse text. Please refresh the page.');
             }
         }
         
@@ -365,9 +370,13 @@
         
         // Universal share handler that reads from DOM
         function shareFromDOM(platform) {
+            console.log('shareFromDOM called with platform:', platform);
             const { verse, reference } = getVerseFromDOM();
+            console.log('Verse data:', { verse, reference });
+            
             if (!verse || !reference) {
                 console.error('Could not read verse from DOM');
+                alert('Error: Could not read verse text. Please refresh the page.');
                 return;
             }
             
@@ -384,25 +393,40 @@
                 case 'email':
                     shareViaEmail(verse, reference);
                     break;
+                default:
+                    console.error('Unknown platform:', platform);
             }
         }
         
         function shareOnTwitter(verse, reference) {
             const text = encodeURIComponent(`"${verse}" — ${reference}`);
             const url = `https://twitter.com/intent/tweet?text=${text}`;
-            window.open(url, '_blank', 'width=550,height=420');
+            const popup = window.open(url, '_blank', 'width=550,height=420');
+            if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+                // Popup blocked, fallback to opening in same window
+                alert('Popup blocked! Opening Twitter in a new tab...');
+                window.open(url, '_blank');
+            }
         }
         
         function shareOnFacebook(verse, reference) {
             const text = encodeURIComponent(`"${verse}" — ${reference}`);
             const url = `https://www.facebook.com/sharer/sharer.php?quote=${text}`;
-            window.open(url, '_blank', 'width=550,height=420');
+            const popup = window.open(url, '_blank', 'width=550,height=420');
+            if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+                alert('Popup blocked! Opening Facebook in a new tab...');
+                window.open(url, '_blank');
+            }
         }
         
         function shareOnWhatsApp(verse, reference) {
             const text = encodeURIComponent(`"${verse}" — ${reference}`);
             const url = `https://wa.me/?text=${text}`;
-            window.open(url, '_blank');
+            const popup = window.open(url, '_blank');
+            if (!popup || popup.closed || typeof popup.closed == 'undefined') {
+                alert('Popup blocked! Opening WhatsApp in a new tab...');
+                window.open(url, '_blank');
+            }
         }
         
         function shareViaEmail(verse, reference) {
