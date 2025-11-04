@@ -1,4 +1,4 @@
-# 📖 Bible Verse Widget# 📖 Quantum - Bible Verse Widget# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
+# 📖 Bible Verse Widget# 📖 Bible Verse Widget# 📖 Quantum - Bible Verse Widget# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application# 📖 Quantum - Bible Verse Laravel Application<<<<<<< HEAD
 
 
 
@@ -10,329 +10,664 @@
 
   <img src="https://img.shields.io/badge/Livewire-3.x-purple?style=for-the-badge" alt="Livewire 3.x">
 
+  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
+
+  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">
+
+</p>  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+
+
+
+<p align="center">  <img src="https://img.shields.io/badge/Livewire-3.x-purple?style=for-the-badge" alt="Livewire 3.x">
+
+  <strong>A beautiful, embeddable Bible verse widget powered by Laravel & Livewire</strong>
+
+</p>  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
+
+
+
+---</p>
+
+
+
+## ✨ Features  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+
+
+
+### 📖 Core Features<p align="center">
+
+- **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories
+
+- **⭐ Verse of the Day Badge** - Golden badge highlights today's featured verse  <strong>A beautiful, embeddable Bible verse widget powered by Laravel & Livewire</strong>  <img src="https://img.shields.io/badge/Livewire-3.x-purple?style=for-the-badge" alt="Livewire 3.x">
+
+- **🔄 Random Verses** - Get a new random verse instantly with the click of a button
+
+- **⚡ Smart Caching** - Verse of the day cached until midnight for optimal performance</p>
+
+- **🔌 Fully Embeddable** - Perfect for iframes, can be embedded in any website
+
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
 
-</p>
+### 🎨 User Experience
 
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+- **🌙 Dark Mode** - Toggle between light and dark themes with localStorage persistence---
 
-<p align="center">
+- **📋 One-Click Copy** - Copy verses to clipboard with visual feedback
 
-  <strong>A beautiful, embeddable Bible verse widget powered by Laravel & Livewire</strong>  <img src="https://img.shields.io/badge/Livewire-3.x-purple?style=for-the-badge" alt="Livewire 3.x">
+- **🖨️ Print Support** - Clean, optimized print layout for physical copies</p>
 
-</p>
+- **📏 Font Size Control** - Small, Medium, Large text options for accessibility
 
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
+- **📜 Verse History** - Track last 10 verses viewed with timestamps## ✨ Features
 
----
+- **⌨️ Keyboard Shortcuts** - Quick actions without mouse clicks
 
-</p>
+  - `N` - New random verse  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-## ✨ Features
+  - `C` - Copy to clipboard
 
-  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center"><p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+  - `P` - Print verse### Core Features
 
-### Core Features
+  - `E` - Email share
 
-- 📖 **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
+  - `H` - Toggle history- 📖 **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
 
-- ⭐ **Verse of the Day Badge** - Golden badge highlights today's featured verse
+- **📱 Fully Responsive** - Works perfectly on mobile, tablet, and desktop
 
-- 🌙 **Dark Mode** - Toggle between light and dark themes with localStorage persistence  <strong>A beautiful, embeddable Bible verse widget with 100 curated verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
-
-- 📋 **One-Click Copy** - Copy verses to clipboard with visual feedback
-
-- 🔄 **Random Verses** - Get a new random verse instantly</p>
-
-- ⚡ **Daily Caching** - Verse of the day cached until midnight for optimal performance
-
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
-
-### Social Features
-
-- 🐦 **Twitter Share** - Share verses on Twitter---
-
-- 📘 **Facebook Share** - Share verses on Facebook
-
-- 💬 **WhatsApp Share** - Share verses on WhatsApp</p>
+- **🎨 Beautiful UI** - Modern gradient design with smooth animations- ⭐ **Verse of the Day Badge** - Golden badge highlights today's featured verse
 
 
 
-### User Experience## ✨ Features
+### 🌐 Social Sharing- 🌙 **Dark Mode** - Toggle between light and dark themes with localStorage persistence  <strong>A beautiful, embeddable Bible verse widget with 100 curated verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
 
-- ⌨️ **Keyboard Shortcuts** - Press `N` for new verse, `C` to copy
+- **🐦 Twitter Share** - Share verses on Twitter with pre-formatted text
 
-- 🎨 **Beautiful UI** - Modern gradient design with smooth animations  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
+- **📘 Facebook Share** - Share verses on Facebook- 📋 **One-Click Copy** - Copy verses to clipboard with visual feedback
 
-- 📱 **Fully Responsive** - Works perfectly on mobile, tablet, and desktop
+- **💬 WhatsApp Share** - Share verses on WhatsApp
 
-- 🚀 **Livewire Powered** - Real-time updates without page refresh### 📖 Bible Verse Widget
+- **📧 Email Share** - Send verses via email with pre-filled subject and body- 🔄 **Random Verses** - Get a new random verse instantly</p>
 
-- 🔌 **Embeddable** - Perfect for iframes, can be embedded in any website
 
-- **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
 
----
+### ⚡ Performance- ⚡ **Daily Caching** - Verse of the day cached until midnight for optimal performance
 
-- **Category Filtering** - Filter by Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness
+- **Database Indexes** - Optimized queries with indexes on frequently searched columns
 
-## 📦 Installation
+- **Eager Loading** - Efficient relationship loading to minimize queries  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x">
 
-- **Daily Verse with Caching** - Verse of the day cached until midnight for optimal performance  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
+- **Daily Verse Cache** - Smart caching strategy reduces database load
 
-### Requirements
+- **Fast Response Times** - Sub-second page loads### Social Features
 
-- PHP 8.2 or higher- **One-Click Copy** - Copy verses to clipboard with visual feedback
+
+
+---- 🐦 **Twitter Share** - Share verses on Twitter---
+
+
+
+## 📦 Installation- 📘 **Facebook Share** - Share verses on Facebook
+
+
+
+### Requirements- 💬 **WhatsApp Share** - Share verses on WhatsApp</p>
+
+- PHP 8.2 or higher
 
 - Composer
 
-- MySQL 8.0 or higher- **Fully Embeddable** - Perfect for iframes, can be embedded in any website</p>
+- MySQL 8.0 or higher
 
-- Node.js & NPM (for asset compilation)
+- Node.js & NPM (for asset compilation)### User Experience## ✨ Features
 
-- **Livewire Powered** - Real-time updates without page refresh
 
-### Quick Start
 
-- **Modern UI** - Beautiful gradient design with smooth animations  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
+### Quick Start- ⌨️ **Keyboard Shortcuts** - Press `N` for new verse, `C` to copy
 
-```bash
+
+
+```bash- 🎨 **Beautiful UI** - Modern gradient design with smooth animations  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><p align="center">
 
 # Clone the repository
 
-git clone https://github.com/starprog/Quantum.git
+git clone https://github.com/starprog/Quantum.git- 📱 **Fully Responsive** - Works perfectly on mobile, tablet, and desktop
 
-cd Quantum### ⚡ Performance## ✨ Features
+cd Quantum
 
+- 🚀 **Livewire Powered** - Real-time updates without page refresh### 📖 Bible Verse Widget
 
+# Install PHP dependencies
 
-# Install PHP dependencies- **Smart Caching** - Daily verse cached to reduce database queries
-
-composer install
-
-- **Optimized Queries** - Efficient database operations with eager loading</p>
-
-# Install JavaScript dependencies
-
-npm install- **Fast Response Times** - Sub-second page loads
+composer install- 🔌 **Embeddable** - Perfect for iframes, can be embedded in any website
 
 
 
-# Copy environment file### 📖 Bible Verse Management
+# Install JavaScript dependencies- **100 Curated Verses** - Hand-picked impactful verses across 10 meaningful categories<p align="center">
 
-cp .env.example .env
+npm install
 
 ---
 
-# Generate application key
+# Copy environment file
 
-php artisan key:generate  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+cp .env.example .env- **Category Filtering** - Filter by Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness
 
 
 
-# Configure your database in .env## 🚀 Quick Start
+# Generate application key## 📦 Installation
 
-# DB_CONNECTION=mysql
+php artisan key:generate
 
-# DB_HOST=127.0.0.1- **100 Curated Verses** - Hand-picked impactful verses organized across 10 categories
+- **Daily Verse with Caching** - Verse of the day cached until midnight for optimal performance  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+">
 
-# DB_PORT=3306
+# Configure your database in .env
 
-# DB_DATABASE=quantum### Prerequisites
+# DB_CONNECTION=mysql### Requirements
 
-# DB_USERNAME=root
+# DB_HOST=127.0.0.1
 
-# DB_PASSWORD=- PHP 8.2 or higher- **10 Categories**: Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness<p align="center">
+# DB_PORT=3306- PHP 8.2 or higher- **One-Click Copy** - Copy verses to clipboard with visual feedback
 
+# DB_DATABASE=quantum
 
+# DB_USERNAME=root- Composer
 
-# Run migrations and seed the database- Composer
+# DB_PASSWORD=
 
-php artisan migrate --seed
+- MySQL 8.0 or higher- **Fully Embeddable** - Perfect for iframes, can be embedded in any website</p>
 
-- MySQL 8.0 or higher- **Daily Verse** - Fresh verse each day using date-based selection
+# Run migrations and seed the database
 
-# Build assets
+php artisan migrate --seed- Node.js & NPM (for asset compilation)
 
-npm run build- Node.js & NPM
 
 
+# Build assets- **Livewire Powered** - Real-time updates without page refresh
 
-# Start the development server- **Random Verse** - Get random verses by category or all verses  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+npm run build
 
-php artisan serve
+### Quick Start
 
-```### Installation
+# Start the development server
 
-
-
-Visit `http://127.0.0.1:8000/bible-verse` to see your widget!- **Verse Search** - Real-time search by text or reference with 500ms debounce
-
-
-
----1. **Clone the repository**
-
-
-
-## 🎯 Usage   ```bash- **Category Filtering** - Filter verses by category</p>
-
-
-
-### Direct Access   git clone https://github.com/starprog/Quantum.git
-
-Simply visit `/bible-verse` in your browser to see the widget.
-
-   cd Quantum- **Beautiful Display** - Responsive verse presentation with modern UI
-
-### Embed in Your Website
-
-   ```
-
-#### Basic Iframe Embed
-
-```html  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-
-<iframe 
-
-    src="http://your-domain.com/bible-verse" 2. **Install dependencies**
-
-    width="600" 
-
-    height="500"    ```bash### ⭐ User Features
-
-    frameborder="0"
-
-    style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">   composer install
-
-</iframe>
-
-```   npm install## ✨ Features
-
-
-
-#### Responsive Iframe Embed   ```
-
-```html
-
-<div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; max-width: 600px; margin: 0 auto;">- **Favorites System** - Save and manage favorite verses
-
-    <iframe 
-
-        src="http://your-domain.com/bible-verse"3. **Environment setup**
-
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 1rem;">
-
-    </iframe>   ```bash- **User Authentication** - Secure login with Laravel Jetstream</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-
-</div>
-
-```   cp .env.example .env
-
-
-
-#### WordPress Shortcode   php artisan key:generate- **Personal Dashboard** - View your saved verses and activity
-
-```html
-
-<iframe    ```
-
-    src="http://your-domain.com/bible-verse" 
-
-    width="100%" - **Livewire Integration** - Real-time updates without page refresh### 📖 Bible Verse Management
-
-    height="600" 
-
-    frameborder="0"4. **Configure database** in `.env`
-
-    scrolling="no">
-
-</iframe>   ```env
+php artisan serve- **Modern UI** - Beautiful gradient design with smooth animations  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License">  <img src="https://img.shields.io/badge/Laravel-11.x-red?style=for-the-badge&logo=laravel" alt="Laravel 11.x"><p align="center">
 
 ```
 
-   DB_CONNECTION=mysql
+```bash
+
+Visit `http://127.0.0.1:8000/bible-verse` to see your widget!
+
+# Clone the repository
 
 ---
 
-   DB_HOST=127.0.0.1### 🔍 Church Finder- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)</p>
+git clone https://github.com/starprog/Quantum.git
 
-## 📚 Bible Verse Categories
+## 🎯 Usage
 
-   DB_PORT=3306
+cd Quantum### ⚡ Performance## ✨ Features
 
-The widget includes 100 verses across 10 meaningful categories:
+### Direct Access
 
-   DB_DATABASE=quantum
-
-1. **Gospel & Salvation** - Core messages of salvation and grace
-
-2. **Faith & Trust** - Building faith and trust in God   DB_USERNAME=root
-
-3. **Love & Compassion** - God's love and loving others
-
-4. **Hope & Encouragement** - Finding hope in difficult times   DB_PASSWORD=- **Google Places Integration** - Find nearby churches- **Daily Verse** - Fresh verse each day using date-based selection
-
-5. **Strength & Courage** - Gaining strength through faith
-
-6. **Wisdom & Guidance** - Seeking God's wisdom and direction   ```
-
-7. **Love & Relationships** - Building godly relationships
-
-8. **Prayer & Worship** - Deepening prayer life and worship- **Location Search** - Search churches by address or current location
-
-9. **Peace & Comfort** - Finding peace in God's presence
-
-10. **Grace & Forgiveness** - Understanding grace and forgiveness5. **Run migrations and seed data**
+Simply visit `/bible-verse` in your browser to see the full-featured widget.
 
 
 
----   ```bash- **Church Details** - View church information and directions- **Random Verse** - Get random verses by category or all verses<p align="center">
+### Embed in Your Website# Install PHP dependencies- **Smart Caching** - Daily verse cached to reduce database queries
 
 
 
-## 🎨 Widget Features   php artisan migrate:fresh --seed
+#### Basic Iframe Embedcomposer install
+
+```html
+
+<iframe- **Optimized Queries** - Efficient database operations with eager loading</p>
+
+    src="https://your-domain.com/bible-verse"
+
+    width="600"# Install JavaScript dependencies
+
+    height="500"
+
+    frameborder="0"npm install- **Fast Response Times** - Sub-second page loads
+
+    style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);"
+
+></iframe>
+
+```
+
+# Copy environment file### 📖 Bible Verse Management
+
+#### Responsive Embed
+
+```htmlcp .env.example .env
+
+<div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
+
+    <iframe---
+
+        src="https://your-domain.com/bible-verse"
+
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 1rem;"# Generate application key
+
+    ></iframe>
+
+</div>php artisan key:generate  <img src="https://img.shields.io/badge/PHP-8.2+-blue?style=for-the-badge&logo=php" alt="PHP 8.2+"><a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+
+```
 
 
-
-### Dark Mode Toggle   ```- **Favorites** - Save favorite churches for quick access
-
-The widget automatically saves your theme preference:
-
-- Click the theme toggle button (top right)
-
-- Preference stored in localStorage
-
-- Smooth transitions between light and dark modes6. **Build assets**- **Verse Display** - Beautiful, responsive verse presentation
-
-
-
-### Verse of the Day Badge   ```bash
-
-- Golden badge appears when showing the daily verse
-
-- Disappears when viewing random verses   npm run build### 🎨 Modern UI
-
-- Cached daily for performance
-
-   ```
 
 ### Keyboard Shortcuts
 
-- **N** - Get a new random verse- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
+The widget includes convenient keyboard shortcuts:# Configure your database in .env## 🚀 Quick Start
 
-- **C** - Copy current verse to clipboard
+- **N** - Get a new random verse
 
-7. **Start development server**
+- **C** - Copy current verse to clipboard# DB_CONNECTION=mysql
 
-### Social Sharing
+- **P** - Print the current verse
 
-Share verses directly to:   ```bash- **Responsive Design** - Works on desktop, tablet, and mobile
+- **E** - Share via email# DB_HOST=127.0.0.1- **100 Curated Verses** - Hand-picked impactful verses organized across 10 categories
 
-- Twitter (opens popup)
+- **H** - Toggle verse history
 
-- Facebook (opens popup)   php artisan serve
+# DB_PORT=3306
 
-- WhatsApp (opens chat)
+---
+
+# DB_DATABASE=quantum### Prerequisites
+
+## 📚 Categories
+
+# DB_USERNAME=root
+
+The widget includes 100 verses organized across 10 meaningful categories:
+
+# DB_PASSWORD=- PHP 8.2 or higher- **10 Categories**: Gospel & Salvation, Faith & Trust, Love & Compassion, Hope & Encouragement, Strength & Courage, Wisdom & Guidance, Love & Relationships, Prayer & Worship, Peace & Comfort, Grace & Forgiveness<p align="center">
+
+1. **Gospel & Salvation** - Verses about salvation, redemption, and eternal life
+
+2. **Faith & Trust** - Building faith and trusting in God
+
+3. **Love & Compassion** - God's love and showing compassion to others
+
+4. **Hope & Encouragement** - Finding hope and encouragement in difficult times# Run migrations and seed the database- Composer
+
+5. **Strength & Courage** - Drawing strength from faith
+
+6. **Wisdom & Guidance** - Seeking God's wisdom and directionphp artisan migrate --seed
+
+7. **Love & Relationships** - Biblical principles for relationships
+
+8. **Prayer & Worship** - The importance of prayer and worship- MySQL 8.0 or higher- **Daily Verse** - Fresh verse each day using date-based selection
+
+9. **Peace & Comfort** - Finding peace in God's presence
+
+10. **Grace & Forgiveness** - Understanding grace and forgiveness# Build assets
+
+
+
+---npm run build- Node.js & NPM
+
+
+
+## 🔧 Configuration
+
+
+
+### Cache Configuration# Start the development server- **Random Verse** - Get random verses by category or all verses  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>  <img src="https://img.shields.io/badge/MySQL-8.0+-orange?style=for-the-badge&logo=mysql" alt="MySQL 8.0+"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+
+The widget uses Laravel's cache system for the daily verse. By default, it uses the database cache driver. You can configure this in `.env`:
+
+php artisan serve
+
+```env
+
+CACHE_STORE=database```### Installation
+
+```
+
+
+
+For better performance in production, consider using Redis:
+
+```envVisit `http://127.0.0.1:8000/bible-verse` to see your widget!- **Verse Search** - Real-time search by text or reference with 500ms debounce
+
+CACHE_STORE=redis
+
+REDIS_HOST=127.0.0.1
+
+REDIS_PORT=6379
+
+```---1. **Clone the repository**
+
+
+
+### Dark Mode Persistence
+
+Dark mode preference is stored in the browser's localStorage, persisting across visits.
+
+## 🎯 Usage   ```bash- **Category Filtering** - Filter verses by category</p>
+
+---
+
+
+
+## 🧪 Testing
+
+### Direct Access   git clone https://github.com/starprog/Quantum.git
+
+Run the test suite:
+
+Simply visit `/bible-verse` in your browser to see the widget.
+
+```bash
+
+# Run all tests   cd Quantum- **Beautiful Display** - Responsive verse presentation with modern UI
+
+php artisan test
+
+### Embed in Your Website
+
+# Run specific test suite
+
+php artisan test --testsuite=Feature   ```
+
+
+
+# Run with coverage#### Basic Iframe Embed
+
+php artisan test --coverage
+
+``````html  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="MIT License"><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+
+
+
+The project includes comprehensive tests for:<iframe 
+
+- Verse retrieval and randomization
+
+- Daily verse caching    src="http://your-domain.com/bible-verse" 2. **Install dependencies**
+
+- Category filtering
+
+- Livewire component functionality    width="600" 
+
+
+
+---    height="500"    ```bash### ⭐ User Features
+
+
+
+## 🗂️ Project Structure    frameborder="0"
+
+
+
+```    style="border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">   composer install
+
+app/
+
+├── Http/</iframe>
+
+│   └── Livewire/
+
+│       └── BibleVerseEmbed.php    # Main widget Livewire component```   npm install## ✨ Features
+
+├── Models/
+
+│   ├── Verse.php                  # Verse model
+
+│   └── VerseCategory.php          # Category model
+
+└── Services/#### Responsive Iframe Embed   ```
+
+    └── BibleVerseService.php      # Business logic for verse operations
+
+```html
+
+database/
+
+├── migrations/<div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; max-width: 600px; margin: 0 auto;">- **Favorites System** - Save and manage favorite verses
+
+│   ├── 2025_10_13_180300_create_verses_table.php
+
+│   ├── 2025_11_04_000001_add_performance_indexes_to_verses.php    <iframe 
+
+│   └── ...
+
+└── seeders/        src="http://your-domain.com/bible-verse"3. **Environment setup**
+
+    ├── VerseCategorySeeder.php    # Seeds 10 categories
+
+    └── VerseSeeder.php             # Seeds 100 curated verses        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 1rem;">
+
+
+
+resources/    </iframe>   ```bash- **User Authentication** - Secure login with Laravel Jetstream</p><a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+
+└── views/
+
+    └── bible-verse/</div>
+
+        ├── embed.blade.php                           # Layout wrapper
+
+        └── livewire/```   cp .env.example .env
+
+            └── bible-verse-embed.blade.php           # Main widget view
+
+
+
+tests/
+
+├── Feature/#### WordPress Shortcode   php artisan key:generate- **Personal Dashboard** - View your saved verses and activity
+
+│   └── BibleVerseEmbedTest.php    # Livewire component tests
+
+└── Unit/```html
+
+    └── BibleVerseServiceTest.php  # Service unit tests
+
+```<iframe    ```
+
+
+
+---    src="http://your-domain.com/bible-verse" 
+
+
+
+## 🚀 Performance Optimizations    width="100%" - **Livewire Integration** - Real-time updates without page refresh### 📖 Bible Verse Management
+
+
+
+This widget is built with performance in mind:    height="600" 
+
+
+
+1. **Database Indexes** - Added indexes on frequently queried columns:    frameborder="0"4. **Configure database** in `.env`
+
+   - `verses.category_id` - For category filtering
+
+   - `verses.reference` - For search operations    scrolling="no">
+
+   - `verse_categories.name` - For category name lookups
+
+</iframe>   ```env
+
+2. **Eager Loading** - Relationships are eager loaded to prevent N+1 queries
+
+```
+
+3. **Smart Caching** - Daily verse is cached until midnight using date-based keys
+
+   DB_CONNECTION=mysql
+
+4. **Optimized Assets** - CSS extracted to reusable classes, minimizing inline styles
+
+---
+
+5. **Responsive Images** - SVG icons for crisp display at any resolution
+
+   DB_HOST=127.0.0.1### 🔍 Church Finder- **78 Curated Verses** - Organized across 6 categories (Peace, Hope, Love, Strength, Faith, Wisdom)</p>
+
+---
+
+## 📚 Bible Verse Categories
+
+## 🎨 Customization
+
+   DB_PORT=3306
+
+### Styling
+
+The widget uses CSS variables for easy theming:The widget includes 100 verses across 10 meaningful categories:
+
+
+
+```css   DB_DATABASE=quantum
+
+:root {
+
+    --widget-bg: #ffffff;1. **Gospel & Salvation** - Core messages of salvation and grace
+
+    --text-primary: #1f2937;
+
+    --text-secondary: #6b7280;2. **Faith & Trust** - Building faith and trust in God   DB_USERNAME=root
+
+}
+
+3. **Love & Compassion** - God's love and loving others
+
+[data-theme="dark"] {
+
+    --widget-bg: #1f2937;4. **Hope & Encouragement** - Finding hope in difficult times   DB_PASSWORD=- **Google Places Integration** - Find nearby churches- **Daily Verse** - Fresh verse each day using date-based selection
+
+    --text-primary: #f9fafb;
+
+    --text-secondary: #d1d5db;5. **Strength & Courage** - Gaining strength through faith
+
+}
+
+```6. **Wisdom & Guidance** - Seeking God's wisdom and direction   ```
+
+
+
+### Adding Custom Verses7. **Love & Relationships** - Building godly relationships
+
+1. Add verses to `database/seeders/VerseSeeder.php`
+
+2. Run `php artisan db:seed --class=VerseSeeder`8. **Prayer & Worship** - Deepening prayer life and worship- **Location Search** - Search churches by address or current location
+
+
+
+---9. **Peace & Comfort** - Finding peace in God's presence
+
+
+
+## 📖 API Documentation10. **Grace & Forgiveness** - Understanding grace and forgiveness5. **Run migrations and seed data**
+
+
+
+### BibleVerseService Methods
+
+
+
+#### `getAllVerses()`---   ```bash- **Church Details** - View church information and directions- **Random Verse** - Get random verses by category or all verses<p align="center">
+
+Returns all verses with their categories.
+
+
+
+#### `getVersesByCategory($categoryId)`
+
+Returns verses filtered by category ID.## 🎨 Widget Features   php artisan migrate:fresh --seed
+
+
+
+#### `getRandomVerse($categoryName = null)`
+
+Returns a random verse, optionally filtered by category name.
+
+### Dark Mode Toggle   ```- **Favorites** - Save favorite churches for quick access
+
+#### `getVerseOfTheDay()`
+
+Returns the cached verse of the day. Uses date-based seeding to ensure consistency throughout the day.The widget automatically saves your theme preference:
+
+
+
+#### `searchVerses($searchTerm, $categoryId = null)`- Click the theme toggle button (top right)
+
+Searches verses by text or reference with optional category filtering.
+
+- Preference stored in localStorage
+
+#### `clearDailyVerseCache()`
+
+Clears the cached verse of the day. Useful after seeding or updating verses.- Smooth transitions between light and dark modes6. **Build assets**- **Verse Display** - Beautiful, responsive verse presentation
+
+
+
+---
+
+
+
+## 🤝 Contributing### Verse of the Day Badge   ```bash
+
+
+
+Contributions are welcome! Please feel free to submit a Pull Request.- Golden badge appears when showing the daily verse
+
+
+
+---- Disappears when viewing random verses   npm run build### 🎨 Modern UI
+
+
+
+## 📝 License- Cached daily for performance
+
+
+
+This project is licensed under the MIT License.   ```
+
+
+
+---### Keyboard Shortcuts
+
+
+
+## 🙏 Acknowledgments- **N** - Get a new random verse- **Livewire Integration** - Real-time verse updates without page refresh  <strong>A clean, modern Laravel application for displaying and managing Bible verses</strong>## About Laravel
+
+
+
+- Built with [Laravel](https://laravel.com)- **C** - Copy current verse to clipboard
+
+- Powered by [Livewire](https://livewire.laravel.com)
+
+- Icons from [Heroicons](https://heroicons.com)7. **Start development server**
+
+
+
+---### Social Sharing
+
+
+
+## 📞 SupportShare verses directly to:   ```bash- **Responsive Design** - Works on desktop, tablet, and mobile
+
+
+
+For issues, questions, or suggestions, please open an issue on GitHub.- Twitter (opens popup)
+
+
+
+---- Facebook (opens popup)   php artisan serve
+
+
+
+**Made with ❤️ for sharing God's Word**- WhatsApp (opens chat)
+
 
    ```- **Tailwind CSS** - Clean, modern interface
 
