@@ -53,14 +53,23 @@
     }
 
     .share-button.whatsapp {
-        @apply bg-[#25D366] hover:bg-[#25D366]/90;
+        background-color: #25D366;
+        &:hover {
+            background-color: rgba(37, 211, 102, 0.9);
+        }
     }
 
     .share-button.telegram {
-        @apply bg-[#0088cc] hover:bg-[#0088cc]/90;
+        background-color: #0088cc;
+        &:hover {
+            background-color: rgba(0, 136, 204, 0.9);
+        }
     }
 
     .share-button.pinterest {
-        @apply bg-[#E60023] hover:bg-[#E60023]/90;
+        background-color: #E60023;
+        &:hover {
+            background-color: rgba(230, 0, 35, 0.9);
+        }
     }
 }
