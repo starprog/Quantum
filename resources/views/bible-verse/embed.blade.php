@@ -271,6 +271,149 @@
             font-size: 1.875rem !important;
         }
         
+        /* History Modal Styles */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        .history-modal-content {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .history-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .history-modal-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .history-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            line-height: 1;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .history-close:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+        
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            min-height: 200px;
+        }
+        
+        .history-item {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: var(--hover-bg);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .history-item:hover {
+            background: var(--accent-color);
+            transform: translateX(4px);
+            border-color: #667eea;
+        }
+        
+        .history-item-text {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        
+        .history-item-reference {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .history-item-time {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .history-empty svg {
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1rem;
+            opacity: 0.5;
+        }
+        
+        .history-modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* Mobile Responsive Styles */
         @media (max-width: 640px) {
             .widget-card {
@@ -356,6 +499,103 @@
     </style>
     
     <script>
+        // Verse History Management
+        const MAX_HISTORY = 10;
+        
+        function toggleHistory() {
+            const modal = document.getElementById('historyModal');
+            if (modal.style.display === 'none') {
+                displayHistory();
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function trackVerseView() {
+            const verseText = document.getElementById('verseText')?.textContent;
+            const verseReference = document.getElementById('verseReference')?.textContent;
+            
+            if (!verseText || !verseReference) return;
+            
+            let history = JSON.parse(localStorage.getItem('verseHistory') || '[]');
+            
+            // Check if this verse is already the most recent
+            if (history.length > 0 && history[history.length - 1].reference === verseReference) {
+                return;
+            }
+            
+            const entry = {
+                text: verseText.length > 80 ? verseText.substring(0, 80) + '...' : verseText,
+                reference: verseReference,
+                timestamp: Date.now()
+            };
+            
+            history.push(entry);
+            
+            // Keep only last 10 entries
+            if (history.length > MAX_HISTORY) {
+                history = history.slice(-MAX_HISTORY);
+            }
+            
+            localStorage.setItem('verseHistory', JSON.stringify(history));
+        }
+        
+        function displayHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem('verseHistory') || '[]');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="history-empty">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p>No verses viewed yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display in reverse order (most recent first)
+            const reversedHistory = [...history].reverse();
+            historyList.innerHTML = reversedHistory.map((entry, index) => {
+                const timeAgo = formatTimeAgo(entry.timestamp);
+                return `
+                    <div class="history-item" onclick="loadHistoricalVerse('${entry.reference.replace(/'/g, "\\'")}')">
+                        <div class="history-item-text">${entry.text}</div>
+                        <div class="history-item-reference">${entry.reference}</div>
+                        <div class="history-item-time">${timeAgo}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function formatTimeAgo(timestamp) {
+            const seconds = Math.floor((Date.now() - timestamp) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hr ago';
+            return Math.floor(seconds / 86400) + ' days ago';
+        }
+        
+        function loadHistoricalVerse(reference) {
+            toggleHistory(); // Close modal
+            // Trigger new verse load - it will randomly pick one
+            // Note: In a full implementation, you'd need to add a Livewire method to load by reference
+            document.querySelector('[wire\\:click="refreshVerse"]')?.click();
+        }
+        
+        function clearHistory() {
+            if (confirm('Clear all verse history?')) {
+                localStorage.removeItem('verseHistory');
+                displayHistory();
+            }
+        }
+        
         // Dark mode toggle
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -561,6 +801,12 @@
                 if (newVerseBtn) newVerseBtn.click();
             }
             
+            // H - History
+            if (key === 'h') {
+                e.preventDefault();
+                toggleHistory();
+            }
+            
             // C - Copy
             if (key === 'c') {
                 e.preventDefault();
@@ -578,6 +824,19 @@
                 e.preventDefault();
                 shareFromDOM('email');
             }
+        });
+        
+        // Track verse view on page load and after Livewire updates
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial verse tracking
+            setTimeout(trackVerseView, 500);
+        });
+        
+        // Listen for Livewire updates to track new verses
+        document.addEventListener('livewire:load', function() {
+            Livewire.hook('message.processed', (message, component) => {
+                setTimeout(trackVerseView, 500);
+            });
         });
     </script>
 </head>

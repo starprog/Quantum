@@ -48,6 +48,18 @@
                 <span wire:loading.remove>New Verse</span>
                 <span wire:loading>Loading...</span>
             </button>
+            
+            <!-- History Button -->
+            <button 
+                onclick="toggleHistory()"
+                id="historyBtn"
+                class="btn-base btn-outline"
+                title="View History (Shortcut: H)">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>History</span>
+            </button>
         </div>
         
         <!-- Font Size Controls -->
@@ -113,6 +125,22 @@
         <!-- Copy notification -->
         <div id="copyNotification" class="copy-notification">
             ✓ Verse copied to clipboard!
+        </div>
+        
+        <!-- History Modal -->
+        <div id="historyModal" class="history-modal" style="display: none;">
+            <div class="history-modal-content">
+                <div class="history-modal-header">
+                    <h3>Verse History</h3>
+                    <button onclick="toggleHistory()" class="history-close">&times;</button>
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- History items will be inserted here -->
+                </div>
+                <div class="history-modal-footer">
+                    <button onclick="clearHistory()" class="btn-base btn-outline" style="font-size: 0.75rem; padding: 0.5rem 1rem;">Clear History</button>
+                </div>
+            </div>
         </div>
     @else
         <p style="text-align: center; color: var(--text-secondary);">No verses available</p>
