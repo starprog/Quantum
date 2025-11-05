@@ -50,6 +50,16 @@
             </button>
         </div>
         
+        <!-- Font Size Controls -->
+        <div class="font-size-controls">
+            <span class="font-size-label">Font Size:</span>
+            <div class="font-size-buttons">
+                <button onclick="setFontSize('small')" id="fontSmall" class="btn-font" title="Small (Shortcut: Shift+S)">S</button>
+                <button onclick="setFontSize('medium')" id="fontMedium" class="btn-font btn-font-active" title="Medium (Default)">M</button>
+                <button onclick="setFontSize('large')" id="fontLarge" class="btn-font" title="Large (Shortcut: Shift+L)">L</button>
+            </div>
+        </div>
+        
         <!-- Social Share Buttons -->
         <div class="social-share">
             <p class="social-label">Share this verse:</p>

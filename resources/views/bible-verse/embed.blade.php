@@ -211,6 +211,66 @@
             font-weight: 600;
         }
         
+        /* Font Size Controls */
+        .font-size-controls {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .font-size-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        
+        .font-size-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-font {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid var(--text-secondary);
+            background: var(--widget-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-font:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-font-active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        /* Font size classes */
+        .verse-text.font-small {
+            font-size: 1.125rem !important;
+        }
+        
+        .verse-text.font-medium {
+            font-size: 1.5rem !important;
+        }
+        
+        .verse-text.font-large {
+            font-size: 1.875rem !important;
+        }
+        
         /* Mobile Responsive Styles */
         @media (max-width: 640px) {
             .widget-card {
@@ -318,7 +378,39 @@
                 document.body.classList.add('dark-mode');
             }
             updateThemeButton();
+            
+            // Load saved font size
+            const savedFontSize = localStorage.getItem('fontSize') || 'medium';
+            setFontSize(savedFontSize);
         });
+        
+        /* =================================
+           Font Size Controls
+           ================================= */
+        
+        function setFontSize(size) {
+            const verseText = document.getElementById('verseText');
+            if (!verseText) return;
+            
+            // Remove all font size classes
+            verseText.classList.remove('font-small', 'font-medium', 'font-large');
+            
+            // Add the selected size class
+            verseText.classList.add(`font-${size}`);
+            
+            // Update button states
+            document.querySelectorAll('.btn-font').forEach(btn => {
+                btn.classList.remove('btn-font-active');
+            });
+            
+            const activeBtn = document.getElementById(`font${size.charAt(0).toUpperCase() + size.slice(1)}`);
+            if (activeBtn) {
+                activeBtn.classList.add('btn-font-active');
+            }
+            
+            // Save preference
+            localStorage.setItem('fontSize', size);
+        }
         
         /* =================================
            Verse Widget Functions
@@ -445,6 +537,22 @@
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
             
             const key = e.key.toLowerCase();
+            
+            // Font size shortcuts (Shift + S/L)
+            if (e.shiftKey && key === 's') {
+                e.preventDefault();
+                setFontSize('small');
+            }
+            
+            if (e.shiftKey && key === 'l') {
+                e.preventDefault();
+                setFontSize('large');
+            }
+            
+            if (e.shiftKey && key === 'm') {
+                e.preventDefault();
+                setFontSize('medium');
+            }
             
             // N - New Verse
             if (key === 'n') {
