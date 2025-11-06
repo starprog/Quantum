@@ -1,5 +1,42 @@
 <div class="widget-card fade-in">
     @if($verse)
+        <!-- Category Filter Dropdown -->
+        <div class="category-filter-container">
+            <label for="categoryFilter" class="category-label">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 1rem; height: 1rem; fill: none;" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Category:
+            </label>
+            <select 
+                id="categoryFilter" 
+                class="category-select"
+                wire:model="selectedCategory"
+                wire:change="filterByCategory($event.target.value)">
+                <option value="">All Categories</option>
+                <option value="2">Faith & Trust</option>
+                <option value="1">Gospel & Salvation</option>
+                <option value="10">Grace & Forgiveness</option>
+                <option value="8">Hope & Encouragement</option>
+                <option value="5">Love & Compassion</option>
+                <option value="6">Love & Relationships</option>
+                <option value="4">Peace & Comfort</option>
+                <option value="9">Prayer & Worship</option>
+                <option value="3">Strength & Courage</option>
+                <option value="7">Wisdom & Guidance</option>
+            </select>
+            @if(!empty($selectedCategory))
+                <button 
+                    wire:click="clearCategoryFilter"
+                    class="btn-clear-filter"
+                    title="Clear filter">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 0.875rem; height: 0.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            @endif
+        </div>
+    
         <!-- Verse of the Day Badge -->
         @if($isVerseOfTheDay)
         <div class="votd-container">

@@ -89,6 +89,71 @@
             transition: background 0.3s;
         }
         
+        /* Category Filter Styles */
+        .category-filter-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--hover-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .category-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        
+        .category-select {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: var(--widget-bg);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        
+        .category-select:hover {
+            border-color: #667eea;
+        }
+        
+        .category-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn-clear-filter {
+            padding: 0.5rem;
+            background: var(--widget-bg);
+            border: 2px solid var(--text-secondary);
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-clear-filter:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+            color: white;
+            transform: rotate(90deg);
+        }
+        
         /* Verse Content Styles */
         .verse-content {
             margin-bottom: 2rem;
@@ -421,6 +486,20 @@
                 border-radius: 0.75rem !important;
             }
             
+            .category-filter-container {
+                flex-wrap: wrap;
+                padding: 0.75rem;
+            }
+            
+            .category-label {
+                font-size: 0.8rem;
+            }
+            
+            .category-select {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.75rem;
+            }
+            
             .verse-text {
                 font-size: 1.25rem !important;
             }
@@ -448,6 +527,14 @@
         @media (max-width: 480px) {
             .widget-card {
                 padding: 1.25rem !important;
+            }
+            
+            .category-filter-container {
+                gap: 0.5rem;
+            }
+            
+            .category-label span {
+                display: none;
             }
             
             .verse-text {
