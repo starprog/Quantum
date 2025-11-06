@@ -917,9 +917,7 @@
         
         // Copy verse to clipboard
         function copyVerseFromDOM() {
-            console.log('copyVerseFromDOM called');
             const { verse, reference } = getVerseFromDOM();
-            console.log('Copy - Verse data:', { verse, reference });
             
             if (verse && reference) {
                 copyVerse(verse, reference);
@@ -949,12 +947,9 @@
         
         // Universal share handler that reads from DOM
         function shareFromDOM(platform) {
-            console.log('shareFromDOM called with platform:', platform);
             const { verse, reference } = getVerseFromDOM();
-            console.log('Verse data:', { verse, reference });
             
             if (!verse || !reference) {
-                console.error('Could not read verse from DOM');
                 alert('Error: Could not read verse text. Please refresh the page.');
                 return;
             }
