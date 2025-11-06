@@ -416,12 +416,38 @@
             cursor: pointer;
             transition: all 0.2s ease;
             border: 2px solid transparent;
+            position: relative;
         }
         
         .history-item:hover {
             background: var(--accent-color);
             transform: translateX(4px);
             border-color: #667eea;
+        }
+        
+        .btn-remove-favorite {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.375rem;
+            width: 1.75rem;
+            height: 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-remove-favorite:hover {
+            background: #ef4444;
+            color: white;
+            transform: scale(1.1);
         }
         
         .history-item-text {
@@ -683,6 +709,140 @@
             }
         }
         
+        /* =================================
+           Favorites Management
+           ================================= */
+        
+        function toggleFavorite() {
+            const verseText = document.getElementById('verseText')?.textContent;
+            const verseReference = document.getElementById('verseReference')?.textContent;
+            
+            if (!verseText || !verseReference) return;
+            
+            let favorites = JSON.parse(localStorage.getItem('verseFavorites') || '[]');
+            const existingIndex = favorites.findIndex(fav => fav.reference === verseReference);
+            
+            if (existingIndex > -1) {
+                // Remove from favorites
+                favorites.splice(existingIndex, 1);
+                localStorage.setItem('verseFavorites', JSON.stringify(favorites));
+                updateFavoriteButton(false);
+                alert('Verse removed from favorites!');
+            } else {
+                // Add to favorites
+                const entry = {
+                    text: verseText.replace(/^"|"$/g, '').trim(),
+                    reference: verseReference.replace(/^—\s*/, '').trim(),
+                    timestamp: Date.now()
+                };
+                favorites.push(entry);
+                localStorage.setItem('verseFavorites', JSON.stringify(favorites));
+                updateFavoriteButton(true);
+                alert('Verse added to favorites!');
+            }
+            
+            updateFavoritesCount();
+        }
+        
+        function updateFavoriteButton(isFavorited) {
+            const star = document.getElementById('favoriteStar');
+            if (!star) return;
+            
+            if (isFavorited) {
+                star.style.fill = '#f59e0b';
+                star.style.stroke = '#f59e0b';
+            } else {
+                star.style.fill = 'none';
+                star.style.stroke = 'currentColor';
+            }
+        }
+        
+        function checkIfFavorited() {
+            const verseReference = document.getElementById('verseReference')?.textContent;
+            if (!verseReference) return;
+            
+            const favorites = JSON.parse(localStorage.getItem('verseFavorites') || '[]');
+            const isFavorited = favorites.some(fav => fav.reference === verseReference);
+            updateFavoriteButton(isFavorited);
+        }
+        
+        function updateFavoritesCount() {
+            const favorites = JSON.parse(localStorage.getItem('verseFavorites') || '[]');
+            const countElement = document.getElementById('favoritesCount');
+            if (countElement) {
+                countElement.textContent = `View Favorites (${favorites.length})`;
+            }
+        }
+        
+        function showFavorites() {
+            const modal = document.getElementById('favoritesModal');
+            if (modal.style.display === 'none') {
+                displayFavorites();
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function displayFavorites() {
+            const favoritesList = document.getElementById('favoritesList');
+            const favorites = JSON.parse(localStorage.getItem('verseFavorites') || '[]');
+            
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = `
+                    <div class="history-empty">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                        <p>No favorite verses yet</p>
+                        <p style="font-size: 0.875rem; margin-top: 0.5rem;">Click the star button to save verses!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Display in reverse order (most recent first)
+            const reversedFavorites = [...favorites].reverse();
+            favoritesList.innerHTML = reversedFavorites.map((entry, index) => {
+                const timeAgo = formatTimeAgo(entry.timestamp);
+                const truncatedText = entry.text.length > 80 ? entry.text.substring(0, 80) + '...' : entry.text;
+                return `
+                    <div class="history-item">
+                        <div class="history-item-text">"${truncatedText}"</div>
+                        <div class="history-item-reference">${entry.reference}</div>
+                        <div class="history-item-time">Added ${timeAgo}</div>
+                        <button onclick="removeFavorite('${entry.reference.replace(/'/g, "\\'")}'); event.stopPropagation();" 
+                                class="btn-remove-favorite" 
+                                title="Remove from favorites">
+                            ✕
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function removeFavorite(reference) {
+            if (confirm('Remove this verse from favorites?')) {
+                let favorites = JSON.parse(localStorage.getItem('verseFavorites') || '[]');
+                favorites = favorites.filter(fav => fav.reference !== reference);
+                localStorage.setItem('verseFavorites', JSON.stringify(favorites));
+                displayFavorites();
+                updateFavoritesCount();
+                checkIfFavorited();
+            }
+        }
+        
+        function clearAllFavorites() {
+            if (confirm('Clear all favorite verses?')) {
+                localStorage.removeItem('verseFavorites');
+                displayFavorites();
+                updateFavoritesCount();
+                checkIfFavorited();
+            }
+        }
+        
         // Dark mode toggle
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -894,6 +1054,18 @@
                 toggleHistory();
             }
             
+            // F - Toggle Favorite
+            if (key === 'f') {
+                e.preventDefault();
+                toggleFavorite();
+            }
+            
+            // V - View Favorites
+            if (key === 'v') {
+                e.preventDefault();
+                showFavorites();
+            }
+            
             // C - Copy
             if (key === 'c') {
                 e.preventDefault();
@@ -917,12 +1089,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initial verse tracking
             setTimeout(trackVerseView, 500);
+            
+            // Initialize favorites UI
+            updateFavoritesCount();
+            setTimeout(checkIfFavorited, 500);
         });
         
         // Listen for Livewire updates to track new verses
         document.addEventListener('livewire:load', function() {
             Livewire.hook('message.processed', (message, component) => {
                 setTimeout(trackVerseView, 500);
+                setTimeout(checkIfFavorited, 500);
             });
         });
     </script>
