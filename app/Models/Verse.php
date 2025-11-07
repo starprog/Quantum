@@ -10,7 +10,12 @@ class Verse extends Model
     protected $fillable = [
         'verse',
         'reference',
-        'category_id'
+        'category_id',
+        'is_featured'
+    ];
+
+    protected $casts = [
+        'is_featured' => 'boolean',
     ];
 
     public function category(): BelongsTo
