@@ -100,5 +100,29 @@ class User extends Authenticatable
     {
         return $this->favoriteVerses()->where('verse_id', $verse->id)->exists();
     }
+
+    /**
+     * Get the user's devotional progress records
+     */
+    public function devotionalProgress()
+    {
+        return $this->hasMany(UserDevotionalProgress::class);
+    }
+
+    /**
+     * Get active devotional plans
+     */
+    public function activeDevotionals()
+    {
+        return $this->devotionalProgress()->active()->with('devotionalPlan');
+    }
+
+    /**
+     * Get completed devotional plans
+     */
+    public function completedDevotionals()
+    {
+        return $this->devotionalProgress()->completed()->with('devotionalPlan');
+    }
 }
 
