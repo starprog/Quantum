@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Verse extends Model
 {
@@ -50,6 +51,22 @@ class Verse extends Model
     public function getFavoritesCountAttribute(): int
     {
         return $this->favoritedBy()->count();
+    }
+
+    /**
+     * Get all audio recordings for this verse.
+     */
+    public function audio(): HasMany
+    {
+        return $this->hasMany(VerseAudio::class);
+    }
+
+    /**
+     * Get active audio recordings for this verse.
+     */
+    public function activeAudio(): HasMany
+    {
+        return $this->hasMany(VerseAudio::class)->where('is_active', true);
     }
 }
 

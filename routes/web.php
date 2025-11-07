@@ -11,6 +11,7 @@ use App\Http\Controllers\ChurchFinderController;
 use App\Http\Controllers\Admin\VerseController as AdminVerseController;
 use App\Http\Controllers\Admin\VerseCategoryController;
 use App\Http\Controllers\Admin\DevotionalPlanController;
+use App\Http\Controllers\Admin\AudioController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -119,6 +120,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Devotional verse assignment (AJAX)
     Route::post('/devotionals/{plan}/assign-verse', [DevotionalPlanController::class, 'assignVerse'])->name('devotionals.assign-verse');
     Route::delete('/devotionals/{plan}/remove-verse/{dayNumber}', [DevotionalPlanController::class, 'removeVerse'])->name('devotionals.remove-verse');
+
+    // Audio Bible Management
+    Route::get('/audio', [AudioController::class, 'index'])->name('audio.index');
+    Route::get('/audio/create', [AudioController::class, 'create'])->name('audio.create');
+    Route::post('/audio', [AudioController::class, 'store'])->name('audio.store');
+    Route::get('/audio/{audio}/edit', [AudioController::class, 'edit'])->name('audio.edit');
+    Route::put('/audio/{audio}', [AudioController::class, 'update'])->name('audio.update');
+    Route::delete('/audio/{audio}', [AudioController::class, 'destroy'])->name('audio.destroy');
+    Route::post('/audio/bulk-upload', [AudioController::class, 'bulkUpload'])->name('audio.bulk-upload');
 });
 
 // User devotional routes (auth protected)
