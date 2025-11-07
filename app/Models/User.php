@@ -84,4 +84,21 @@ class User extends Authenticatable
         return $this->belongsToMany(Church::class, 'user_churches')
             ->withTimestamps();
     }
+
+    /**
+     * The verse collections owned by the user.
+     */
+    public function verseCollections()
+    {
+        return $this->hasMany(VerseCollection::class);
+    }
+
+    /**
+     * Check if the user has favorited a specific verse.
+     */
+    public function hasFavorited(Verse $verse): bool
+    {
+        return $this->favoriteVerses()->where('verse_id', $verse->id)->exists();
+    }
 }
+
