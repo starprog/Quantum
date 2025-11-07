@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\VerseController as AdminVerseController;
 use App\Http\Controllers\Admin\VerseCategoryController;
 use App\Http\Controllers\Admin\DevotionalPlanController;
 use App\Http\Controllers\Admin\AudioController;
+use App\Http\Controllers\SocialController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -139,3 +140,23 @@ Route::middleware(['auth'])->prefix('devotionals')->name('devotionals.')->group(
     Route::get('/{slug}/daily', [DevotionalController::class, 'daily'])->name('daily');
     Route::post('/{plan}/complete-day', [DevotionalController::class, 'completeDay'])->name('complete-day');
 });
+
+// Social/Community routes (auth protected)
+Route::middleware(['auth'])->prefix('social')->name('social.')->group(function () {
+    // User following
+    Route::post('/users/{user}/follow', [SocialController::class, 'follow'])->name('follow');
+    Route::delete('/users/{user}/unfollow', [SocialController::class, 'unfollow'])->name('unfollow');
+    
+    // Collection interactions
+    Route::post('/collections/{collection}/like', [SocialController::class, 'likeCollection'])->name('collections.like');
+    Route::post('/collections/{collection}/unlike', [SocialController::class, 'unlikeCollection'])->name('collections.unlike');
+    Route::post('/collections/{collection}/comment', [SocialController::class, 'commentCollection'])->name('collections.comment');
+    Route::delete('/comments/{comment}', [SocialController::class, 'deleteComment'])->name('comments.delete');
+    
+    // User profiles and discovery
+    Route::get('/users/{user}', [SocialController::class, 'profile'])->name('profile');
+    Route::get('/discover', [SocialController::class, 'discover'])->name('discover');
+    Route::get('/users/{user}/followers', [SocialController::class, 'followers'])->name('followers');
+    Route::get('/users/{user}/following', [SocialController::class, 'following'])->name('following');
+});
+

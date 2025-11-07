@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class VerseCollection extends Model
@@ -85,6 +86,38 @@ class VerseCollection extends Model
     {
         $user = $user ?? auth()->user();
         return $user && $user->id === $this->user_id;
+    }
+
+    /**
+     * Users who have liked this collection.
+     */
+    public function likes(): HasMany
+    {
+        return $this->hasMany(CollectionLike::class, 'collection_id');
+    }
+
+    /**
+     * Comments on this collection.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(CollectionComment::class, 'collection_id');
+    }
+
+    /**
+     * Get the number of likes.
+     */
+    public function getLikesCountAttribute(): int
+    {
+        return $this->likes()->count();
+    }
+
+    /**
+     * Get the number of comments.
+     */
+    public function getCommentsCountAttribute(): int
+    {
+        return $this->comments()->count();
     }
 }
 

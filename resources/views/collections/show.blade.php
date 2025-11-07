@@ -40,6 +40,14 @@
 
                 <div class="flex items-center gap-6 text-sm text-gray-600">
                     <span>📖 {{ $collection->verses->count() }} {{ Str::plural('verse', $collection->verses->count()) }}</span>
+                    <button onclick="toggleLike()" id="like-btn" class="flex items-center gap-1 hover:text-red-600 transition">
+                        <span id="like-icon">{{ auth()->user()->hasLikedCollection($collection) ? '❤️' : '🤍' }}</span>
+                        <span id="likes-count">{{ $collection->likes()->count() }}</span> likes
+                    </button>
+                    <span>💬 {{ $collection->comments()->count() }} comments</span>
+                    <a href="{{ route('social.profile', $collection->user) }}" class="hover:text-indigo-600">
+                        View Profile →
+                    </a>
                 </div>
 
                 @if($collection->is_public)
@@ -108,10 +116,136 @@
                 </div>
             @endif
         </div>
+
+        <!-- Comments Section -->
+        @if($collection->is_public)
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 mt-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Comments</h3>
+
+                <!-- Add Comment Form -->
+                <form onsubmit="addComment(event)" class="mb-6">
+                    <textarea 
+                        id="comment-input" 
+                        rows="3" 
+                        class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" 
+                        placeholder="Share your thoughts..."
+                        maxlength="500"
+                    ></textarea>
+                    <div class="flex justify-end mt-2">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Comments List -->
+                <div id="comments-list" class="space-y-4">
+                    @foreach($collection->comments()->with('user')->latest()->get() as $comment)
+                    <div class="flex gap-3 pb-4 border-b border-gray-200" data-comment-id="{{ $comment->id }}">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+                            {{ substr($comment->user->name, 0, 1) }}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-medium text-gray-900">{{ $comment->user->name }}</span>
+                                    <span class="text-sm text-gray-500 ml-2">{{ $comment->created_at->diffForHumans() }}</span>
+                                </div>
+                                @if($comment->user_id === auth()->id())
+                                <button onclick="deleteComment({{ $comment->id }})" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                @endif
+                            </div>
+                            <p class="text-gray-700 mt-1">{{ $comment->comment }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 
     @push('scripts')
     <script>
+        const collectionId = {{ $collection->id }};
+        let isLiked = {{ auth()->user()->hasLikedCollection($collection) ? 'true' : 'false' }};
+
+        function toggleLike() {
+            const url = isLiked 
+                ? `/social/collections/${collectionId}/unlike`
+                : `/social/collections/${collectionId}/like`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                isLiked = !isLiked;
+                document.getElementById('like-icon').textContent = isLiked ? '❤️' : '🤍';
+                document.getElementById('likes-count').textContent = data.likes_count;
+            });
+        }
+
+        function addComment(event) {
+            event.preventDefault();
+            const input = document.getElementById('comment-input');
+            const comment = input.value.trim();
+
+            if (!comment) return;
+
+            fetch(`/social/collections/${collectionId}/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ comment })
+            })
+            .then(res => res.json())
+            .then(data => {
+                input.value = '';
+                const commentsList = document.getElementById('comments-list');
+                const commentHTML = `
+                    <div class="flex gap-3 pb-4 border-b border-gray-200" data-comment-id="${data.comment.id}">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+                            ${data.comment.user.name.charAt(0)}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-medium text-gray-900">${data.comment.user.name}</span>
+                                    <span class="text-sm text-gray-500 ml-2">just now</span>
+                                </div>
+                                <button onclick="deleteComment(${data.comment.id})" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                            </div>
+                            <p class="text-gray-700 mt-1">${data.comment.comment}</p>
+                        </div>
+                    </div>
+                `;
+                commentsList.insertAdjacentHTML('afterbegin', commentHTML);
+            });
+        }
+
+        function deleteComment(commentId) {
+            if (!confirm('Delete this comment?')) return;
+
+            fetch(`/social/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(res => res.json())
+            .then(() => {
+                document.querySelector(`[data-comment-id="${commentId}"]`).remove();
+            });
+        }
+
         function copyShareUrl() {
             const input = document.getElementById('shareUrl');
             input.select();

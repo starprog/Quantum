@@ -124,5 +124,56 @@ class User extends Authenticatable
     {
         return $this->devotionalProgress()->completed()->with('devotionalPlan');
     }
+
+    /**
+     * Users that this user is following.
+     */
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'user_follows', 'follower_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Users that are following this user.
+     */
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'user_follows', 'following_id', 'follower_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if this user is following another user.
+     */
+    public function isFollowing(User $user): bool
+    {
+        return $this->following()->where('following_id', $user->id)->exists();
+    }
+
+    /**
+     * Collections that this user has liked.
+     */
+    public function likedCollections()
+    {
+        return $this->belongsToMany(VerseCollection::class, 'collection_likes')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user has liked a collection.
+     */
+    public function hasLikedCollection(VerseCollection $collection): bool
+    {
+        return $this->likedCollections()->where('collection_id', $collection->id)->exists();
+    }
+
+    /**
+     * Comments made by this user.
+     */
+    public function collectionComments()
+    {
+        return $this->hasMany(CollectionComment::class);
+    }
 }
 
