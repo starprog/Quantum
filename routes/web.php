@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BibleVerseController;
 use App\Http\Controllers\FavoriteVerseController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\ChurchFinderController;
 use App\Http\Controllers\Admin\VerseController as AdminVerseController;
 use App\Http\Controllers\Admin\VerseCategoryController;
@@ -36,6 +38,27 @@ Route::get('/daily-verse', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteVerseController::class, 'index'])->name('favorites.index');
     Route::post('/favorites/toggle/{verse}', [FavoriteVerseController::class, 'toggle'])->name('favorites.toggle');
+    
+    // New favorites system with JSON responses
+    Route::post('/favorites/{verse}/toggle', [FavoriteController::class, 'toggle'])->name('favorites.toggle.new');
+    Route::delete('/favorites/{verse}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+    Route::get('/favorites/{verse}/check', [FavoriteController::class, 'check'])->name('favorites.check');
+});
+
+// Collections routes (protected by auth middleware)
+Route::middleware(['auth'])->prefix('collections')->name('collections.')->group(function () {
+    Route::get('/', [CollectionController::class, 'index'])->name('index');
+    Route::get('/create', [CollectionController::class, 'create'])->name('create');
+    Route::post('/', [CollectionController::class, 'store'])->name('store');
+    Route::get('/{slug}', [CollectionController::class, 'show'])->name('show');
+    Route::get('/{slug}/edit', [CollectionController::class, 'edit'])->name('edit');
+    Route::put('/{slug}', [CollectionController::class, 'update'])->name('update');
+    Route::delete('/{slug}', [CollectionController::class, 'destroy'])->name('destroy');
+    
+    // Verse management in collections
+    Route::post('/{slug}/verses', [CollectionController::class, 'addVerse'])->name('verses.add');
+    Route::delete('/{slug}/verses', [CollectionController::class, 'removeVerse'])->name('verses.remove');
+    Route::post('/{slug}/toggle-public', [CollectionController::class, 'togglePublic'])->name('toggle-public');
 });
 
 // Other routes
