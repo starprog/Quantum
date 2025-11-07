@@ -6,9 +6,11 @@ use App\Http\Controllers\BibleVerseController;
 use App\Http\Controllers\FavoriteVerseController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\DevotionalController;
 use App\Http\Controllers\ChurchFinderController;
 use App\Http\Controllers\Admin\VerseController as AdminVerseController;
 use App\Http\Controllers\Admin\VerseCategoryController;
+use App\Http\Controllers\Admin\DevotionalPlanController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
@@ -105,4 +107,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/categories/{category}/edit', [VerseCategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [VerseCategoryController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [VerseCategoryController::class, 'destroy'])->name('categories.destroy');
+
+    // Devotional Plans Management
+    Route::get('/devotionals', [DevotionalPlanController::class, 'index'])->name('devotionals.index');
+    Route::get('/devotionals/create', [DevotionalPlanController::class, 'create'])->name('devotionals.create');
+    Route::post('/devotionals', [DevotionalPlanController::class, 'store'])->name('devotionals.store');
+    Route::get('/devotionals/{plan}/edit', [DevotionalPlanController::class, 'edit'])->name('devotionals.edit');
+    Route::put('/devotionals/{plan}', [DevotionalPlanController::class, 'update'])->name('devotionals.update');
+    Route::delete('/devotionals/{plan}', [DevotionalPlanController::class, 'destroy'])->name('devotionals.destroy');
+    
+    // Devotional verse assignment (AJAX)
+    Route::post('/devotionals/{plan}/assign-verse', [DevotionalPlanController::class, 'assignVerse'])->name('devotionals.assign-verse');
+    Route::delete('/devotionals/{plan}/remove-verse/{dayNumber}', [DevotionalPlanController::class, 'removeVerse'])->name('devotionals.remove-verse');
+});
+
+// User devotional routes (auth protected)
+Route::middleware(['auth'])->prefix('devotionals')->name('devotionals.')->group(function () {
+    Route::get('/', [DevotionalController::class, 'index'])->name('index');
+    Route::get('/{slug}', [DevotionalController::class, 'show'])->name('show');
+    Route::post('/{plan}/start', [DevotionalController::class, 'start'])->name('start');
+    Route::get('/{slug}/daily', [DevotionalController::class, 'daily'])->name('daily');
+    Route::post('/{plan}/complete-day', [DevotionalController::class, 'completeDay'])->name('complete-day');
 });
