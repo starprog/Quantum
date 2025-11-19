@@ -75,14 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < PARTICLES_PER_BEAT; i++) {
         const angle = (Math.random() - 0.5) * Math.PI;
         const speed = 1 + Math.random() * 4;
+        // spawn coordinates in physical pixels
+        const spawnXPhysical = spawnX * devicePixelRatio;
+        const spawnYPhysical = spawnY * devicePixelRatio;
         particles.push({
-          x: spawnX * devicePixelRatio,
-          y: spawnY * devicePixelRatio,
-          vx: Math.cos(angle) * speed * (0.6 + Math.random()),
-          vy: Math.sin(angle) * speed * (0.6 + Math.random()) * -1,
+          x: spawnXPhysical,
+          y: spawnYPhysical,
+          vx: Math.cos(angle) * speed * (0.6 + Math.random()) * devicePixelRatio,
+          vy: Math.sin(angle) * speed * (0.6 + Math.random()) * -1 * devicePixelRatio,
           life: 60 + Math.floor(Math.random() * 40),
           age: 0,
-          size: 2 + Math.random() * 5,
+          size: (2 + Math.random() * 5) * devicePixelRatio,
           color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
         });
       }
@@ -94,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const barWidth = Math.max(1, Math.floor((w / devicePixelRatio) / freq.length));
+    // Determine bar width in physical pixels so bars span the full canvas width
+    const barWidth = Math.max(1, Math.floor(w / freq.length));
 
     // create a blue gradient for the bars
     const grad = ctx.createLinearGradient(0, 0, w, 0);
@@ -105,30 +109,30 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i=0;i<freq.length;i++){
       const value = freq[i];
       const percent = value / 255;
-      const x = Math.floor(i * barWidth * devicePixelRatio);
+      const x = i * barWidth;
       const barH = Math.floor(percent * h);
 
-      // glow layer
+      // glow layer (slightly wider than main bar)
       ctx.fillStyle = 'rgba(59,130,246,0.08)';
-      ctx.fillRect(x - 1, h - barH - 6, barWidth * devicePixelRatio + 2, barH + 6);
+      ctx.fillRect(x - 1, h - barH - 6, barWidth + 2, barH + 6);
 
       // main bar with gradient
       ctx.fillStyle = grad;
-      ctx.fillRect(x, h - barH, barWidth * devicePixelRatio, barH);
+      ctx.fillRect(x, h - barH, barWidth, barH);
     }
 
     // update and draw particles on top
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.vy += PARTICLE_GRAVITY;
-      p.x += p.vx * devicePixelRatio;
-      p.y += p.vy * devicePixelRatio;
+      p.vy += PARTICLE_GRAVITY * devicePixelRatio;
+      p.x += p.vx;
+      p.y += p.vy;
       p.age++;
       const alpha = Math.max(0, 1 - p.age / p.life);
       ctx.globalAlpha = alpha;
       ctx.fillStyle = p.color;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * devicePixelRatio, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
       ctx.globalAlpha = 1;
       if (p.age >= p.life) particles.splice(i, 1);
@@ -186,60 +190,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const minLag = Math.floor((60/200) * targetRate);
     const upper = Math.floor((60/40)*targetRate);
-    const ac = new Float32Array(upper + 1);
-    for (let lag = minLag; lag <= upper; lag++){
-      let sum = 0;
+    fitCanvasToScreen();
+    // Use CSS pixel coordinates for drawing by applying a DPR transform.
+    const w = canvas.width; // physical pixels
+    const h = canvas.height; // physical pixels
+    const wCss = Math.floor(w / devicePixelRatio);
+    const hCss = Math.floor(h / devicePixelRatio);
+    // reset transform and scale so we can draw in CSS pixels
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
       for (let i=0;i+lag<length;i++) sum += onset[i]*onset[i+lag];
       ac[lag] = sum;
     }
 
-    let bestLag = minLag; let bestVal = -1;
+    const barWidth = Math.max(1, Math.floor(wCss / freq.length));
     for (let lag=minLag; lag<=upper; lag++){
+    // create a blue gradient for the bars (use CSS coords)
+    const grad = ctx.createLinearGradient(0, 0, wCss, 0);
       if (ac[lag] > bestVal) { bestVal = ac[lag]; bestLag = lag; }
     }
     const bpm = 60 * (targetRate / bestLag);
-    return Math.round(bpm);
-  }
-
-  async function analyzeBPM(file) {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    for (let i=0;i<freq.length;i++){
+      const value = freq[i];
+      const percent = value / 255;
+      const x = i * barWidth;
+      const barH = Math.floor(percent * hCss);
     const arrayBuffer = await file.arrayBuffer();
+      // glow layer (slightly wider than main bar) in CSS coords
+      ctx.fillStyle = 'rgba(59,130,246,0.08)';
+      ctx.fillRect(x - 1, hCss - barH - 6, barWidth + 2, barH + 6);
     const decoded = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+      // main bar with gradient
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, hCss - barH, barWidth, barH);
     try {
       const bpm = detectBPMFromBuffer(decoded);
-      return bpm;
-    } catch (e) {
-      console.warn('BPM detection failed', e);
-      return null;
-    }
-  }
-
-  function showCoverFromTags(tags) {
-    if (!tags || !tags.picture) { if (coverImage) coverImage.classList.add('hidden'); if (noCover) noCover.classList.remove('hidden'); return; }
-    const pic = tags.picture;
-    const blob = new Blob([new Uint8Array(pic.data)], { type: pic.format });
-    const url = URL.createObjectURL(blob);
-    if (coverImage) {
-      coverImage.src = url;
-      coverImage.classList.remove('hidden');
-    }
-    if (noCover) noCover.classList.add('hidden');
-  }
-
-  if (fileInput) {
-    fileInput.addEventListener('change', async (e) => {
-      const f = e.target.files && e.target.files[0];
-      if (!f) return;
-      if (trackTitle) trackTitle.textContent = f.name;
-      if (audioEl) {
-        audioEl.src = URL.createObjectURL(f);
-        audioEl.classList.remove('hidden');
+      for (let i = 0; i < PARTICLES_PER_BEAT; i++) {
+        const angle = (Math.random() - 0.5) * Math.PI;
+        const speed = 1 + Math.random() * 4;
+        // spawn coordinates in CSS pixels (we draw in CSS space because of ctx.setTransform)
+        const spawnXCss = spawnX;
+        const spawnYCss = spawnY;
+        particles.push({
+          x: spawnXCss,
+          y: spawnYCss,
+          vx: Math.cos(angle) * speed * (0.6 + Math.random()),
+          vy: Math.sin(angle) * speed * (0.6 + Math.random()) * -1,
+          life: 60 + Math.floor(Math.random() * 40),
+          age: 0,
+          size: 2 + Math.random() * 5,
+          color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+        });
       }
-      if (bpmDisplay) bpmDisplay.textContent = 'Detecting...';
-
-      try {
-        await loadJsMediaTags();
-        window.jsmediatags.read(f, {
+  }
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.vy += PARTICLE_GRAVITY;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.age++;
+      const alpha = Math.max(0, 1 - p.age / p.life);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      if (p.age >= p.life) particles.splice(i, 1);
+    }
           onSuccess: function(tag) { showCoverFromTags(tag.tags); },
           onError: function() { showCoverFromTags(null); }
         });

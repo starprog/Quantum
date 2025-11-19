@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-xl text-slate-400 leading-tight">
             {{ __('BPM Finder') }}
         </h2>
     </x-slot>
@@ -12,7 +12,7 @@
 
     <!-- Centered content (z-index above canvas) -->
     <div class="z-10 flex flex-col items-center gap-6 p-6 w-full max-w-3xl mx-auto">
-        <h1 class="text-4xl font-semibold text-slate-200 drop-shadow">BPM Finder</h1>
+        <h1 class="text-4xl font-semibold text-slate-400 drop-shadow">BPM Finder</h1>
 
         <div id="player-card" class="flex flex-col items-center gap-4 w-full max-w-xl mx-auto bg-slate-900/70 backdrop-blur-md rounded-xl p-6 shadow-lg border border-slate-800/40">
             <div id="cover-wrapper" class="w-56 h-56 bg-slate-800/60 rounded-xl shadow-inner flex items-center justify-center overflow-hidden">
