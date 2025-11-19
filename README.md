@@ -250,3 +250,53 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">Made with ❤️ by the Quantum Team</p>
+
+---
+
+## 🎵 BPM Finder (Demo)
+
+A simple in-app utility to load an audio file, display its embedded cover art, detect the track's estimated BPM, and play the track with a realtime background spectrum visualizer.
+
+- **Route:** `GET /bpm` — visit this page after running the app.
+- **UI:** Centered cover image, BPM display beneath the cover, file upload and play/pause controls, and a canvas-based spectrum background synced to playback.
+
+### How to run the BPM demo locally (Windows `cmd.exe`)
+
+1. Install frontend dependencies and start the Vite dev server:
+
+```cmd
+npm install
+npm run dev
+```
+
+2. Start the Laravel app (if not already running):
+
+```cmd
+php artisan serve
+```
+
+3. Open your browser and visit:
+
+```
+http://127.0.0.1:8000/bpm
+```
+
+4. Use the page:
+- Click the file chooser and select a local audio file (MP3, WAV, etc.).
+- The page will attempt to extract embedded cover art and display it.
+- The client-side BPM estimator will run and show an estimated BPM below the cover.
+- Use Play/Pause to control playback; the background spectrum will sync to the audio.
+
+### Notes & Troubleshooting
+
+- BPM detection runs fully in the browser using the Web Audio API and a lightweight autocorrelation-on-onset algorithm; results vary by genre and audio clarity.
+- Embedded cover extraction uses `jsmediatags` (loaded from CDN) and only works when artwork is embedded in the audio file's tags.
+- Remote audio files served from other domains may fail due to CORS — use a local file upload or host files with appropriate CORS headers.
+- If audio doesn't play automatically, click the page or press Play to resume the AudioContext (some browsers block autoplay).
+
+### Next steps (optional)
+
+- Improve BPM detection accuracy with a dedicated library or server-side analysis.
+- Add server-side upload & persistence to support remote access and longer files.
+- Add example demo files to `public/` for quick testing.
+

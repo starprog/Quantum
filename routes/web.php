@@ -5,7 +5,9 @@ use App\Http\Controllers\StripeController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\HomeController;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return redirect('/bpm');
+})->name('home');
 
 Route::get('/checkout', [StripeController::class, 'show'])->name('checkout.show');
 Route::post('/checkout/session', [StripeController::class, 'createCheckoutSession'])->name('checkout.session');
@@ -16,6 +18,11 @@ Route::get('/checkout/cancel', [StripeController::class, 'cancel'])->name('check
 Route::get('/hello', function () {
     return view('hello::index');
 })->name('hello');
+
+// BPM player demo
+Route::get('/bpm', function () {
+    return view('bpm');
+})->name('bpm');
 
 Route::middleware([
     'auth:sanctum',
