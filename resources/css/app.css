@@ -5,3 +5,21 @@
 [x-cloak] {
     display: none;
 }
+
+/* BPM player beat pulse - subtle scale and glow */
+#player-card.beat-pulse {
+    transform: scale(1.02);
+    transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+    box-shadow: 0 10px 30px rgba(59,130,246,0.12), 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* Particle canvas smoothing - ensure crisp rendering on high-DPR displays */
+#spectrum-canvas {
+    image-rendering: optimizeQuality;
+    -webkit-font-smoothing: antialiased;
+    -webkit-transform: translateZ(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #player-card.beat-pulse { transform: none; box-shadow: none; transition: none; }
+}

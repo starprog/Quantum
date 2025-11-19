@@ -27,11 +27,24 @@ document.addEventListener('DOMContentLoaded', () => {
   let analyser = null;
   let sourceNode = null;
   let rafId = null;
+  // Particles for beat effects
+  let particles = [];
+  let energyEma = 0;
+  const BEAT_SENSITIVITY = 1.45; // threshold multiplier for beat detection
+  const PARTICLES_PER_BEAT = 30;
+  const PARTICLE_GRAVITY = 0.06;
+  const PARTICLE_COLORS = ['#60a5fa','#3b82f6','#7c3aed','#38bdf8','#93c5fd'];
 
   function fitCanvasToScreen() {
     if (!canvas) return;
-    canvas.width = canvas.clientWidth * devicePixelRatio;
-    canvas.height = canvas.clientHeight * devicePixelRatio;
+    // Use full viewport size so the canvas covers entire background
+    const w = Math.max(window.innerWidth, document.documentElement.clientWidth || 0);
+    const h = Math.max(window.innerHeight, document.documentElement.clientHeight || 0);
+    canvas.width = Math.floor(w * devicePixelRatio);
+    canvas.height = Math.floor(h * devicePixelRatio);
+    // ensure CSS size matches viewport
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
   }
 
   function drawSpectrum() {
@@ -40,20 +53,87 @@ document.addEventListener('DOMContentLoaded', () => {
     fitCanvasToScreen();
     const w = canvas.width;
     const h = canvas.height;
-    ctx.clearRect(0,0,w,h);
+
+    // subtle dimming to create trailing effect
+    ctx.fillStyle = 'rgba(6,10,20,0.36)';
+    ctx.fillRect(0, 0, w, h);
 
     const freq = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(freq);
 
-    const barWidth = Math.max(1, Math.floor(w / freq.length));
+    // Simple real-time beat detection using instant energy vs exponential moving average
+    let instantEnergy = 0;
+    for (let i = 0; i < freq.length; i++) instantEnergy += freq[i];
+    instantEnergy = instantEnergy / freq.length; // normalize
+    energyEma = energyEma * 0.92 + instantEnergy * 0.08; // EMA smoothing
+    const isBeat = instantEnergy > energyEma * BEAT_SENSITIVITY;
+    if (isBeat) {
+      // spawn particles across width, biased toward center
+      const rect = canvas.getBoundingClientRect();
+      const spawnX = rect.width / 2;
+      const spawnY = rect.height / 2;
+      for (let i = 0; i < PARTICLES_PER_BEAT; i++) {
+        const angle = (Math.random() - 0.5) * Math.PI;
+        const speed = 1 + Math.random() * 4;
+        particles.push({
+          x: spawnX * devicePixelRatio,
+          y: spawnY * devicePixelRatio,
+          vx: Math.cos(angle) * speed * (0.6 + Math.random()),
+          vy: Math.sin(angle) * speed * (0.6 + Math.random()) * -1,
+          life: 60 + Math.floor(Math.random() * 40),
+          age: 0,
+          size: 2 + Math.random() * 5,
+          color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+        });
+      }
+      // visual pulse on player card
+      const card = document.getElementById('player-card');
+      if (card) {
+        card.classList.add('beat-pulse');
+        setTimeout(() => card.classList.remove('beat-pulse'), 120);
+      }
+    }
+
+    const barWidth = Math.max(1, Math.floor((w / devicePixelRatio) / freq.length));
+
+    // create a blue gradient for the bars
+    const grad = ctx.createLinearGradient(0, 0, w, 0);
+    grad.addColorStop(0, '#60a5fa'); // sky-400
+    grad.addColorStop(0.5, '#3b82f6'); // blue-500
+    grad.addColorStop(1, '#7c3aed'); // purple-600
+
     for (let i=0;i<freq.length;i++){
       const value = freq[i];
       const percent = value / 255;
-      const hue = Math.round(200 - percent * 200);
-      ctx.fillStyle = `hsla(${hue},80%,60%,0.06)`;
-      const x = i*barWidth;
-      ctx.fillRect(x, h - percent*h, barWidth, percent*h);
+      const x = Math.floor(i * barWidth * devicePixelRatio);
+      const barH = Math.floor(percent * h);
+
+      // glow layer
+      ctx.fillStyle = 'rgba(59,130,246,0.08)';
+      ctx.fillRect(x - 1, h - barH - 6, barWidth * devicePixelRatio + 2, barH + 6);
+
+      // main bar with gradient
+      ctx.fillStyle = grad;
+      ctx.fillRect(x, h - barH, barWidth * devicePixelRatio, barH);
     }
+
+    // update and draw particles on top
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.vy += PARTICLE_GRAVITY;
+      p.x += p.vx * devicePixelRatio;
+      p.y += p.vy * devicePixelRatio;
+      p.age++;
+      const alpha = Math.max(0, 1 - p.age / p.life);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * devicePixelRatio, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      if (p.age >= p.life) particles.splice(i, 1);
+    }
+
     rafId = requestAnimationFrame(drawSpectrum);
   }
 
