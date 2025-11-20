@@ -9,16 +9,14 @@ class ModuleSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('modules')->updateOrInsert(
-            ['path' => 'modules/Hello'],
-            [
-                'name'       => 'hello',
-                'provider'   => 'Modules\\Hello\\HelloServiceProvider',
-                'enabled'    => 1,
-                'settings'   => null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        );
+        DB::table('modules')->insertOrIgnore([
+            'name' => 'hello',
+            'path' => 'modules/Hello',
+            'provider' => 'Modules\\Hello\\HelloServiceProvider',
+            'enabled' => true,
+            'settings' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }
