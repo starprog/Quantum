@@ -1,4 +1,6 @@
 ﻿<?php
+// ...existing code...
+<?php
 
 namespace Database\Seeders;
 
