@@ -1,6 +1,4 @@
 ﻿<?php
-// ...existing code...
-<?php
 
 namespace Database\Seeders;
 
@@ -14,10 +12,10 @@ class ModuleSeeder extends Seeder
         DB::table('modules')->updateOrInsert(
             ['path' => 'modules/Hello'],
             [
-                'name' => 'hello',
-                'provider' => 'Modules\\Hello\\HelloServiceProvider',
-                'enabled' => 1,
-                'settings' => null,
+                'name'       => 'hello',
+                'provider'   => 'Modules\\Hello\\HelloServiceProvider',
+                'enabled'    => 1,
+                'settings'   => null,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
