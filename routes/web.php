@@ -24,6 +24,10 @@ Route::get('/bpm', function () {
     return view('bpm');
 })->name('bpm');
 
+// Audio proxy for direct audio file URLs (used to bypass CORS for analysis)
+use App\Http\Controllers\AudioProxyController;
+Route::get('/proxy/audio', [AudioProxyController::class, 'stream'])->name('proxy.audio');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

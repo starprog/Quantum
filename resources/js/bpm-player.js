@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const trackTitle = $('#track-title');
   const playToggle = $('#play-toggle');
   const audioEl = $('#audio');
+  const linkInput = $('#link-input');
+  const loadLinkBtn = $('#load-link');
+  const linkEmbed = $('#link-embed');
+  const linkNote = $('#link-note');
   const canvas = $('#spectrum-canvas');
 
   let audioCtx = null;
@@ -116,7 +120,139 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAudioElementListeners();
   }
 
+  // Helpers for link handling
+  function isAudioUrl(url) {
+    return /\.(mp3|wav|ogg|m4a|flac|aac)(\?|$)/i.test(url);
+  }
+
+  function isYouTubeUrl(url) {
+    return /(youtube\.com\/watch|youtu\.be\/)/i.test(url);
+  }
+
+  function youTubeIdFromUrl(url) {
+    try {
+      const u = new URL(url);
+      if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+      return u.searchParams.get('v');
+    } catch (e) { return null; }
+  }
+
+  function isSpotifyTrack(url) {
+    return /open\.spotify\.com\/track\//i.test(url) || /spotify:track:/i.test(url);
+  }
+
+  function spotifyIdFromUrl(url) {
+    try {
+      if (/spotify:track:/i.test(url)) return url.split(':').pop();
+      const u = new URL(url);
+      if (u.pathname) return u.pathname.split('/').pop();
+    } catch (e) { return null; }
+  }
+
+  async function handleLink(url) {
+    if (!url) return;
+    linkEmbed.innerHTML = '';
+    if (isAudioUrl(url)) {
+      // direct audio file — load into audio element and allow analysis
+      if (bpmDisplay) bpmDisplay.textContent = '— BPM';
+      trackTitle.textContent = url.split('/').pop();
+      coverImage.classList.add('hidden'); noCover.classList.remove('hidden');
+      audioEl.src = url;
+      audioEl.classList.remove('hidden');
+      audioEl.muted = false; audioEl.volume = 1;
+      setupAudioElementListeners();
+      if (linkNote) linkNote.textContent = 'Loaded direct audio URL — analysis will run after you press Play.';
+
+      // Offer an option to load via server proxy to avoid CORS issues and allow analysis
+      const proxyBtn = document.createElement('button');
+      proxyBtn.textContent = 'Load via proxy';
+      proxyBtn.className = 'mt-3 px-3 py-2 rounded bg-emerald-600 text-white';
+      proxyBtn.addEventListener('click', () => {
+        const proxyUrl = '/proxy/audio?url=' + encodeURIComponent(url);
+        trackTitle.textContent = '(proxied) ' + (url.split('/').pop() || url);
+        audioEl.src = proxyUrl;
+        audioEl.classList.remove('hidden');
+        if (linkNote) linkNote.textContent = 'Loaded via server proxy — press Play to begin analysis.';
+        setupAudioElementListeners();
+      });
+      linkEmbed.appendChild(proxyBtn);
+      return;
+    }
+
+    if (isYouTubeUrl(url)) {
+      const id = youTubeIdFromUrl(url);
+      if (!id) { if (linkNote) linkNote.textContent = 'Could not parse YouTube ID.'; return; }
+      const src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&autoplay=1&modestbranding=1`;
+      linkEmbed.innerHTML = `<div class="aspect-video w-full rounded overflow-hidden"><iframe id="yt-embed" class="w-full h-64" src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+      audioEl.pause(); audioEl.src = '';
+      if (linkNote) linkNote.textContent = 'YouTube playback is embedded. In-browser BPM analysis usually requires a direct audio file or a server-side proxy — you can try "Attempt analysis" but it may fail due to cross-origin rules.';
+      // add attempt button
+      const btn = document.createElement('button'); btn.textContent = 'Attempt analysis'; btn.className = 'mt-3 px-3 py-2 rounded bg-yellow-600 text-white';
+      btn.addEventListener('click', async () => {
+        const iframe = document.getElementById('yt-embed');
+        try {
+          // try captureStream on iframe (will usually fail for cross-origin)
+          const stream = iframe.captureStream ? iframe.captureStream() : null;
+          if (stream) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const ms = audioCtx.createMediaStreamSource(stream);
+            analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
+            ms.connect(analyser); analyser.connect(audioCtx.destination);
+            if (!rafId) drawSpectrum();
+            if (linkNote) linkNote.textContent = 'Analysis attached via captureStream.';
+          } else {
+            if (linkNote) linkNote.textContent = 'Could not capture audio from embed (cross-origin). Analysis unavailable.';
+          }
+        } catch (e) {
+          console.warn('[bpm-player] embed analysis failed', e);
+          if (linkNote) linkNote.textContent = 'Attempt failed — cross-origin restrictions prevent analysis.';
+        }
+      });
+      linkEmbed.appendChild(btn);
+      return;
+    }
+
+    if (isSpotifyTrack(url)) {
+      const id = spotifyIdFromUrl(url);
+      if (!id) { if (linkNote) linkNote.textContent = 'Could not parse Spotify track ID.'; return; }
+      const src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}`;
+      linkEmbed.innerHTML = `<div class="w-full rounded overflow-hidden"><iframe id="sp-embed" class="w-full h-24" src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+      audioEl.pause(); audioEl.src = '';
+      if (linkNote) linkNote.textContent = 'Spotify embed will play, but analysis is usually not available due to cross-origin restrictions.';
+      const btn = document.createElement('button'); btn.textContent = 'Attempt analysis'; btn.className = 'mt-3 px-3 py-2 rounded bg-yellow-600 text-white';
+      btn.addEventListener('click', async () => {
+        const iframe = document.getElementById('sp-embed');
+        try {
+          const stream = iframe.captureStream ? iframe.captureStream() : null;
+          if (stream) {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const ms = audioCtx.createMediaStreamSource(stream);
+            analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
+            ms.connect(analyser); analyser.connect(audioCtx.destination);
+            if (!rafId) drawSpectrum();
+            if (linkNote) linkNote.textContent = 'Analysis attached via captureStream.';
+          } else {
+            if (linkNote) linkNote.textContent = 'Could not capture audio from embed (cross-origin). Analysis unavailable.';
+          }
+        } catch (e) {
+          console.warn('[bpm-player] spotify attempt failed', e);
+          if (linkNote) linkNote.textContent = 'Attempt failed — cross-origin restrictions prevent analysis.';
+        }
+      });
+      linkEmbed.appendChild(btn);
+      return;
+    }
+
+    // fallback: show the link in embed area
+    linkEmbed.innerHTML = `<div class="p-3 text-sm text-slate-300">Cannot automatically handle that link. Try a direct audio file URL (mp3/wav) or copy the URL and download it first.</div>`;
+    if (linkNote) linkNote.textContent = 'Unsupported link type for automatic analysis.';
+  }
+
   if (fileInput) fileInput.addEventListener('change', async (ev) => { const f = ev.target.files && ev.target.files[0]; if (f) await handleFile(f); });
+
+  // link load events
+  if (loadLinkBtn) loadLinkBtn.addEventListener('click', async () => { const url = linkInput && linkInput.value && linkInput.value.trim(); if (url) await handleLink(url); });
+  if (linkInput) linkInput.addEventListener('keydown', async (e) => { if (e.key === 'Enter') { e.preventDefault(); const url = linkInput.value && linkInput.value.trim(); if (url) await handleLink(url); } });
 
   if (playToggle) {
     playToggle.addEventListener('click', async () => {

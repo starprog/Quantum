@@ -30,6 +30,17 @@
                 <button id="play-toggle" class="w-28 flex-shrink-0 px-3 py-3 rounded bg-sky-600 hover:bg-sky-700 text-white font-semibold">Play</button>
             </div>
 
+            <!-- Link paste option -->
+            <div class="w-full mt-3">
+                <label for="link-input" class="block text-sm text-slate-300 mb-2">Or paste a song link (direct audio URL, YouTube or Spotify)</label>
+                <div class="flex gap-3">
+                    <input id="link-input" type="text" placeholder="https://...mp3 or https://youtube.com/watch?v=..." class="flex-1 p-3 rounded bg-slate-800/40 text-slate-100" />
+                    <button id="load-link" class="w-28 flex-shrink-0 px-3 py-3 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">Load</button>
+                </div>
+                <div id="link-note" class="text-xs text-slate-400 mt-2">Direct audio file URLs (mp3/wav/ogg) will enable analysis and visualization. YouTube/Spotify embeds will play but may not support BPM analysis in-browser due to cross-origin restrictions.</div>
+                <div id="link-embed" class="mt-3"></div>
+            </div>
+
             <audio id="audio" controls class="w-full hidden mt-3"></audio>
         </div>
 
