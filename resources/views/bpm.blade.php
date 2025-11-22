@@ -15,9 +15,15 @@
         <h1 class="text-4xl font-semibold text-slate-400 drop-shadow">BPM Finder</h1>
 
         <div id="player-card" class="flex flex-col items-center gap-4 w-full max-w-xl mx-auto bg-slate-900/70 backdrop-blur-md rounded-xl p-6 shadow-lg border border-slate-800/40">
-            <div id="cover-wrapper" class="w-56 h-56 bg-slate-800/60 rounded-xl shadow-inner flex items-center justify-center overflow-hidden">
+            <div id="cover-wrapper" class="relative w-56 h-56 bg-slate-800/60 rounded-xl shadow-inner flex items-center justify-center overflow-hidden">
+                <div id="cover-spinner" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40">
+                    <svg class="animate-spin h-12 w-12 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                    <div id="cover-spinner-text" class="text-xs text-slate-100 mt-2">Estimating BPM...</div>
+                </div>
                 <img id="cover-image" src="" alt="cover" class="object-cover w-full h-full hidden">
-                <div id="no-cover" class="text-sm text-slate-300">No cover available</div>
             </div>
 
             <div class="w-full text-center">
@@ -30,29 +36,20 @@
                 <button id="play-toggle" class="w-28 flex-shrink-0 px-3 py-3 rounded bg-sky-600 hover:bg-sky-700 text-white font-semibold">Play</button>
             </div>
 
-            <!-- Link paste option -->
             <div class="w-full mt-3">
-                <label for="link-input" class="block text-sm text-slate-300 mb-2">Or paste a song link (direct audio URL, YouTube or Spotify)</label>
-                <div class="flex gap-3">
-                    <input id="link-input" type="text" placeholder="https://...mp3 or https://youtube.com/watch?v=..." class="flex-1 p-3 rounded bg-slate-800/40 text-slate-100" />
-                    <button id="load-link" class="w-28 flex-shrink-0 px-3 py-3 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-semibold">Load</button>
-                </div>
-                <div id="link-note" class="text-xs text-slate-400 mt-2">Direct audio file URLs (mp3/wav/ogg) will enable analysis and visualization. YouTube/Spotify embeds will play but may not support BPM analysis in-browser due to cross-origin restrictions.</div>
-                <div id="link-embed" class="mt-3"></div>
+                <div id="status-note" class="text-xs text-slate-400 mt-2">Upload an audio file or drag & drop to estimate BPM. Direct audio URLs may work when CORS permits.</div>
             </div>
+
+            <!-- cover area (no persistent-logo hint) -->
 
             <audio id="audio" controls class="w-full hidden mt-3"></audio>
         </div>
 
         <!-- Feature highlights centered below the player for polish -->
-        <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full text-center">
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-center">
             <div class="p-4 bg-slate-800/40 rounded-lg border border-slate-700/40">
                 <div class="font-semibold text-slate-100">Fast Detection</div>
                 <div class="text-sm text-slate-300">Client-side BPM estimate in seconds.</div>
-            </div>
-            <div class="p-4 bg-slate-800/40 rounded-lg border border-slate-700/40">
-                <div class="font-semibold text-slate-100">Cover Art</div>
-                <div class="text-sm text-slate-300">Displays embedded artwork when available.</div>
             </div>
             <div class="p-4 bg-slate-800/40 rounded-lg border border-slate-700/40">
                 <div class="font-semibold text-slate-100">Live Visualizer</div>

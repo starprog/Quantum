@@ -27,6 +27,8 @@ Route::get('/bpm', function () {
 // Audio proxy for direct audio file URLs (used to bypass CORS for analysis)
 use App\Http\Controllers\AudioProxyController;
 Route::get('/proxy/audio', [AudioProxyController::class, 'stream'])->name('proxy.audio');
+use App\Http\Controllers\CoverController;
+Route::post('/cover/upload', [CoverController::class, 'upload'])->name('cover.upload');
 
 Route::middleware([
     'auth:sanctum',

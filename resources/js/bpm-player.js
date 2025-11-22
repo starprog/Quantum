@@ -4,21 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = sel => document.querySelector(sel);
   const fileInput = $('#file-input');
   const coverImage = $('#cover-image');
-  const noCover = $('#no-cover');
   const bpmDisplay = $('#bpm-display');
   const trackTitle = $('#track-title');
   const playToggle = $('#play-toggle');
   const audioEl = $('#audio');
-  const linkInput = $('#link-input');
-  const loadLinkBtn = $('#load-link');
-  const linkEmbed = $('#link-embed');
-  const linkNote = $('#link-note');
+  const statusNote = $('#status-note');
   const canvas = $('#spectrum-canvas');
+  const coverSpinner = $('#cover-spinner');
+  const coverSpinnerText = $('#cover-spinner-text');
 
   let audioCtx = null;
   let analyser = null;
   let sourceNode = null;
   let rafId = null;
+  
 
   function fitCanvasToScreen() {
     if (!canvas) return;
@@ -108,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return;
     if (bpmDisplay) bpmDisplay.textContent = '— BPM';
     if (trackTitle) trackTitle.textContent = file.name;
-    coverImage.classList.add('hidden'); noCover.classList.remove('hidden');
+    // hide cover image until embedded artwork is handled; persistent logo load will run on init
+    coverImage.classList.add('hidden');
 
     if (audioEl) {
       audioEl.src = URL.createObjectURL(file);
@@ -118,141 +118,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Setup listeners now but DO NOT attach analyser until user plays.
     setupAudioElementListeners();
-  }
 
-  // Helpers for link handling
-  function isAudioUrl(url) {
-    return /\.(mp3|wav|ogg|m4a|flac|aac)(\?|$)/i.test(url);
-  }
-
-  function isYouTubeUrl(url) {
-    return /(youtube\.com\/watch|youtu\.be\/)/i.test(url);
-  }
-
-  function youTubeIdFromUrl(url) {
+    // Attempt to estimate BPM from the uploaded file (client-side)
+    if (statusNote) statusNote.textContent = 'Estimating BPM from uploaded file...';
+    if (coverSpinner) coverSpinner.classList.remove('hidden');
     try {
-      const u = new URL(url);
-      if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
-      return u.searchParams.get('v');
-    } catch (e) { return null; }
-  }
-
-  function isSpotifyTrack(url) {
-    return /open\.spotify\.com\/track\//i.test(url) || /spotify:track:/i.test(url);
-  }
-
-  function spotifyIdFromUrl(url) {
-    try {
-      if (/spotify:track:/i.test(url)) return url.split(':').pop();
-      const u = new URL(url);
-      if (u.pathname) return u.pathname.split('/').pop();
-    } catch (e) { return null; }
-  }
-
-  async function handleLink(url) {
-    if (!url) return;
-    linkEmbed.innerHTML = '';
-    if (isAudioUrl(url)) {
-      // direct audio file — load into audio element and allow analysis
-      if (bpmDisplay) bpmDisplay.textContent = '— BPM';
-      trackTitle.textContent = url.split('/').pop();
-      coverImage.classList.add('hidden'); noCover.classList.remove('hidden');
-      audioEl.src = url;
-      audioEl.classList.remove('hidden');
-      audioEl.muted = false; audioEl.volume = 1;
-      setupAudioElementListeners();
-      if (linkNote) linkNote.textContent = 'Loaded direct audio URL — analysis will run after you press Play.';
-
-      // Offer an option to load via server proxy to avoid CORS issues and allow analysis
-      const proxyBtn = document.createElement('button');
-      proxyBtn.textContent = 'Load via proxy';
-      proxyBtn.className = 'mt-3 px-3 py-2 rounded bg-emerald-600 text-white';
-      proxyBtn.addEventListener('click', () => {
-        const proxyUrl = '/proxy/audio?url=' + encodeURIComponent(url);
-        trackTitle.textContent = '(proxied) ' + (url.split('/').pop() || url);
-        audioEl.src = proxyUrl;
-        audioEl.classList.remove('hidden');
-        if (linkNote) linkNote.textContent = 'Loaded via server proxy — press Play to begin analysis.';
-        setupAudioElementListeners();
-      });
-      linkEmbed.appendChild(proxyBtn);
-      return;
+      const bpm = await estimateBPMFromFile(file);
+      if (bpm && bpm > 0) {
+        if (bpmDisplay) bpmDisplay.textContent = Math.round(bpm) + ' BPM';
+        if (statusNote) statusNote.textContent = 'Estimated BPM from uploaded file.';
+      } else {
+        if (statusNote) statusNote.textContent = 'Could not estimate BPM from uploaded file.';
+      }
+    } catch (e) {
+      console.warn('[bpm-player] bpm estimate from file failed', e);
+      if (statusNote) statusNote.textContent = 'BPM estimation failed: ' + (e && e.message ? e.message : 'unknown');
+    } finally {
+      if (coverSpinner) coverSpinner.classList.add('hidden');
     }
 
-    if (isYouTubeUrl(url)) {
-      const id = youTubeIdFromUrl(url);
-      if (!id) { if (linkNote) linkNote.textContent = 'Could not parse YouTube ID.'; return; }
-      const src = `https://www.youtube.com/embed/${encodeURIComponent(id)}?rel=0&autoplay=1&modestbranding=1`;
-      linkEmbed.innerHTML = `<div class="aspect-video w-full rounded overflow-hidden"><iframe id="yt-embed" class="w-full h-64" src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
-      audioEl.pause(); audioEl.src = '';
-      if (linkNote) linkNote.textContent = 'YouTube playback is embedded. In-browser BPM analysis usually requires a direct audio file or a server-side proxy — you can try "Attempt analysis" but it may fail due to cross-origin rules.';
-      // add attempt button
-      const btn = document.createElement('button'); btn.textContent = 'Attempt analysis'; btn.className = 'mt-3 px-3 py-2 rounded bg-yellow-600 text-white';
-      btn.addEventListener('click', async () => {
-        const iframe = document.getElementById('yt-embed');
-        try {
-          // try captureStream on iframe (will usually fail for cross-origin)
-          const stream = iframe.captureStream ? iframe.captureStream() : null;
-          if (stream) {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const ms = audioCtx.createMediaStreamSource(stream);
-            analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
-            ms.connect(analyser); analyser.connect(audioCtx.destination);
-            if (!rafId) drawSpectrum();
-            if (linkNote) linkNote.textContent = 'Analysis attached via captureStream.';
-          } else {
-            if (linkNote) linkNote.textContent = 'Could not capture audio from embed (cross-origin). Analysis unavailable.';
-          }
-        } catch (e) {
-          console.warn('[bpm-player] embed analysis failed', e);
-          if (linkNote) linkNote.textContent = 'Attempt failed — cross-origin restrictions prevent analysis.';
+    // (no per-track cover persistence anymore)
+  }
+
+  // cover upload UI has been removed — persistent logo handled separately
+
+  // drag & drop support for audio files (images are ignored)
+  function setupDragAndDrop() {
+    const dropArea = document.getElementById('player-card');
+    if (!dropArea) return;
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+      dropArea.addEventListener(evt, (e) => { e.preventDefault(); e.stopPropagation(); });
+    });
+    dropArea.addEventListener('drop', async (e) => {
+      const files = Array.from(e.dataTransfer.files || []);
+      for (const f of files) {
+        if (f.type && f.type.startsWith('audio/')) {
+          // treat as audio file
+          await handleFile(f);
         }
-      });
-      linkEmbed.appendChild(btn);
-      return;
-    }
-
-    if (isSpotifyTrack(url)) {
-      const id = spotifyIdFromUrl(url);
-      if (!id) { if (linkNote) linkNote.textContent = 'Could not parse Spotify track ID.'; return; }
-      const src = `https://open.spotify.com/embed/track/${encodeURIComponent(id)}`;
-      linkEmbed.innerHTML = `<div class="w-full rounded overflow-hidden"><iframe id="sp-embed" class="w-full h-24" src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
-      audioEl.pause(); audioEl.src = '';
-      if (linkNote) linkNote.textContent = 'Spotify embed will play, but analysis is usually not available due to cross-origin restrictions.';
-      const btn = document.createElement('button'); btn.textContent = 'Attempt analysis'; btn.className = 'mt-3 px-3 py-2 rounded bg-yellow-600 text-white';
-      btn.addEventListener('click', async () => {
-        const iframe = document.getElementById('sp-embed');
-        try {
-          const stream = iframe.captureStream ? iframe.captureStream() : null;
-          if (stream) {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const ms = audioCtx.createMediaStreamSource(stream);
-            analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
-            ms.connect(analyser); analyser.connect(audioCtx.destination);
-            if (!rafId) drawSpectrum();
-            if (linkNote) linkNote.textContent = 'Analysis attached via captureStream.';
-          } else {
-            if (linkNote) linkNote.textContent = 'Could not capture audio from embed (cross-origin). Analysis unavailable.';
-          }
-        } catch (e) {
-          console.warn('[bpm-player] spotify attempt failed', e);
-          if (linkNote) linkNote.textContent = 'Attempt failed — cross-origin restrictions prevent analysis.';
-        }
-      });
-      linkEmbed.appendChild(btn);
-      return;
-    }
-
-    // fallback: show the link in embed area
-    linkEmbed.innerHTML = `<div class="p-3 text-sm text-slate-300">Cannot automatically handle that link. Try a direct audio file URL (mp3/wav) or copy the URL and download it first.</div>`;
-    if (linkNote) linkNote.textContent = 'Unsupported link type for automatic analysis.';
+      }
+    });
   }
+  setupDragAndDrop();
+
+  // cover upload/processing removed — persistent logo is used instead
+
+  // (link/paste UI removed — file upload + drag/drop remain as primary analysis paths)
 
   if (fileInput) fileInput.addEventListener('change', async (ev) => { const f = ev.target.files && ev.target.files[0]; if (f) await handleFile(f); });
 
-  // link load events
-  if (loadLinkBtn) loadLinkBtn.addEventListener('click', async () => { const url = linkInput && linkInput.value && linkInput.value.trim(); if (url) await handleLink(url); });
-  if (linkInput) linkInput.addEventListener('keydown', async (e) => { if (e.key === 'Enter') { e.preventDefault(); const url = linkInput.value && linkInput.value.trim(); if (url) await handleLink(url); } });
+  // paste-link feature removed; status updates use #status-note instead
 
   if (playToggle) {
     playToggle.addEventListener('click', async () => {
@@ -279,7 +194,166 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- BPM estimation utilities ---
+  async function fetchArrayBuffer(url) {
+    // Try a ranged fetch (first ~3MB) to avoid downloading entire files and to work around some hosts
+    const RANGE_BYTES = 3 * 1024 * 1024; // 3MB
+    const headers = { 'Accept': '*/*' };
+    try {
+      const resp = await fetch(url, { headers: { ...headers, Range: 'bytes=0-' + (RANGE_BYTES - 1) } });
+      if (!resp.ok && resp.status !== 206 && resp.status !== 200) throw new Error('Failed to fetch audio: ' + resp.status);
+      return await resp.arrayBuffer();
+    } catch (err) {
+      // rethrow with a clear message for upstream handling
+      throw new Error('Network/Fetch error: ' + (err && err.message ? err.message : String(err)));
+    }
+  }
+
+  async function decodeAudioData(arrayBuffer) {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+  }
+
+  // Lightweight BPM estimator based on autocorrelation of the energy envelope
+  async function estimateBPMFromUrl(url) {
+    // show lightweight progress
+    console.log('[bpm-player] estimating BPM for', url);
+    const buffer = await fetchArrayBuffer(url);
+    try {
+      const audioBuffer = await decodeAudioData(buffer);
+      return estimateBPMFromAudioBuffer(audioBuffer);
+    } catch (e) {
+      // decoding failed, provide extra context
+      throw new Error('Audio decode failed: ' + (e && e.message ? e.message : 'unknown'));
+    }
+  }
+
+  // Estimate BPM from a File object (client-side upload)
+  async function estimateBPMFromFile(file) {
+    if (!file) throw new Error('No file');
+    const RANGE_BYTES = 3 * 1024 * 1024; // 3MB
+    try {
+      // Try decoding only the first N bytes for faster estimation
+      const slice = file.slice(0, RANGE_BYTES);
+      let arrayBuffer = await slice.arrayBuffer();
+      try {
+        const audioBuffer = await decodeAudioData(arrayBuffer);
+        return estimateBPMFromAudioBuffer(audioBuffer);
+      } catch (e) {
+        // partial decode failed (format needs more data); fallback to full file
+        const fullArray = await file.arrayBuffer();
+        const audioBuffer = await decodeAudioData(fullArray);
+        return estimateBPMFromAudioBuffer(audioBuffer);
+      }
+    } catch (e) {
+      throw new Error('File decode failed: ' + (e && e.message ? e.message : 'unknown'));
+    }
+  }
+
+  function estimateBPMFromAudioBuffer(audioBuffer) {
+    // downmix to mono and get samples at a reduced rate for speed
+    const sampleRate = audioBuffer.sampleRate;
+    const channelData = audioBuffer.numberOfChannels > 1
+      ? mergeChannels(audioBuffer)
+      : audioBuffer.getChannelData(0).slice(0);
+
+    // downsample to ~11025 for faster processing
+    const desiredRate = Math.min(11025, sampleRate);
+    const downsampleFactor = Math.max(1, Math.floor(sampleRate / desiredRate));
+    const down = downsample(channelData, downsampleFactor);
+
+    // compute energy envelope using windowing
+    const frameSize = 1024;
+    const hopSize = 512;
+    const energy = [];
+    for (let i = 0; i < down.length - frameSize; i += hopSize) {
+      let sum = 0;
+      for (let j = 0; j < frameSize; j++) {
+        const v = down[i + j];
+        sum += v * v;
+      }
+      energy.push(sum);
+    }
+
+    // normalize energy
+    const maxE = Math.max(...energy, 1e-9);
+    const norm = energy.map(e => e / maxE);
+
+    // autocorrelate the envelope
+    const ac = autocorrelate(norm);
+
+    // find best lag corresponding to tempo between 60 and 200 BPM
+    const fps = sampleRate / downsampleFactor / hopSize; // frames per second
+    const minBpm = 60, maxBpm = 200;
+    let best = { bpm: 0, score: -Infinity };
+    for (let bpm = minBpm; bpm <= maxBpm; bpm++) {
+      const period = Math.round((60 * fps) / bpm);
+      if (period <= 0 || period >= ac.length) continue;
+      const score = ac[period];
+      if (score > best.score) best = { bpm, score };
+    }
+
+    // fallback: derive bpm from highest autocorrelation lag
+    if (best.score <= 0) {
+      const peakLag = ac.indexOf(Math.max(...ac));
+      const derivedBpm = peakLag > 0 ? (60 * fps) / peakLag : 0;
+      return Math.round(derivedBpm);
+    }
+
+    return Math.round(best.bpm);
+  }
+
+  function mergeChannels(audioBuffer) {
+    const len = audioBuffer.length;
+    const out = new Float32Array(len);
+    for (let c = 0; c < audioBuffer.numberOfChannels; c++) {
+      const ch = audioBuffer.getChannelData(c);
+      for (let i = 0; i < len; i++) out[i] = (out[i] || 0) + (ch[i] / audioBuffer.numberOfChannels);
+    }
+    return out;
+  }
+
+  function downsample(samples, factor) {
+    if (factor <= 1) return samples;
+    const outLen = Math.floor(samples.length / factor);
+    const out = new Float32Array(outLen);
+    for (let i = 0; i < outLen; i++) {
+      out[i] = samples[i * factor];
+    }
+    return out;
+  }
+
+  function autocorrelate(data) {
+    const n = data.length;
+    const ac = new Float32Array(n);
+    for (let lag = 0; lag < n; lag++) {
+      let sum = 0;
+      for (let i = 0; i < n - lag; i++) sum += data[i] * data[i + lag];
+      ac[lag] = sum;
+    }
+    return ac;
+  }
+
   window.addEventListener('resize', () => fitCanvasToScreen());
   window.addEventListener('pagehide', () => { if (rafId) cancelAnimationFrame(rafId); if (audioCtx) audioCtx.close(); });
   fitCanvasToScreen();
+  // Try to load a persistent logo (prefer SVG then PNG) and show it when no cover is present
+  (function loadPersistentLogo(){
+    const tryUrls = ['/images/bpm-logo.svg', '/images/bpm-logo.png'];
+    let idx = 0;
+    function tryNext() {
+      if (idx >= tryUrls.length) return;
+      const url = tryUrls[idx++];
+      const img = new Image();
+      img.onload = () => {
+        if (coverImage && coverImage.classList.contains('hidden')) {
+          coverImage.src = url;
+          coverImage.classList.remove('hidden');
+        }
+      };
+      img.onerror = () => { tryNext(); };
+      img.src = url;
+    }
+    tryNext();
+  })();
 });
