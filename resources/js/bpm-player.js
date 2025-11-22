@@ -107,8 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return;
     if (bpmDisplay) bpmDisplay.textContent = '— BPM';
     if (trackTitle) trackTitle.textContent = file.name;
-    // hide cover image until embedded artwork is handled; persistent logo load will run on init
-    coverImage.classList.add('hidden');
+    // hide cover image only if there is no logo/cover already set; persistent logo stays visible
+    try {
+      if (coverImage && (!coverImage.src || String(coverImage.src).trim() === '')) {
+        coverImage.classList.add('hidden');
+      }
+    } catch (err) {
+      // defensive: if any error, do not hide the cover to avoid disappearing logo
+      console.warn('[bpm-player] cover visibility check failed', err);
+    }
 
     if (audioEl) {
       audioEl.src = URL.createObjectURL(file);
