@@ -5,6 +5,9 @@
         </h2>
     </x-slot>
 
+    <!-- Load jsmediatags from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+
     <style>
         @keyframes pulse-ring {
             0% { transform: scale(0.95); opacity: 1; }
@@ -40,13 +43,108 @@
     <!-- Blurred canvas background -->
     <canvas id="spectrum-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
 
+    <!-- Left Panel: Track Statistics -->
+    <div id="track-stats-panel" class="hidden fixed left-0 top-0 h-screen w-80 bg-slate-900/95 backdrop-blur-md border-r border-white/10 overflow-y-auto z-20 p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white">Track Statistics</h2>
+            <button id="close-stats" class="text-slate-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="stats-loading" class="flex items-center justify-center py-12">
+            <svg class="animate-spin h-8 w-8 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+        </div>
+        
+        <div id="stats-content" class="hidden space-y-6">
+            <!-- Album art -->
+            <div class="flex justify-center">
+                <img id="stats-album-art" src="" alt="Album art" class="w-48 h-48 rounded-lg shadow-lg hidden">
+            </div>
+            
+            <!-- Track info -->
+            <div>
+                <h3 id="stats-track-name" class="text-lg font-semibold text-white mb-1"></h3>
+                <p id="stats-artist-name" class="text-sm text-slate-400"></p>
+            </div>
+            
+            <!-- Stats grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-xs text-slate-400 mb-1">Listeners</div>
+                    <div id="stats-listeners" class="text-lg font-bold text-purple-400">—</div>
+                </div>
+                <div class="bg-slate-800/50 rounded-lg p-3">
+                    <div class="text-xs text-slate-400 mb-1">Play Count</div>
+                    <div id="stats-playcount" class="text-lg font-bold text-purple-400">—</div>
+                </div>
+            </div>
+            
+            <!-- Tags -->
+            <div>
+                <div class="text-xs text-slate-400 mb-2">Tags</div>
+                <div id="stats-tags" class="flex flex-wrap gap-2"></div>
+            </div>
+            
+            <!-- Wiki summary -->
+            <div>
+                <div class="text-xs text-slate-400 mb-2">About</div>
+                <p id="stats-wiki" class="text-sm text-slate-300 leading-relaxed"></p>
+            </div>
+        </div>
+        
+        <div id="stats-error" class="hidden text-center py-12">
+            <div class="text-slate-400 text-sm">
+                <svg class="w-12 h-12 mx-auto mb-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p id="stats-error-message">Track info not found</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Recommendations -->
+    <div id="recommendations-panel" class="hidden fixed right-0 top-0 h-screen w-80 bg-slate-900/95 backdrop-blur-md border-l border-white/10 overflow-y-auto z-20 p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white">Similar Tracks</h2>
+            <button id="close-recommendations" class="text-slate-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <div id="recs-loading" class="flex items-center justify-center py-12">
+            <svg class="animate-spin h-8 w-8 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+        </div>
+        
+        <div id="recs-content" class="hidden space-y-3"></div>
+        
+        <div id="recs-error" class="hidden text-center py-12">
+            <div class="text-slate-400 text-sm">
+                <svg class="w-12 h-12 mx-auto mb-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p id="recs-error-message">No recommendations found</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Main content -->
     <div class="z-10 flex flex-col items-center gap-8 p-6 w-full max-w-2xl mx-auto">
         
         <!-- Logo and title -->
         <div class="text-center float">
             <h1 class="text-5xl font-bold mb-2" style="background: linear-gradient(135deg, #667eea 0%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">BPM Finder</h1>
-            <p class="text-slate-400 text-sm">Instant beat detection with stunning visuals</p>
+            <p class="text-slate-400 text-sm">Find the beats per minute of your favorite tracks!</p>
         </div>
 
         <!-- Circular player card -->
@@ -79,6 +177,26 @@
 
             <!-- Track title -->
             <div id="track-title" class="text-center text-white text-lg font-medium px-6 max-w-sm truncate">Tap to upload a track</div>
+
+            <!-- Metadata info buttons -->
+            <div id="metadata-buttons" class="hidden flex gap-3 w-full max-w-sm">
+                <button id="show-stats" class="flex-1 py-2 px-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-all duration-300">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        Stats
+                    </span>
+                </button>
+                <button id="show-recommendations" class="flex-1 py-2 px-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-all duration-300">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                        </svg>
+                        Similar
+                    </span>
+                </button>
+            </div>
 
             <!-- File input styled as button -->
             <div class="relative w-full max-w-sm">

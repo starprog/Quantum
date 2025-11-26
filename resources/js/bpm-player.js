@@ -12,11 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = $('#spectrum-canvas');
   const coverSpinner = $('#cover-spinner');
   const coverSpinnerText = $('#cover-spinner-text');
+  
+  // Metadata and panels
+  const metadataButtons = $('#metadata-buttons');
+  const showStatsBtn = $('#show-stats');
+  const showRecsBtn = $('#show-recommendations');
+  const statsPanel = $('#track-stats-panel');
+  const recsPanel = $('#recommendations-panel');
+  const closeStats = $('#close-stats');
+  const closeRecs = $('#close-recommendations');
 
   let audioCtx = null;
   let analyser = null;
   let sourceNode = null;
   let rafId = null;
+  let currentMetadata = null; // Store extracted metadata
   
 
   function fitCanvasToScreen() {
@@ -144,7 +154,239 @@ document.addEventListener('DOMContentLoaded', () => {
       if (coverSpinner) coverSpinner.classList.add('hidden');
     }
 
+    // Extract metadata from audio file
+    await extractMetadata(file);
+
     // (no per-track cover persistence anymore)
+  }
+
+  // Extract metadata (artist, title, album art) from audio file
+  async function extractMetadata(file) {
+    return new Promise((resolve) => {
+      window.jsmediatags.read(file, {
+        onSuccess: (tag) => {
+          console.log('[bpm-player] metadata extracted', tag);
+          const { title, artist, album, picture } = tag.tags;
+          
+          currentMetadata = {
+            title: title || file.name.replace(/\.[^/.]+$/, ''),
+            artist: artist || 'Unknown Artist',
+            album: album || 'Unknown Album',
+          };
+
+          // Update UI with metadata
+          if (trackTitle && (title || artist)) {
+            trackTitle.textContent = `${currentMetadata.artist} - ${currentMetadata.title}`;
+          }
+
+          // Show metadata buttons if we have artist and title
+          if (currentMetadata.artist !== 'Unknown Artist' && metadataButtons) {
+            metadataButtons.classList.remove('hidden');
+          }
+
+          // Extract and display embedded album art
+          if (picture && coverImage) {
+            const { data, type } = picture;
+            let base64String = '';
+            for (let i = 0; i < data.length; i++) {
+              base64String += String.fromCharCode(data[i]);
+            }
+            const dataUrl = `data:${type};base64,${window.btoa(base64String)}`;
+            coverImage.src = dataUrl;
+            coverImage.classList.remove('hidden');
+          }
+
+          resolve(currentMetadata);
+        },
+        onError: (error) => {
+          console.warn('[bpm-player] metadata extraction failed', error);
+          currentMetadata = {
+            title: file.name.replace(/\.[^/.]+$/, ''),
+            artist: 'Unknown Artist',
+            album: 'Unknown Album',
+          };
+          resolve(currentMetadata);
+        }
+      });
+    });
+  }
+
+  // Fetch track info from Last.fm
+  async function fetchTrackInfo(artist, track) {
+    try {
+      const response = await fetch(`/api/lastfm/track-info?artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(track)}`);
+      if (!response.ok) throw new Error('Failed to fetch track info');
+      return await response.json();
+    } catch (error) {
+      console.error('[bpm-player] Last.fm track info error', error);
+      throw error;
+    }
+  }
+
+  // Fetch similar tracks from Last.fm
+  async function fetchSimilarTracks(artist, track) {
+    try {
+      const response = await fetch(`/api/lastfm/similar-tracks?artist=${encodeURIComponent(artist)}&track=${encodeURIComponent(track)}`);
+      if (!response.ok) throw new Error('Failed to fetch similar tracks');
+      return await response.json();
+    } catch (error) {
+      console.error('[bpm-player] Last.fm similar tracks error', error);
+      throw error;
+    }
+  }
+
+  // Display track statistics in left panel
+  async function displayTrackStats() {
+    if (!currentMetadata || currentMetadata.artist === 'Unknown Artist') return;
+    
+    statsPanel.classList.remove('hidden');
+    $('#stats-loading').classList.remove('hidden');
+    $('#stats-content').classList.add('hidden');
+    $('#stats-error').classList.add('hidden');
+
+    try {
+      const data = await fetchTrackInfo(currentMetadata.artist, currentMetadata.title);
+      
+      if (data.track) {
+        const track = data.track;
+        
+        // Update UI
+        $('#stats-track-name').textContent = track.name || currentMetadata.title;
+        $('#stats-artist-name').textContent = track.artist?.name || currentMetadata.artist;
+        $('#stats-listeners').textContent = track.listeners ? Number(track.listeners).toLocaleString() : '—';
+        $('#stats-playcount').textContent = track.playcount ? Number(track.playcount).toLocaleString() : '—';
+        
+        // Album art
+        const albumArt = $('#stats-album-art');
+        if (track.album?.image && track.album.image.length > 0) {
+          const largeImage = track.album.image.find(img => img.size === 'extralarge' || img.size === 'large');
+          if (largeImage && largeImage['#text']) {
+            albumArt.src = largeImage['#text'];
+            albumArt.classList.remove('hidden');
+          }
+        }
+        
+        // Tags
+        const tagsContainer = $('#stats-tags');
+        tagsContainer.innerHTML = '';
+        if (track.toptags?.tag && Array.isArray(track.toptags.tag)) {
+          track.toptags.tag.slice(0, 5).forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full';
+            span.textContent = tag.name;
+            tagsContainer.appendChild(span);
+          });
+        }
+        
+        // Wiki summary
+        const wiki = $('#stats-wiki');
+        if (track.wiki?.summary) {
+          // Remove HTML tags and truncate
+          const summary = track.wiki.summary.replace(/<[^>]*>/g, '').split('\n')[0];
+          wiki.textContent = summary.length > 300 ? summary.substring(0, 300) + '...' : summary;
+        } else {
+          wiki.textContent = 'No description available.';
+        }
+        
+        $('#stats-loading').classList.add('hidden');
+        $('#stats-content').classList.remove('hidden');
+      } else {
+        throw new Error('Track not found');
+      }
+    } catch (error) {
+      $('#stats-loading').classList.add('hidden');
+      $('#stats-error').classList.remove('hidden');
+      $('#stats-error-message').textContent = error.message || 'Track info not found';
+    }
+  }
+
+  // Display similar tracks in right panel
+  async function displaySimilarTracks() {
+    if (!currentMetadata || currentMetadata.artist === 'Unknown Artist') return;
+    
+    recsPanel.classList.remove('hidden');
+    $('#recs-loading').classList.remove('hidden');
+    $('#recs-content').classList.add('hidden');
+    $('#recs-error').classList.add('hidden');
+
+    try {
+      const data = await fetchSimilarTracks(currentMetadata.artist, currentMetadata.title);
+      
+      if (data.similartracks?.track && Array.isArray(data.similartracks.track)) {
+        const tracks = data.similartracks.track;
+        const container = $('#recs-content');
+        container.innerHTML = '';
+        
+        tracks.forEach(track => {
+          const div = document.createElement('div');
+          div.className = 'flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer';
+          
+          // Album art
+          const img = document.createElement('img');
+          const smallImage = track.image?.find(img => img.size === 'medium' || img.size === 'small');
+          img.src = smallImage?.['#text'] || '';
+          img.alt = track.name;
+          img.className = 'w-12 h-12 rounded object-cover';
+          img.onerror = () => { img.style.display = 'none'; };
+          
+          // Track info
+          const info = document.createElement('div');
+          info.className = 'flex-1 min-w-0';
+          
+          const name = document.createElement('div');
+          name.className = 'text-sm font-medium text-white truncate';
+          name.textContent = track.name;
+          
+          const artist = document.createElement('div');
+          artist.className = 'text-xs text-slate-400 truncate';
+          artist.textContent = track.artist?.name || '';
+          
+          info.appendChild(name);
+          info.appendChild(artist);
+          
+          // Match percentage
+          if (track.match) {
+            const match = document.createElement('div');
+            match.className = 'text-xs text-purple-400 font-semibold';
+            match.textContent = Math.round(parseFloat(track.match) * 100) + '%';
+            div.appendChild(img);
+            div.appendChild(info);
+            div.appendChild(match);
+          } else {
+            div.appendChild(img);
+            div.appendChild(info);
+          }
+          
+          container.appendChild(div);
+        });
+        
+        $('#recs-loading').classList.add('hidden');
+        $('#recs-content').classList.remove('hidden');
+      } else {
+        throw new Error('No similar tracks found');
+      }
+    } catch (error) {
+      $('#recs-loading').classList.add('hidden');
+      $('#recs-error').classList.remove('hidden');
+      $('#recs-error-message').textContent = error.message || 'No recommendations found';
+    }
+  }
+
+  // Panel controls
+  if (showStatsBtn) {
+    showStatsBtn.addEventListener('click', displayTrackStats);
+  }
+  
+  if (showRecsBtn) {
+    showRecsBtn.addEventListener('click', displaySimilarTracks);
+  }
+  
+  if (closeStats) {
+    closeStats.addEventListener('click', () => statsPanel.classList.add('hidden'));
+  }
+  
+  if (closeRecs) {
+    closeRecs.addEventListener('click', () => recsPanel.classList.add('hidden'));
   }
 
   // cover upload UI has been removed — persistent logo handled separately

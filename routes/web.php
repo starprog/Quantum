@@ -30,6 +30,11 @@ Route::get('/proxy/audio', [AudioProxyController::class, 'stream'])->name('proxy
 use App\Http\Controllers\CoverController;
 Route::post('/cover/upload', [CoverController::class, 'upload'])->name('cover.upload');
 
+// Last.fm API proxy for track info and recommendations
+use App\Http\Controllers\LastFmController;
+Route::get('/api/lastfm/track-info', [LastFmController::class, 'getTrackInfo'])->name('lastfm.track.info');
+Route::get('/api/lastfm/similar-tracks', [LastFmController::class, 'getSimilarTracks'])->name('lastfm.similar.tracks');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
