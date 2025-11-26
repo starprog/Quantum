@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sourceNode = null;
   let rafId = null;
   let currentMetadata = null; // Store extracted metadata
+  let audioElementAttached = false; // Track if MediaElementSource has been created
   
 
   function fitCanvasToScreen() {
@@ -117,6 +118,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return;
     if (bpmDisplay) bpmDisplay.textContent = '— BPM';
     if (trackTitle) trackTitle.textContent = file.name;
+    
+    // Reset play button state
+    if (playToggle) playToggle.textContent = 'Play';
+    
+    // Pause and reset current audio if playing
+    if (audioEl && !audioEl.paused) {
+      audioEl.pause();
+      audioEl.currentTime = 0;
+    }
+    
+    // Disconnect existing audio source to prevent issues
+    if (sourceNode) {
+      try { 
+        sourceNode.disconnect(); 
+      } catch (e) {
+        console.warn('[bpm-player] disconnect source failed', e);
+      }
+      sourceNode = null;
+    }
+    
     // hide cover image only if there is no logo/cover already set; persistent logo stays visible
     try {
       if (coverImage && (!coverImage.src || String(coverImage.src).trim() === '')) {
@@ -128,9 +149,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (audioEl) {
+      // Revoke old object URL to prevent memory leaks
+      if (audioEl.src && audioEl.src.startsWith('blob:')) {
+        URL.revokeObjectURL(audioEl.src);
+      }
       audioEl.src = URL.createObjectURL(file);
       audioEl.classList.remove('hidden');
-      audioEl.muted = false; audioEl.volume = 1;
+      audioEl.muted = false; 
+      audioEl.volume = 1;
+      audioEl.currentTime = 0; // Reset to beginning
     }
 
     // Setup listeners now but DO NOT attach analyser until user plays.
@@ -420,7 +447,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (playToggle) {
     playToggle.addEventListener('click', async () => {
-      if (!audioEl) return;
+      if (!audioEl || !audioEl.src) return;
+      
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') {
         try { await audioCtx.resume(); } catch (e) { console.warn('[bpm-player] resume failed', e); }
@@ -428,12 +456,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         if (audioEl.paused) {
-          // start playback first (user gesture), then attach analyser so captureStream has tracks
+          // Resume or start playback
           await audioEl.play();
           playToggle.textContent = 'Pause';
-          // now attach analyser (will try MediaElementSource first, fallback to captureStream)
-          await attachAudioElementToContext();
+          
+          // Attach analyser only if not already attached
+          if (!sourceNode || !analyser) {
+            await attachAudioElementToContext();
+          }
         } else {
+          // Just pause, don't stop
           audioEl.pause();
           playToggle.textContent = 'Play';
         }
