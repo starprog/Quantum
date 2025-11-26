@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const bpmDisplay = $('#bpm-display');
   const trackTitle = $('#track-title');
   const playToggle = $('#play-toggle');
-  const audioEl = $('#audio');
+  let audioEl = $('#audio'); // Changed to let so we can replace it
   const statusNote = $('#status-note');
   const canvas = $('#spectrum-canvas');
   const coverSpinner = $('#cover-spinner');
@@ -76,25 +76,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function attachAudioElementToContext() {
     if (!audioEl) return;
+    if (audioElementAttached && sourceNode && analyser) {
+      console.log('[bpm-player] audio already attached, skipping');
+      return; // Already attached, don't recreate
+    }
+    
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
     try {
+      // Clean up old connections if they exist
       if (sourceNode) {
         try { sourceNode.disconnect(); } catch (e) {}
-        sourceNode = null;
       }
+      if (analyser) {
+        try { analyser.disconnect(); } catch (e) {}
+      }
+      
       try {
         sourceNode = audioCtx.createMediaElementSource(audioEl);
-        analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
-        sourceNode.connect(analyser); analyser.connect(audioCtx.destination);
+        analyser = audioCtx.createAnalyser(); 
+        analyser.fftSize = 2048;
+        sourceNode.connect(analyser); 
+        analyser.connect(audioCtx.destination);
+        audioElementAttached = true;
         console.log('[bpm-player] attached MediaElementSource');
       } catch (err) {
         console.warn('[bpm-player] createMediaElementSource failed, trying captureStream', err);
         const stream = audioEl.captureStream ? audioEl.captureStream() : (audioEl.mozCaptureStream ? audioEl.mozCaptureStream() : null);
         if (stream) {
           const ms = audioCtx.createMediaStreamSource(stream);
-          analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
-          ms.connect(analyser); analyser.connect(audioCtx.destination);
+          analyser = audioCtx.createAnalyser(); 
+          analyser.fftSize = 2048;
+          ms.connect(analyser); 
+          analyser.connect(audioCtx.destination);
           sourceNode = ms;
+          audioElementAttached = true;
           console.log('[bpm-player] attached MediaStreamSource via captureStream');
         } else {
           console.warn('[bpm-player] no captureStream available; analyser not attached');
@@ -122,13 +138,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset play button state
     if (playToggle) playToggle.textContent = 'Play';
     
-    // Pause and reset current audio if playing
+    // Pause current audio if playing
     if (audioEl && !audioEl.paused) {
       audioEl.pause();
-      audioEl.currentTime = 0;
     }
     
-    // Disconnect existing audio source to prevent issues
+    // Stop drawing spectrum temporarily
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+    
+    // Disconnect and clean up audio nodes
     if (sourceNode) {
       try { 
         sourceNode.disconnect(); 
@@ -136,6 +157,57 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('[bpm-player] disconnect source failed', e);
       }
       sourceNode = null;
+    }
+    
+    if (analyser) {
+      try {
+        analyser.disconnect();
+      } catch (e) {
+        console.warn('[bpm-player] disconnect analyser failed', e);
+      }
+      analyser = null;
+    }
+    
+    // Close and recreate audio context for new song
+    if (audioCtx) {
+      try {
+        await audioCtx.close();
+      } catch (e) {
+        console.warn('[bpm-player] close context failed', e);
+      }
+      audioCtx = null;
+    }
+    
+    // Reset attachment flag
+    audioElementAttached = false;
+    
+    // CRITICAL FIX: Replace the audio element completely to allow new MediaElementSource
+    if (audioEl) {
+      // Revoke old object URL to prevent memory leaks
+      if (audioEl.src && audioEl.src.startsWith('blob:')) {
+        URL.revokeObjectURL(audioEl.src);
+      }
+      
+      // Remove the old audio element
+      const oldAudio = audioEl;
+      const parent = oldAudio.parentElement;
+      
+      // Create a fresh audio element
+      audioEl = document.createElement('audio');
+      audioEl.id = 'audio';
+      audioEl.className = 'hidden';
+      audioEl.preload = 'auto';
+      
+      // Replace in DOM
+      parent.replaceChild(audioEl, oldAudio);
+      
+      // Set up the new audio
+      audioEl.src = URL.createObjectURL(file);
+      audioEl.muted = false;
+      audioEl.volume = 1;
+      
+      // Setup listeners on the new element
+      setupAudioElementListeners();
     }
     
     // hide cover image only if there is no logo/cover already set; persistent logo stays visible
@@ -147,21 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // defensive: if any error, do not hide the cover to avoid disappearing logo
       console.warn('[bpm-player] cover visibility check failed', err);
     }
-
-    if (audioEl) {
-      // Revoke old object URL to prevent memory leaks
-      if (audioEl.src && audioEl.src.startsWith('blob:')) {
-        URL.revokeObjectURL(audioEl.src);
-      }
-      audioEl.src = URL.createObjectURL(file);
-      audioEl.classList.remove('hidden');
-      audioEl.muted = false; 
-      audioEl.volume = 1;
-      audioEl.currentTime = 0; // Reset to beginning
-    }
-
-    // Setup listeners now but DO NOT attach analyser until user plays.
-    setupAudioElementListeners();
 
     // Attempt to estimate BPM from the uploaded file (client-side)
     if (statusNote) statusNote.textContent = 'Estimating BPM from uploaded file...';
@@ -456,16 +513,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         if (audioEl.paused) {
-          // Resume or start playback
+          // Start or resume playback
           await audioEl.play();
           playToggle.textContent = 'Pause';
           
-          // Attach analyser only if not already attached
-          if (!sourceNode || !analyser) {
+          // Attach analyser on first play of each song
+          if (!audioElementAttached) {
             await attachAudioElementToContext();
+          } else if (!rafId && analyser) {
+            // Resume visualization if it was stopped
+            drawSpectrum();
           }
         } else {
-          // Just pause, don't stop
+          // Just pause, keep everything connected
           audioEl.pause();
           playToggle.textContent = 'Play';
         }
