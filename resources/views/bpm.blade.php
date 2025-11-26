@@ -5,60 +5,140 @@
         </h2>
     </x-slot>
 
-    <div class="min-h-screen flex items-center justify-center bg-transparent text-white relative overflow-hidden">
+    <style>
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.5; }
+            100% { transform: scale(0.95); opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #spectrum-canvas {
+            filter: blur(80px) opacity(0.3);
+        }
+    </style>
 
-    <!-- Full-viewport fixed canvas background -->
+    <div class="min-h-screen flex items-center justify-center relative overflow-hidden" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);">
+
+    <!-- Blurred canvas background -->
     <canvas id="spectrum-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
 
-    <!-- Centered content (z-index above canvas) -->
-    <div class="z-10 flex flex-col items-center gap-6 p-6 w-full max-w-3xl mx-auto">
-        <h1 class="text-4xl font-semibold text-slate-400 drop-shadow">BPM Finder</h1>
+    <!-- Main content -->
+    <div class="z-10 flex flex-col items-center gap-8 p-6 w-full max-w-2xl mx-auto">
+        
+        <!-- Logo and title -->
+        <div class="text-center float">
+            <h1 class="text-5xl font-bold mb-2" style="background: linear-gradient(135deg, #667eea 0%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">BPM Finder</h1>
+            <p class="text-slate-400 text-sm">Instant beat detection with stunning visuals</p>
+        </div>
 
-        <div id="player-card" class="flex flex-col items-center gap-4 w-full max-w-xl mx-auto bg-slate-900/70 backdrop-blur-md rounded-xl p-6 shadow-lg border border-slate-800/40">
-            <div id="cover-wrapper" class="relative w-56 h-56 bg-slate-800/60 rounded-xl shadow-inner flex items-center justify-center overflow-hidden">
-                <div id="cover-spinner" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/40">
-                    <svg class="animate-spin h-12 w-12 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                    </svg>
-                    <div id="cover-spinner-text" class="text-xs text-slate-100 mt-2">Estimating BPM...</div>
+        <!-- Circular player card -->
+        <div id="player-card" class="relative flex flex-col items-center gap-6 w-full">
+            
+            <!-- Circular cover with pulsing ring -->
+            <div class="relative">
+                <!-- Pulsing outer ring -->
+                <div class="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 pulse-ring" style="width: 280px; height: 280px; margin: -10px;"></div>
+                
+                <!-- Cover wrapper -->
+                <div id="cover-wrapper" class="relative w-64 h-64 rounded-full shadow-2xl flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border-4 border-white/10">
+                    <!-- Spinner overlay -->
+                    <div id="cover-spinner" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm rounded-full">
+                        <svg class="animate-spin h-16 w-16 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                        <div id="cover-spinner-text" class="text-xs text-white mt-3 font-medium">Analyzing...</div>
+                    </div>
+                    <img id="cover-image" src="" alt="cover" class="object-cover w-full h-full hidden rounded-full">
                 </div>
-                <img id="cover-image" src="" alt="cover" class="object-cover w-full h-full hidden">
             </div>
 
-            <div class="w-full text-center">
-                <div id="bpm-display" class="text-4xl font-extrabold text-sky-200 mt-2 drop-shadow">— BPM</div>
-                <div id="track-title" class="text-sm text-slate-300 mt-1">No track loaded</div>
+            <!-- BPM Display -->
+            <div class="text-center -mt-2">
+                <div id="bpm-display" class="text-7xl font-black tracking-tight" style="background: linear-gradient(135deg, #667eea 0%, #f093fb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);">—</div>
+                <div class="text-sm text-slate-400 font-medium mt-1 tracking-widest uppercase">Beats Per Minute</div>
             </div>
 
-            <div class="w-full flex gap-3 mt-3 items-center">
-                <input id="file-input" type="file" accept="audio/*" class="flex-1 p-3 rounded bg-slate-800/40 text-slate-100" />
-                <button id="play-toggle" class="w-28 flex-shrink-0 px-3 py-3 rounded bg-sky-600 hover:bg-sky-700 text-white font-semibold">Play</button>
+            <!-- Track title -->
+            <div id="track-title" class="text-center text-white text-lg font-medium px-6 max-w-sm truncate">Tap to upload a track</div>
+
+            <!-- File input styled as button -->
+            <div class="relative w-full max-w-sm">
+                <input id="file-input" type="file" accept="audio/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <button class="w-full py-4 rounded-full font-bold text-lg text-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        Choose Audio File
+                    </span>
+                </button>
             </div>
 
-            <div class="w-full mt-3">
-                <div id="status-note" class="text-xs text-slate-400 mt-2">Upload an audio file or drag & drop to estimate BPM. Direct audio URLs may work when CORS permits.</div>
-            </div>
+            <!-- Play button -->
+            <button id="play-toggle" class="w-full max-w-sm py-3 px-6 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold hover:bg-white/20 transition-all duration-300">
+                <span class="flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>
+                    </svg>
+                    Play
+                </span>
+            </button>
 
-            <!-- cover area (no persistent-logo hint) -->
+            <!-- Status note -->
+            <div id="status-note" class="text-center text-slate-400 text-xs max-w-md px-4">Drag & drop audio files or tap to browse. BPM analysis happens instantly.</div>
 
-            <audio id="audio" controls class="w-full hidden mt-3"></audio>
+            <!-- Hidden audio element -->
+            <audio id="audio" class="hidden"></audio>
         </div>
 
-        <!-- Feature highlights centered below the player for polish -->
-            <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-center">
-            <div class="p-4 bg-slate-800/40 rounded-lg border border-slate-700/40">
-                <div class="font-semibold text-slate-100">Fast Detection</div>
-                <div class="text-sm text-slate-300">Client-side BPM estimate in seconds.</div>
+        <!-- Minimalist features -->
+        <div class="mt-8 flex gap-6 text-center text-sm">
+            <div class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <div class="text-slate-300 font-medium text-xs">Instant</div>
             </div>
-            <div class="p-4 bg-slate-800/40 rounded-lg border border-slate-700/40">
-                <div class="font-semibold text-slate-100">Live Visualizer</div>
-                <div class="text-sm text-slate-300">Real-time spectrum synced to playback.</div>
+            <div class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                </div>
+                <div class="text-slate-300 font-medium text-xs">Accurate</div>
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path>
+                    </svg>
+                </div>
+                <div class="text-slate-300 font-medium text-xs">Visual</div>
             </div>
         </div>
-    </div>
-    </div>
 
+    </div>
     </div>
 
 </x-app-layout>
