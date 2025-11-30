@@ -6,142 +6,318 @@
     <title>Marvel vs DC - Top Trumps Battle</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        @keyframes space {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-2000px); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(138,43,226,0.6); }
+            50% { text-shadow: 0 0 30px rgba(255,255,255,1), 0 0 40px rgba(138,43,226,0.8); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(to bottom, #000000 0%, #0a0a2e 50%, #16213e 100%);
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            color: white;
         }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, white, transparent),
+                radial-gradient(2px 2px at 60% 70%, white, transparent),
+                radial-gradient(1px 1px at 50% 50%, white, transparent),
+                radial-gradient(1px 1px at 80% 10%, white, transparent),
+                radial-gradient(2px 2px at 90% 60%, white, transparent),
+                radial-gradient(1px 1px at 33% 80%, white, transparent),
+                radial-gradient(1px 1px at 15% 90%, white, transparent);
+            background-size: 200% 200%;
+            animation: space 200s linear infinite;
+            opacity: 0.8;
+            z-index: 0;
+        }
+        
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
+        
         h1 {
             text-align: center;
             color: white;
             font-size: 3em;
             margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            animation: glow 2s ease-in-out infinite;
         }
+        
         .team-title {
             font-size: 1.5em;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px currentColor;
+            color: inherit;
         }
-        .marvel { color: #ed1d24; }
-        .dc { color: #0476f2; }
+        
+        .marvel { color: #ed1d24 !important; }
+        .dc { color: #0476f2 !important; }
+        
         .deck-selection {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
+        
         .deck {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
+        
         .hero-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            gap: 15px;
             margin-top: 15px;
         }
+        
         .hero-card {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
         }
+        
         .hero-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.5);
+            border-color: rgba(255, 255, 255, 0.6);
         }
+        
         .hero-card.selected {
             border-color: #28a745;
-            background: #d4edda;
+            background: rgba(40, 167, 69, 0.2);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
         }
+        
+        .hero-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: block;
+        }
+        
         .hero-card h3 {
-            font-size: 1em;
-            margin-bottom: 5px;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
+        
         .hero-card .stats {
-            font-size: 0.8em;
-            color: #666;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.9) !important;
         }
+        
+        .stat-bar {
+            display: flex;
+            align-items: center;
+            margin: 4px 0;
+        }
+        
+        .stat-label {
+            width: 50px;
+            font-weight: bold;
+            font-size: 0.8em;
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        .stat-value {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-left: 8px;
+        }
+        
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        
         .battle-button {
             display: block;
             width: 300px;
             margin: 0 auto 30px;
-            padding: 15px;
+            padding: 18px;
             font-size: 1.5em;
             font-weight: bold;
             color: white;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border: none;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+        
         .battle-button:hover {
             transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
         }
+        
         .battle-button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: scale(1);
         }
+        
         .battle-log {
-            background: white;
-            padding: 20px;
+            background: rgba(20, 20, 40, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
             max-height: 500px;
             overflow-y: auto;
         }
+        
+        .battle-log h2 {
+            color: white !important;
+            text-shadow: 0 3px 10px rgba(0,0,0,1);
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        
         .round {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 10px;
             animation: fadeIn 0.5s;
+            background: rgba(0, 0, 0, 0.6);
+            border-left: 5px solid;
+            line-height: 1.8;
+            color: white !important;
         }
+        
         .round.winner-A {
-            background: #ffebee;
-            border-left: 4px solid #ed1d24;
+            border-color: #ed1d24;
+            background: rgba(237, 29, 36, 0.25);
         }
+        
         .round.winner-B {
-            background: #e3f2fd;
-            border-left: 4px solid #0476f2;
+            border-color: #0476f2;
+            background: rgba(4, 118, 242, 0.25);
         }
+        
         .round.winner-draw {
-            background: #f5f5f5;
-            border-left: 4px solid #999;
+            border-color: #999;
+            background: rgba(153, 153, 153, 0.25);
         }
+        
+        .round strong {
+            color: #FFD700 !important;
+            font-size: 1.15em;
+            text-shadow: 0 2px 8px rgba(0,0,0,1);
+        }
+        
+        .round span {
+            color: white !important;
+            font-weight: 600;
+            text-shadow: 0 2px 8px rgba(0,0,0,1);
+            font-size: 1.05em;
+        }
+        
         .result {
             text-align: center;
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
-            padding: 30px;
+            padding: 40px;
             margin: 20px 0;
-            background: white;
+            background: rgba(20, 20, 40, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.5s;
         }
-        .result.marvel-wins { color: #ed1d24; }
-        .result.dc-wins { color: #0476f2; }
-        .result.stalemate { color: #666; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        .result.marvel-wins { 
+            color: #ed1d24 !important;
+            text-shadow: 0 0 40px #ed1d24, 0 3px 10px rgba(0,0,0,1);
         }
+        
+        .result.dc-wins { 
+            color: #0476f2 !important;
+            text-shadow: 0 0 40px #0476f2, 0 3px 10px rgba(0,0,0,1);
+        }
+        
+        .result.stalemate { 
+            color: #FFD700 !important;
+            text-shadow: 0 0 40px rgba(255,215,0,0.8), 0 3px 10px rgba(0,0,0,1);
+        }
+        
         .loading {
             text-align: center;
             font-size: 1.5em;
-            color: white;
+            color: white !important;
             padding: 20px;
+            text-shadow: 0 2px 8px rgba(0,0,0,1);
+        }
+        
+        /* Scrollbar styling */
+        .battle-log::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .battle-log::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .battle-log::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+        }
+        
+        .battle-log::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.6);
         }
     </style>
 </head>
@@ -169,6 +345,63 @@
     </div>
 
     <script>
+                // Local images stored in public/images/heroes/
+        const heroImages = {
+            'thor': '/images/heroes/thor.jpg',
+            'hulk': '/images/heroes/hulk.jpg',
+            'iron-man': '/images/heroes/iron-man.jpg',
+            'spider-man': '/images/heroes/spider-man.jpg',
+            'dr-strange': '/images/heroes/dr-strange.jpg',
+            'black-widow': '/images/heroes/black-widow.jpg',
+            'storm': '/images/heroes/storm.jpg',
+            'namor': '/images/heroes/namor.jpg',
+            'luke-cage': '/images/heroes/luke-cage.jpg',
+            'captain-america': '/images/heroes/captain-america.jpg',
+            'superman': '/images/heroes/superman.jpg',
+            'batman': '/images/heroes/batman.jpg',
+            'wonder-woman': '/images/heroes/wonder-woman.jpg',
+            'flash': '/images/heroes/flash.jpg',
+            'aquaman': '/images/heroes/aquaman.jpg',
+            'green-lantern': '/images/heroes/green-lantern.jpg',
+            'cyborg': '/images/heroes/cyborg.jpg',
+            'martian-manhunter': '/images/heroes/martian-manhunter.jpg',
+            'shazam': '/images/heroes/shazam.jpg',
+            'vixen': '/images/heroes/vixen.jpg'
+        };
+
+        function createHeroCard(hero, team) {
+            const card = document.createElement('div');
+            card.className = 'hero-card';
+            card.innerHTML = `
+                <img src="${heroImages[hero.slug]}" 
+                     alt="${hero.name}" 
+                     class="hero-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display:none; width:100%; height:120px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:8px; margin-bottom:10px; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; color:white;">${hero.name}</div>
+                <h3>${hero.name}</h3>
+                <div class="stats">
+                    <div class="stat-bar">
+                        <span class="stat-label">STR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.strength * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">PWR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.powers * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">DUR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.durability * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">END:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.endurance * 10}%"></div></div>
+                    </div>
+                </div>
+            `;
+            card.onclick = () => toggleHero(hero, team, card);
+            return card;
+        }
+
         const heroes = {
             marvel: [
                 {slug: 'thor', name: 'Thor', strength: 9, powers: 8, durability: 9, endurance: 8},
@@ -218,10 +451,25 @@
             const card = document.createElement('div');
             card.className = 'hero-card';
             card.innerHTML = `
+                <img src="${heroImages[hero.slug]}" alt="${hero.name}" class="hero-image">
                 <h3>${hero.name}</h3>
                 <div class="stats">
-                    STR: ${hero.strength} | PWR: ${hero.powers}<br>
-                    DUR: ${hero.durability} | END: ${hero.endurance}
+                    <div class="stat-bar">
+                        <span class="stat-label">STR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.strength * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">PWR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.powers * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">DUR:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.durability * 10}%"></div></div>
+                    </div>
+                    <div class="stat-bar">
+                        <span class="stat-label">END:</span>
+                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.endurance * 10}%"></div></div>
+                    </div>
                 </div>
             `;
             card.onclick = () => toggleHero(hero, team, card);
@@ -275,7 +523,7 @@
                 const data = await response.json();
                 displayBattle(data);
             } catch (error) {
-                log.innerHTML = `<div style="color: red; text-align: center;">Error: ${error.message}</div>`;
+                log.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
             }
 
             btn.disabled = false;
@@ -300,7 +548,7 @@
             result.innerHTML = `
                 <div class="result ${winnerClass}">
                     ${winnerText}<br>
-                    <div style="font-size: 0.6em; margin-top: 10px;">
+                    <div style="font-size: 0.4em; margin-top: 15px; color: white;">
                         Rounds: ${data.rounds} | Marvel: ${data.remaining.A} cards | DC: ${data.remaining.B} cards
                     </div>
                 </div>
