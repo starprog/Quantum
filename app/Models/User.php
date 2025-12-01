@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,8 +12,6 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
@@ -63,5 +60,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Child Development Tracker relationships
+    public function children()
+    {
+        return $this->hasMany(Child::class);
+    }
+
+    public function caregiverAccess()
+    {
+        return $this->hasMany(Caregiver::class);
+    }
+
+    public function accessibleChildren()
+    {
+        return $this->hasManyThrough(Child::class, Caregiver::class, 'user_id', 'id', 'id', 'child_id');
     }
 }
