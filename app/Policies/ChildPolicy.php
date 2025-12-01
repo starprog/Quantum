@@ -13,7 +13,7 @@ class ChildPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true; // Users can view their own children list
     }
 
     /**
@@ -21,7 +21,15 @@ class ChildPolicy
      */
     public function view(User $user, Child $child): bool
     {
-        return false;
+        // User is the child's parent
+        if ($child->user_id === $user->id) {
+            return true;
+        }
+
+        // User is a caregiver with access
+        return $child->caregivers()
+            ->where('user_id', $user->id)
+            ->exists();
     }
 
     /**
@@ -29,7 +37,7 @@ class ChildPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true; // Any authenticated user can create a child profile
     }
 
     /**
@@ -37,7 +45,16 @@ class ChildPolicy
      */
     public function update(User $user, Child $child): bool
     {
-        return false;
+        // User is the child's parent
+        if ($child->user_id === $user->id) {
+            return true;
+        }
+
+        // User is a caregiver with edit permissions
+        return $child->caregivers()
+            ->where('user_id', $user->id)
+            ->where('can_edit', true)
+            ->exists();
     }
 
     /**
@@ -45,7 +62,8 @@ class ChildPolicy
      */
     public function delete(User $user, Child $child): bool
     {
-        return false;
+        // Only the child's primary parent can delete
+        return $child->user_id === $user->id;
     }
 
     /**
@@ -53,7 +71,8 @@ class ChildPolicy
      */
     public function restore(User $user, Child $child): bool
     {
-        return false;
+        // Only the child's primary parent can restore
+        return $child->user_id === $user->id;
     }
 
     /**
@@ -61,6 +80,7 @@ class ChildPolicy
      */
     public function forceDelete(User $user, Child $child): bool
     {
-        return false;
+        // Only the child's primary parent can permanently delete
+        return $child->user_id === $user->id;
     }
 }
