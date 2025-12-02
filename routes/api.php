@@ -14,5 +14,7 @@ Route::get('/heroes', function () {
     return Hero::all();
 });
 
-// Battle endpoint
+// Battle endpoints
 Route::post('/battles/toptrumps', [BattleController::class, 'topTrumps']);
+Route::post('/battles/series', [BattleController::class, 'battleSeries']);
+Route::get('/battles/leaderboard', [BattleController::class, 'leaderboard']);

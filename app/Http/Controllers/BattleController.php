@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Hero;
+use App\Models\BattleScore;
 
 class BattleController extends Controller
 {
@@ -151,5 +152,120 @@ class BattleController extends Controller
             ],
             'history' => $history,
         ]);
+    }
+
+    public function battleSeries(Request $request)
+    {
+        $request->validate([
+            'deckA' => 'required|array|min:1',
+            'deckB' => 'required|array|min:1',
+            'seriesType' => 'required|in:3,5',
+            'playerName' => 'nullable|string|max:50',
+        ]);
+
+        $seriesType = (int) $request->seriesType;
+        $winsNeeded = ceil($seriesType / 2);
+        
+        $marvelWins = 0;
+        $dcWins = 0;
+        $games = [];
+        $gameNumber = 0;
+
+        while ($marvelWins < $winsNeeded && $dcWins < $winsNeeded) {
+            $gameNumber++;
+            
+            $gameRequest = new Request([
+                'deckA' => $request->deckA,
+                'deckB' => $request->deckB,
+            ]);
+            
+            $gameResult = $this->topTrumps($gameRequest)->getData();
+            
+            if ($gameResult->winner === 'A') {
+                $marvelWins++;
+            } elseif ($gameResult->winner === 'B') {
+                $dcWins++;
+            }
+            
+            $games[] = [
+                'game' => $gameNumber,
+                'winner' => $gameResult->winner,
+                'rounds' => $gameResult->rounds,
+                'marvelWins' => $marvelWins,
+                'dcWins' => $dcWins,
+            ];
+        }
+
+        $seriesWinner = $marvelWins >= $winsNeeded ? 'Marvel' : 'DC';
+        
+        $this->updateBattleScores($seriesWinner, $games, $request->playerName);
+
+        return response()->json([
+            'seriesWinner' => $seriesWinner,
+            'seriesType' => $seriesType,
+            'marvelWins' => $marvelWins,
+            'dcWins' => $dcWins,
+            'games' => $games,
+        ]);
+    }
+
+    protected function updateBattleScores($winner, $games, $playerName = null)
+    {
+        $userId = auth()->id();
+        
+        $marvelScore = BattleScore::firstOrCreate(
+            [
+                'user_id' => $userId,
+                'player_name' => $playerName,
+                'team' => 'Marvel'
+            ],
+            [
+                'wins' => 0,
+                'losses' => 0,
+                'draws' => 0,
+                'total_rounds' => 0,
+                'win_streak' => 0,
+                'best_streak' => 0,
+            ]
+        );
+
+        $dcScore = BattleScore::firstOrCreate(
+            [
+                'user_id' => $userId,
+                'player_name' => $playerName,
+                'team' => 'DC'
+            ],
+            [
+                'wins' => 0,
+                'losses' => 0,
+                'draws' => 0,
+                'total_rounds' => 0,
+                'win_streak' => 0,
+                'best_streak' => 0,
+            ]
+        );
+
+        $totalRounds = array_sum(array_column($games, 'rounds'));
+        
+        if ($winner === 'Marvel') {
+            $marvelScore->updateScore('win', $totalRounds);
+            $dcScore->updateScore('loss', $totalRounds);
+        } elseif ($winner === 'DC') {
+            $dcScore->updateScore('win', $totalRounds);
+            $marvelScore->updateScore('loss', $totalRounds);
+        } else {
+            $marvelScore->updateScore('draw', $totalRounds);
+            $dcScore->updateScore('draw', $totalRounds);
+        }
+    }
+
+    public function leaderboard()
+    {
+        $scores = BattleScore::orderBy('wins', 'desc')
+            ->orderBy('best_streak', 'desc')
+            ->take(20)
+            ->get();
+
+        return response()->json($scores);
     }
 }

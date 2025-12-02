@@ -253,11 +253,74 @@
             transition: width 0.3s;
         }
         
-        .battle-button {
-            display: block;
+        .battle-options {
+            background: rgba(20, 20, 40, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .battle-options h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .battle-type-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .battle-type-btn {
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .battle-type-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .battle-type-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+        }
+        
+        .player-name-input {
+            margin-bottom: 20px;
+        }
+        
+        .player-name-input input {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             width: 300px;
-            margin: 0 auto 30px;
-            padding: 18px;
+            text-align: center;
+        }
+        
+        .player-name-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .battle-button {
+            padding: 18px 40px;
             font-size: 1.5em;
             font-weight: bold;
             color: white;
@@ -281,6 +344,49 @@
             transform: scale(1);
         }
         
+        .leaderboard {
+            background: rgba(20, 20, 40, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .leaderboard h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            color: white;
+            border-collapse: collapse;
+        }
+        
+        .leaderboard-table th {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .leaderboard-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .leaderboard-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .rank-1 { color: #FFD700; font-weight: bold; }
+        .rank-2 { color: #C0C0C0; font-weight: bold; }
+        .rank-3 { color: #CD7F32; font-weight: bold; }
+        
         .battle-log {
             background: rgba(20, 20, 40, 0.85);
             backdrop-filter: blur(10px);
@@ -298,6 +404,42 @@
             font-size: 1.8em;
             margin-bottom: 20px;
         }
+        
+        .series-result {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            padding: 40px;
+            margin: 20px 0;
+            background: rgba(20, 20, 40, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.5s;
+        }
+        
+        .series-result.marvel-wins { 
+            color: #ed1d24 !important;
+            text-shadow: 0 0 40px #ed1d24, 0 3px 10px rgba(0,0,0,1);
+        }
+        
+        .series-result.dc-wins { 
+            color: #0476f2 !important;
+            text-shadow: 0 0 40px #0476f2, 0 3px 10px rgba(0,0,0,1);
+        }
+        
+        .game-summary {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            border-left: 5px solid;
+            animation: fadeIn 0.5s;
+        }
+        
+        .game-summary.winner-A { border-color: #ed1d24; }
+        .game-summary.winner-B { border-color: #0476f2; }
         
         .round {
             padding: 18px;
@@ -338,35 +480,6 @@
             font-size: 1.05em;
         }
         
-        .result {
-            text-align: center;
-            font-size: 2.5em;
-            font-weight: bold;
-            padding: 40px;
-            margin: 20px 0;
-            background: rgba(20, 20, 40, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-            animation: fadeIn 0.5s;
-        }
-        
-        .result.marvel-wins { 
-            color: #ed1d24 !important;
-            text-shadow: 0 0 40px #ed1d24, 0 3px 10px rgba(0,0,0,1);
-        }
-        
-        .result.dc-wins { 
-            color: #0476f2 !important;
-            text-shadow: 0 0 40px #0476f2, 0 3px 10px rgba(0,0,0,1);
-        }
-        
-        .result.stalemate { 
-            color: #FFD700 !important;
-            text-shadow: 0 0 40px rgba(255,215,0,0.8), 0 3px 10px rgba(0,0,0,1);
-        }
-        
         .loading {
             text-align: center;
             font-size: 1.5em;
@@ -375,7 +488,13 @@
             text-shadow: 0 2px 8px rgba(0,0,0,1);
         }
         
-        /* Scrollbar styling */
+        .hero-count {
+            text-align: center;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
+        
         .battle-log::-webkit-scrollbar {
             width: 12px;
         }
@@ -393,18 +512,32 @@
         .battle-log::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.6);
         }
-        
-        .hero-count {
-            text-align: center;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.7);
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>⚡ MARVEL vs DC ⚡<br>Top Trumps Battle</h1>
+        
+        <!-- Leaderboard -->
+        <div class="leaderboard">
+            <h2>🏆 LEADERBOARD 🏆</h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Team</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
+                        <th>Win Rate</th>
+                        <th>Best Streak</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr><td colspan="7" style="text-align: center;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
         
         <div class="deck-selection">
             <div class="deck">
@@ -419,19 +552,37 @@
             </div>
         </div>
 
-        <button class="battle-button" id="battleBtn" onclick="startBattle()">
-            ⚔️ START BATTLE ⚔️
-        </button>
+        <!-- Battle Options -->
+        <div class="battle-options">
+            <h2>⚔️ BATTLE MODE ⚔️</h2>
+            <div class="battle-type-buttons">
+                <button class="battle-type-btn active" onclick="selectBattleType('single')">
+                    Single Battle
+                </button>
+                <button class="battle-type-btn" onclick="selectBattleType('3')">
+                    Best of 3
+                </button>
+                <button class="battle-type-btn" onclick="selectBattleType('5')">
+                    Best of 5
+                </button>
+            </div>
+            <div class="player-name-input">
+                <input type="text" id="playerName" placeholder="Enter your name (optional)" maxlength="50">
+            </div>
+            <button class="battle-button" id="battleBtn" onclick="startBattle()">
+                ⚔️ START BATTLE ⚔️
+            </button>
+        </div>
 
         <div id="result"></div>
         <div class="battle-log" id="battleLog"></div>
     </div>
 
     <script>
-        // Fetch heroes from database
         let allHeroes = [];
         let selectedMarvel = [];
         let selectedDC = [];
+        let battleType = 'single';
 
         async function loadHeroes() {
             try {
@@ -442,6 +593,45 @@
                 console.error('Error loading heroes:', error);
                 document.getElementById('marvelGrid').innerHTML = '<p>Error loading heroes</p>';
             }
+        }
+
+        async function loadLeaderboard() {
+            try {
+                const response = await fetch('/api/battles/leaderboard');
+                const scores = await response.json();
+                renderLeaderboard(scores);
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        function renderLeaderboard(scores) {
+            const tbody = document.getElementById('leaderboardBody');
+            if (scores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No battles yet. Be the first!</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = scores.map((score, index) => {
+                const rank = index + 1;
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+                const playerName = score.player_name || 'Anonymous';
+                const winRate = score.wins + score.losses + score.draws > 0 
+                    ? ((score.wins / (score.wins + score.losses + score.draws)) * 100).toFixed(1) 
+                    : 0;
+                
+                return `
+                    <tr>
+                        <td class="${rankClass}">#${rank}</td>
+                        <td>${playerName}</td>
+                        <td class="${score.team.toLowerCase()}">${score.team}</td>
+                        <td>${score.wins}</td>
+                        <td>${score.losses}</td>
+                        <td>${winRate}%</td>
+                        <td>🔥 ${score.best_streak}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         function renderHeroes() {
@@ -531,6 +721,14 @@
             }
         }
 
+        function selectBattleType(type) {
+            battleType = type;
+            document.querySelectorAll('.battle-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
         async function startBattle() {
             if (selectedMarvel.length === 0 || selectedDC.length === 0) {
                 alert('Please select heroes for both teams!');
@@ -540,25 +738,41 @@
             const btn = document.getElementById('battleBtn');
             const log = document.getElementById('battleLog');
             const result = document.getElementById('result');
+            const playerName = document.getElementById('playerName').value.trim();
             
             btn.disabled = true;
             log.innerHTML = '<div class="loading">⚔️ Battle in progress...</div>';
             result.innerHTML = '';
 
             try {
-                const response = await fetch('/api/battles/toptrumps', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        deckA: selectedMarvel,
-                        deckB: selectedDC
-                    })
-                });
-
-                const data = await response.json();
-                displayBattle(data);
+                if (battleType === 'single') {
+                    const response = await fetch('/api/battles/toptrumps', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            deckA: selectedMarvel,
+                            deckB: selectedDC
+                        })
+                    });
+                    const data = await response.json();
+                    displaySingleBattle(data);
+                } else {
+                    const response = await fetch('/api/battles/series', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            deckA: selectedMarvel,
+                            deckB: selectedDC,
+                            seriesType: battleType,
+                            playerName: playerName
+                        })
+                    });
+                    const data = await response.json();
+                    displaySeriesBattle(data);
+                }
+                
+                // Reload leaderboard after battle
+                loadLeaderboard();
             } catch (error) {
                 log.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
             }
@@ -566,11 +780,10 @@
             btn.disabled = false;
         }
 
-        function displayBattle(data) {
+        function displaySingleBattle(data) {
             const log = document.getElementById('battleLog');
             const result = document.getElementById('result');
             
-            // Display winner
             let winnerClass = 'stalemate';
             let winnerText = '⚔️ STALEMATE ⚔️';
             
@@ -583,7 +796,7 @@
             }
             
             result.innerHTML = `
-                <div class="result ${winnerClass}">
+                <div class="series-result ${winnerClass}">
                     ${winnerText}<br>
                     <div style="font-size: 0.4em; margin-top: 15px; color: white;">
                         Rounds: ${data.rounds} | Marvel: ${data.remaining.A} cards | DC: ${data.remaining.B} cards
@@ -591,7 +804,6 @@
                 </div>
             `;
 
-            // Display rounds (show last 50 rounds to avoid too much)
             const rounds = data.history.slice(-50);
             log.innerHTML = '<h2 style="margin-bottom: 15px;">Battle Log (Last 50 Rounds)</h2>';
             
@@ -611,8 +823,44 @@
             log.scrollTop = 0;
         }
 
-        // Initialize on load
+        function displaySeriesBattle(data) {
+            const log = document.getElementById('battleLog');
+            const result = document.getElementById('result');
+            
+            const winnerClass = data.seriesWinner === 'Marvel' ? 'marvel-wins' : 'dc-wins';
+            const icon = data.seriesWinner === 'Marvel' ? '🦸' : '🦹';
+            
+            result.innerHTML = `
+                <div class="series-result ${winnerClass}">
+                    ${icon} ${data.seriesWinner.toUpperCase()} WINS THE SERIES! ${icon}<br>
+                    <div style="font-size: 0.4em; margin-top: 15px; color: white;">
+                        Best of ${data.seriesType} | Score: Marvel ${data.marvelWins} - DC ${data.dcWins}
+                    </div>
+                </div>
+            `;
+
+            log.innerHTML = '<h2 style="margin-bottom: 15px;">Series Summary</h2>';
+            
+            data.games.forEach(game => {
+                const gameDiv = document.createElement('div');
+                const winnerClass = game.winner === 'A' ? 'winner-A' : 'winner-B';
+                const winnerText = game.winner === 'A' ? '🦸 Marvel' : '🦹 DC';
+                
+                gameDiv.className = `game-summary ${winnerClass}`;
+                gameDiv.innerHTML = `
+                    <strong>Game ${game.game}</strong><br>
+                    Winner: ${winnerText} in ${game.rounds} rounds<br>
+                    Score: Marvel ${game.marvelWins} - DC ${game.dcWins}
+                `;
+                log.appendChild(gameDiv);
+            });
+
+            log.scrollTop = 0;
+        }
+
+        // Initialize
         loadHeroes();
+        loadLeaderboard();
     </script>
 </body>
 </html>
