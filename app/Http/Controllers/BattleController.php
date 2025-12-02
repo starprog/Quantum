@@ -78,4 +78,78 @@ class BattleController extends Controller
             'remaining' => ['A' => count($qA), 'B' => count($qB)],
         ]);
     }
+
+    public function topTrumps(Request $request)
+    {
+        $request->validate([
+            'deckA' => 'required|array|min:1',
+            'deckB' => 'required|array|min:1',
+        ]);
+
+        // Fetch heroes from database
+        $deckA = Hero::whereIn('slug', $request->deckA)->get()->toArray();
+        $deckB = Hero::whereIn('slug', $request->deckB)->get()->toArray();
+
+        shuffle($deckA);
+        shuffle($deckB);
+
+        $history = [];
+        $round = 0;
+        $maxRounds = 1000;
+
+        while (count($deckA) > 0 && count($deckB) > 0 && $round < $maxRounds) {
+            $round++;
+            
+            $cardA = array_shift($deckA);
+            $cardB = array_shift($deckB);
+
+            $attributes = ['strength', 'powers', 'durability', 'endurance'];
+            $attr = $attributes[array_rand($attributes)];
+
+            $valA = $cardA[$attr] ?? 0;
+            $valB = $cardB[$attr] ?? 0;
+
+            $winner = null;
+            if ($valA > $valB) {
+                $winner = 'A';
+                $deckA[] = $cardA;
+                $deckA[] = $cardB;
+            } elseif ($valB > $valA) {
+                $winner = 'B';
+                $deckB[] = $cardB;
+                $deckB[] = $cardA;
+            } else {
+                $winner = 'draw';
+                $deckA[] = $cardA;
+                $deckB[] = $cardB;
+            }
+
+            $history[] = [
+                'round' => $round,
+                'attribute' => $attr,
+                'a' => ['slug' => $cardA['slug'], 'value' => $valA],
+                'b' => ['slug' => $cardB['slug'], 'value' => $valB],
+                'winner' => $winner,
+                'sizeA' => count($deckA),
+                'sizeB' => count($deckB),
+            ];
+        }
+
+        $finalWinner = null;
+        if (count($deckA) > count($deckB)) {
+            $finalWinner = 'A';
+        } elseif (count($deckB) > count($deckA)) {
+            $finalWinner = 'B';
+        }
+
+        return response()->json([
+            'winner' => $finalWinner,
+            'rounds' => $round,
+            'remaining' => [
+                'A' => count($deckA),
+                'B' => count($deckB),
+            ],
+            'history' => $history,
+        ]);
+    }
 }

@@ -121,10 +121,84 @@
             border-color: rgba(255, 255, 255, 0.6);
         }
         
+        .hero-card:hover .hero-bio {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .hero-card.selected {
             border-color: #28a745;
             background: rgba(40, 167, 69, 0.2);
             box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
+        }
+        
+        .rarity-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+            z-index: 2;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        .rarity-legendary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+        
+        .rarity-rare {
+            background: linear-gradient(135deg, #9B59B6, #8E44AD);
+            color: white;
+            box-shadow: 0 0 10px rgba(155, 89, 182, 0.6);
+        }
+        
+        .rarity-common {
+            background: linear-gradient(135deg, #95A5A6, #7F8C8D);
+            color: white;
+            box-shadow: 0 0 10px rgba(149, 165, 166, 0.4);
+        }
+        
+        .hero-bio {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px;
+            border-radius: 0 0 12px 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 3;
+            font-size: 0.85em;
+            line-height: 1.4;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .special-ability {
+            margin-top: 8px;
+            padding: 6px;
+            background: rgba(138, 43, 226, 0.3);
+            border-radius: 6px;
+            border-left: 3px solid #8a2be2;
+        }
+        
+        .special-ability-name {
+            font-weight: bold;
+            color: #FFD700;
+            font-size: 0.9em;
+        }
+        
+        .special-ability-desc {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 3px;
         }
         
         .hero-image {
@@ -319,6 +393,13 @@
         .battle-log::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.6);
         }
+        
+        .hero-count {
+            text-align: center;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -328,10 +409,12 @@
         <div class="deck-selection">
             <div class="deck">
                 <div class="team-title marvel">🦸 MARVEL HEROES</div>
+                <div class="hero-count" id="marvelCount">0 heroes selected</div>
                 <div class="hero-grid" id="marvelGrid"></div>
             </div>
             <div class="deck">
                 <div class="team-title dc">🦹 DC HEROES</div>
+                <div class="hero-count" id="dcCount">0 heroes selected</div>
                 <div class="hero-grid" id="dcGrid"></div>
             </div>
         </div>
@@ -345,39 +428,53 @@
     </div>
 
     <script>
-                // Local images stored in public/images/heroes/
-        const heroImages = {
-            'thor': '/images/heroes/thor.jpg',
-            'hulk': '/images/heroes/hulk.jpg',
-            'iron-man': '/images/heroes/iron-man.jpg',
-            'spider-man': '/images/heroes/spider-man.jpg',
-            'dr-strange': '/images/heroes/dr-strange.jpg',
-            'black-widow': '/images/heroes/black-widow.jpg',
-            'storm': '/images/heroes/storm.jpg',
-            'namor': '/images/heroes/namor.jpg',
-            'luke-cage': '/images/heroes/luke-cage.jpg',
-            'captain-america': '/images/heroes/captain-america.jpg',
-            'superman': '/images/heroes/superman.jpg',
-            'batman': '/images/heroes/batman.jpg',
-            'wonder-woman': '/images/heroes/wonder-woman.jpg',
-            'flash': '/images/heroes/flash.jpg',
-            'aquaman': '/images/heroes/aquaman.jpg',
-            'green-lantern': '/images/heroes/green-lantern.jpg',
-            'cyborg': '/images/heroes/cyborg.jpg',
-            'martian-manhunter': '/images/heroes/martian-manhunter.jpg',
-            'shazam': '/images/heroes/shazam.jpg',
-            'vixen': '/images/heroes/vixen.jpg'
-        };
+        // Fetch heroes from database
+        let allHeroes = [];
+        let selectedMarvel = [];
+        let selectedDC = [];
+
+        async function loadHeroes() {
+            try {
+                const response = await fetch('/api/heroes');
+                allHeroes = await response.json();
+                renderHeroes();
+            } catch (error) {
+                console.error('Error loading heroes:', error);
+                document.getElementById('marvelGrid').innerHTML = '<p>Error loading heroes</p>';
+            }
+        }
+
+        function renderHeroes() {
+            const marvelGrid = document.getElementById('marvelGrid');
+            const dcGrid = document.getElementById('dcGrid');
+            
+            const marvelHeroes = allHeroes.filter(h => h.universe === 'Marvel');
+            const dcHeroes = allHeroes.filter(h => h.universe === 'DC');
+
+            marvelHeroes.forEach(hero => {
+                const card = createHeroCard(hero, 'marvel');
+                marvelGrid.appendChild(card);
+            });
+
+            dcHeroes.forEach(hero => {
+                const card = createHeroCard(hero, 'dc');
+                dcGrid.appendChild(card);
+            });
+        }
 
         function createHeroCard(hero, team) {
             const card = document.createElement('div');
             card.className = 'hero-card';
+            
+            const rarityClass = `rarity-${hero.rarity || 'common'}`;
+            const rarityLabel = (hero.rarity || 'common').toUpperCase();
+            
             card.innerHTML = `
-                <img src="${heroImages[hero.slug]}" 
+                <div class="rarity-badge ${rarityClass}">${rarityLabel}</div>
+                <img src="${hero.image || '/images/heroes/' + hero.slug + '.jpg'}" 
                      alt="${hero.name}" 
                      class="hero-image"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div style="display:none; width:100%; height:120px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:8px; margin-bottom:10px; align-items:center; justify-content:center; font-size:1.2em; font-weight:bold; color:white;">${hero.name}</div>
+                     onerror="this.style.display='none';">
                 <h3>${hero.name}</h3>
                 <div class="stats">
                     <div class="stat-bar">
@@ -397,79 +494,14 @@
                         <div class="stat-value"><div class="stat-fill" style="width: ${hero.endurance * 10}%"></div></div>
                     </div>
                 </div>
-            `;
-            card.onclick = () => toggleHero(hero, team, card);
-            return card;
-        }
-
-        const heroes = {
-            marvel: [
-                {slug: 'thor', name: 'Thor', strength: 9, powers: 8, durability: 9, endurance: 8},
-                {slug: 'hulk', name: 'Hulk', strength: 10, powers: 6, durability: 10, endurance: 9},
-                {slug: 'iron-man', name: 'Iron Man', strength: 6, powers: 9, durability: 7, endurance: 6},
-                {slug: 'spider-man', name: 'Spider-Man', strength: 7, powers: 7, durability: 6, endurance: 7},
-                {slug: 'dr-strange', name: 'Doctor Strange', strength: 5, powers: 10, durability: 6, endurance: 6},
-                {slug: 'black-widow', name: 'Black Widow', strength: 5, powers: 5, durability: 5, endurance: 7},
-                {slug: 'storm', name: 'Storm', strength: 5, powers: 8, durability: 5, endurance: 6},
-                {slug: 'namor', name: 'Namor', strength: 8, powers: 6, durability: 7, endurance: 7},
-                {slug: 'luke-cage', name: 'Luke Cage', strength: 7, powers: 4, durability: 8, endurance: 7},
-                {slug: 'captain-america', name: 'Captain America', strength: 7, powers: 5, durability: 7, endurance: 8}
-            ],
-            dc: [
-                {slug: 'superman', name: 'Superman', strength: 10, powers: 9, durability: 10, endurance: 10},
-                {slug: 'batman', name: 'Batman', strength: 5, powers: 3, durability: 5, endurance: 6},
-                {slug: 'wonder-woman', name: 'Wonder Woman', strength: 9, powers: 7, durability: 9, endurance: 9},
-                {slug: 'flash', name: 'The Flash', strength: 5, powers: 8, durability: 5, endurance: 9},
-                {slug: 'aquaman', name: 'Aquaman', strength: 8, powers: 6, durability: 8, endurance: 7},
-                {slug: 'green-lantern', name: 'Green Lantern', strength: 7, powers: 9, durability: 7, endurance: 8},
-                {slug: 'cyborg', name: 'Cyborg', strength: 7, powers: 7, durability: 8, endurance: 7},
-                {slug: 'martian-manhunter', name: 'Martian Manhunter', strength: 9, powers: 9, durability: 8, endurance: 8},
-                {slug: 'shazam', name: 'Shazam', strength: 9, powers: 8, durability: 8, endurance: 8},
-                {slug: 'vixen', name: 'Vixen', strength: 6, powers: 7, durability: 6, endurance: 6}
-            ]
-        };
-
-        let selectedMarvel = [];
-        let selectedDC = [];
-
-        function renderHeroes() {
-            const marvelGrid = document.getElementById('marvelGrid');
-            const dcGrid = document.getElementById('dcGrid');
-
-            heroes.marvel.forEach(hero => {
-                const card = createHeroCard(hero, 'marvel');
-                marvelGrid.appendChild(card);
-            });
-
-            heroes.dc.forEach(hero => {
-                const card = createHeroCard(hero, 'dc');
-                dcGrid.appendChild(card);
-            });
-        }
-
-        function createHeroCard(hero, team) {
-            const card = document.createElement('div');
-            card.className = 'hero-card';
-            card.innerHTML = `
-                <img src="${heroImages[hero.slug]}" alt="${hero.name}" class="hero-image">
-                <h3>${hero.name}</h3>
-                <div class="stats">
-                    <div class="stat-bar">
-                        <span class="stat-label">STR:</span>
-                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.strength * 10}%"></div></div>
-                    </div>
-                    <div class="stat-bar">
-                        <span class="stat-label">PWR:</span>
-                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.powers * 10}%"></div></div>
-                    </div>
-                    <div class="stat-bar">
-                        <span class="stat-label">DUR:</span>
-                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.durability * 10}%"></div></div>
-                    </div>
-                    <div class="stat-bar">
-                        <span class="stat-label">END:</span>
-                        <div class="stat-value"><div class="stat-fill" style="width: ${hero.endurance * 10}%"></div></div>
-                    </div>
+                <div class="hero-bio">
+                    <div>${hero.bio || 'No biography available.'}</div>
+                    ${hero.special_ability ? `
+                        <div class="special-ability">
+                            <div class="special-ability-name">⚡ ${hero.special_ability}</div>
+                            <div class="special-ability-desc">${hero.special_description || ''}</div>
+                        </div>
+                    ` : ''}
                 </div>
             `;
             card.onclick = () => toggleHero(hero, team, card);
@@ -490,8 +522,13 @@
                 }
             }
 
-            if (team === 'marvel') selectedMarvel = selected;
-            else selectedDC = selected;
+            if (team === 'marvel') {
+                selectedMarvel = selected;
+                document.getElementById('marvelCount').textContent = `${selected.length} heroes selected`;
+            } else {
+                selectedDC = selected;
+                document.getElementById('dcCount').textContent = `${selected.length} heroes selected`;
+            }
         }
 
         async function startBattle() {
@@ -575,7 +612,7 @@
         }
 
         // Initialize on load
-        renderHeroes();
+        loadHeroes();
     </script>
 </body>
 </html>
