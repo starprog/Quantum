@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lyricsPanel = $('#lyrics-panel');
   const closeStats = $('#close-stats');
   const closeRecs = $('#close-recommendations');
-  const closeLyrics = $('#close-lyrics');
+  const hideLyrics = $('#hide-lyrics');
   const lrcFileUpload = $('#lrc-file-upload');
 
   let audioCtx = null;
@@ -155,16 +155,73 @@ document.addEventListener('DOMContentLoaded', () => {
     return lyrics.sort((a, b) => a.time - b.time);
   }
   
-  // Fetch lyrics from Lyrics.ovh API
+  // Fetch lyrics from Lyrics.ovh API with timeout
   async function fetchLyrics(artist, title) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const MAX_LYRICS_RETRIES = 3;
+    let lyricsRetryCount = 0;
+    
     try {
-      const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
+      const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
       if (!response.ok) throw new Error('Lyrics not found');
       const data = await response.json();
       return data.lyrics;
     } catch (error) {
-      console.error('[bpm-player] Lyrics fetch error', error);
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        console.error('[bpm-player] Lyrics fetch timeout');
+      } else {
+        console.error('[bpm-player] Lyrics fetch error', error);
+      }
       throw error;
+    }
+  }
+  
+  // Fetch lyrics with automatic retry
+  async function fetchLyricsWithRetry(artist, title, retryCount = 0) {
+    try {
+      const lyrics = await fetchLyrics(artist, title);
+      if (lyrics) {
+        displayPlainLyrics(lyrics);
+        lyricsRetryCount = 0; // Reset on success
+      } else {
+        throw new Error('No lyrics found');
+      }
+    } catch (error) {
+      lyricsRetryCount = retryCount + 1;
+      
+      if (lyricsRetryCount < MAX_LYRICS_RETRIES) {
+        // Show retry message
+        $('#lyrics-loading').classList.add('hidden');
+        $('#lyrics-error').classList.remove('hidden');
+        const errorMsg = $('#lyrics-error-message');
+        if (errorMsg) {
+          errorMsg.textContent = `Attempting to reload lyrics... (${lyricsRetryCount}/${MAX_LYRICS_RETRIES})`;
+        }
+        
+        // Retry after 2 seconds
+        console.log(`[bpm-player] Retrying lyrics fetch (${lyricsRetryCount}/${MAX_LYRICS_RETRIES})`);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Show loading again
+        $('#lyrics-loading').classList.remove('hidden');
+        $('#lyrics-error').classList.add('hidden');
+        
+        await fetchLyricsWithRetry(artist, title, lyricsRetryCount);
+      } else {
+        // Max retries reached
+        $('#lyrics-loading').classList.add('hidden');
+        $('#lyrics-error').classList.remove('hidden');
+        const errorMsg = $('#lyrics-error-message');
+        if (errorMsg) {
+          errorMsg.textContent = 'Lyrics not available for this track. Upload an LRC file for synced lyrics.';
+        }
+        lyricsRetryCount = 0;
+      }
     }
   }
   
@@ -225,27 +282,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if we have uploaded LRC lyrics first
     if (lyricsData.length > 0) {
       displaySyncedLyrics();
+      lyricsRetryCount = 0; // Reset retry count
     } else if (currentMetadata && currentMetadata.artist !== 'Unknown Artist') {
-      // Try to fetch lyrics automatically from API
-      try {
-        const lyrics = await fetchLyrics(currentMetadata.artist, currentMetadata.title);
-        if (lyrics) {
-          displayPlainLyrics(lyrics);
-        } else {
-          throw new Error('No lyrics found');
-        }
-      } catch (error) {
-        $('#lyrics-loading').classList.add('hidden');
-        $('#lyrics-error').classList.remove('hidden');
-        const errorMsg = $('#lyrics-error-message');
-        if (errorMsg) {
-          errorMsg.textContent = 'Lyrics not available for this track. Upload an LRC file for synced lyrics.';
-        }
-      }
+      // Try to fetch lyrics automatically from API with auto-retry
+      await fetchLyricsWithRetry(currentMetadata.artist, currentMetadata.title);
     } else {
       // Show error message prompting to upload LRC
       $('#lyrics-loading').classList.add('hidden');
       $('#lyrics-error').classList.remove('hidden');
+      lyricsRetryCount = 0;
     }
   }
   
@@ -853,8 +898,8 @@ document.addEventListener('DOMContentLoaded', () => {
     closeRecs.addEventListener('click', () => recsPanel.classList.add('hidden'));
   }
   
-  if (closeLyrics) {
-    closeLyrics.addEventListener('click', () => {
+  if (hideLyrics) {
+    hideLyrics.addEventListener('click', () => {
       lyricsPanel.classList.add('hidden');
       stopLyricsSync();
     });

@@ -175,19 +175,21 @@
     <!-- Center-Bottom Panel: Lyrics & Credits -->
     <div id="lyrics-panel" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-80 bg-slate-900/95 backdrop-blur-md border-t border-white/10 rounded-t-2xl overflow-hidden z-20">
         <div class="flex flex-col h-full">
+            <!-- Hide Button -->
+            <div class="flex justify-center items-center py-2 border-b border-white/10">
+                <button id="hide-lyrics" class="px-4 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors">
+                    Hide
+                </button>
+            </div>
+            
             <!-- Header -->
-            <div class="flex justify-between items-center p-4 border-b border-white/10">
+            <div class="flex justify-between items-center px-4 pb-3 border-b border-white/10">
                 <h2 class="text-lg font-bold text-white">Lyrics & Credits</h2>
                 <div class="flex gap-2 items-center">
                     <label for="lrc-file-upload" class="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors cursor-pointer">
                         Upload LRC
                     </label>
                     <input id="lrc-file-upload" type="file" accept=".lrc" class="hidden" />
-                    <button id="close-lyrics" class="text-slate-400 hover:text-white transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
                 </div>
             </div>
             
