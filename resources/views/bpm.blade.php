@@ -172,6 +172,87 @@
         </div>
     </div>
 
+    <!-- Center-Bottom Panel: Lyrics & Credits -->
+    <div id="lyrics-panel" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-80 bg-slate-900/95 backdrop-blur-md border-t border-white/10 rounded-t-2xl overflow-hidden z-20">
+        <div class="flex flex-col h-full">
+            <!-- Header -->
+            <div class="flex justify-between items-center p-4 border-b border-white/10">
+                <h2 class="text-lg font-bold text-white">Lyrics & Credits</h2>
+                <div class="flex gap-2 items-center">
+                    <label for="lrc-file-upload" class="px-3 py-1 text-xs bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors cursor-pointer">
+                        Upload LRC
+                    </label>
+                    <input id="lrc-file-upload" type="file" accept=".lrc" class="hidden" />
+                    <button id="close-lyrics" class="text-slate-400 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-1 overflow-hidden flex">
+                <!-- Lyrics Section (70%) -->
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div id="lyrics-loading" class="flex items-center justify-center py-12">
+                        <svg class="animate-spin h-8 w-8 text-purple-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                    </div>
+                    
+                    <div id="lyrics-content" class="hidden space-y-2 text-center">
+                        <!-- Lyrics lines will be inserted here -->
+                    </div>
+                    
+                    <div id="lyrics-error" class="hidden text-center py-12">
+                        <div class="text-slate-400 text-sm">
+                            <svg class="w-12 h-12 mx-auto mb-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p id="lyrics-error-message">Lyrics not available. Upload an LRC file for synced lyrics.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credits Section (30%) -->
+                <div class="w-1/3 border-l border-white/10 p-4 bg-slate-800/50 overflow-y-auto">
+                    <h3 class="text-sm font-bold text-white mb-3">Credits</h3>
+                    <div id="credits-content" class="space-y-2 text-xs">
+                        <div id="credit-artist" class="hidden">
+                            <div class="text-slate-400">Artist</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div id="credit-album" class="hidden">
+                            <div class="text-slate-400">Album</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div id="credit-year" class="hidden">
+                            <div class="text-slate-400">Year</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div id="credit-label" class="hidden">
+                            <div class="text-slate-400">Label</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div id="credit-writer" class="hidden">
+                            <div class="text-slate-400">Writer(s)</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div id="credit-producer" class="hidden">
+                            <div class="text-slate-400">Producer(s)</div>
+                            <div class="text-white font-medium"></div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-white/10 text-slate-500">
+                            <p>Credits fetched from Last.fm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Main content -->
     <div class="z-10 flex flex-col items-center gap-8 p-6 w-full max-w-2xl mx-auto">
         
@@ -228,6 +309,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
                         </svg>
                         Similar
+                    </span>
+                </button>
+                <button id="show-lyrics" class="flex-1 py-2 px-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold hover:bg-white/20 transition-all duration-300">
+                    <span class="flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Lyrics
                     </span>
                 </button>
             </div>

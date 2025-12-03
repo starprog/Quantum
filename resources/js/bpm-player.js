@@ -17,10 +17,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const metadataButtons = $('#metadata-buttons');
   const showStatsBtn = $('#show-stats');
   const showRecsBtn = $('#show-recommendations');
+  const showLyricsBtn = $('#show-lyrics');
   const statsPanel = $('#track-stats-panel');
   const recsPanel = $('#recommendations-panel');
+  const lyricsPanel = $('#lyrics-panel');
   const closeStats = $('#close-stats');
   const closeRecs = $('#close-recommendations');
+  const closeLyrics = $('#close-lyrics');
+  const lrcFileUpload = $('#lrc-file-upload');
 
   let audioCtx = null;
   let analyser = null;
@@ -29,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMetadata = null; // Store extracted metadata
   let audioElementAttached = false; // Track if MediaElementSource has been created
   let sessionHistory = []; // Store analyzed tracks
+  let lyricsData = []; // Store parsed LRC lyrics with timestamps
+  let lyricsUpdateInterval = null; // Interval for syncing lyrics
   
 
   // === SESSION HISTORY MANAGEMENT ===
@@ -125,6 +131,213 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="text-xs text-slate-500">${new Date(track.timestamp).toLocaleString()}</div>
       </div>
     `).join('');
+  }
+
+  // === LYRICS & CREDITS MANAGEMENT ===
+  function parseLRC(lrcText) {
+    const lines = lrcText.split('\n');
+    const lyrics = [];
+    const timeRegex = /\[(\d{2}):(\d{2})\.(\d{2,3})\](.*)/;
+    
+    lines.forEach(line => {
+      const match = line.match(timeRegex);
+      if (match) {
+        const minutes = parseInt(match[1]);
+        const seconds = parseInt(match[2]);
+        const centiseconds = parseInt(match[3].padEnd(3, '0'));
+        const text = match[4].trim();
+        const time = (minutes * 60) + seconds + (centiseconds / 1000);
+        
+        lyrics.push({ time, text });
+      }
+    });
+    
+    return lyrics.sort((a, b) => a.time - b.time);
+  }
+  
+  // Fetch lyrics from Lyrics.ovh API
+  async function fetchLyrics(artist, title) {
+    try {
+      const response = await fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`);
+      if (!response.ok) throw new Error('Lyrics not found');
+      const data = await response.json();
+      return data.lyrics;
+    } catch (error) {
+      console.error('[bpm-player] Lyrics fetch error', error);
+      throw error;
+    }
+  }
+  
+  async function displayLyrics(trackInfo = null) {
+    if (!lyricsPanel) return;
+    
+    lyricsPanel.classList.remove('hidden');
+    $('#lyrics-loading').classList.remove('hidden');
+    $('#lyrics-content').classList.add('hidden');
+    $('#lyrics-error').classList.add('hidden');
+    
+    // Display credits from Last.fm track info
+    if (trackInfo && trackInfo.track) {
+      const track = trackInfo.track;
+      
+      // Artist
+      if (track.artist?.name) {
+        const creditArtist = $('#credit-artist');
+        if (creditArtist) {
+          creditArtist.classList.remove('hidden');
+          creditArtist.querySelector('.text-white').textContent = track.artist.name;
+        }
+      }
+      
+      // Album
+      if (track.album?.title) {
+        const creditAlbum = $('#credit-album');
+        if (creditAlbum) {
+          creditAlbum.classList.remove('hidden');
+          creditAlbum.querySelector('.text-white').textContent = track.album.title;
+        }
+      }
+      
+      // Year (from wiki or album)
+      if (track.wiki?.published) {
+        const year = new Date(track.wiki.published).getFullYear();
+        const creditYear = $('#credit-year');
+        if (creditYear) {
+          creditYear.classList.remove('hidden');
+          creditYear.querySelector('.text-white').textContent = year;
+        }
+      }
+    } else if (currentMetadata) {
+      // Fallback to current metadata
+      const creditArtist = $('#credit-artist');
+      if (creditArtist && currentMetadata.artist) {
+        creditArtist.classList.remove('hidden');
+        creditArtist.querySelector('.text-white').textContent = currentMetadata.artist;
+      }
+      
+      const creditAlbum = $('#credit-album');
+      if (creditAlbum && currentMetadata.album) {
+        creditAlbum.classList.remove('hidden');
+        creditAlbum.querySelector('.text-white').textContent = currentMetadata.album;
+      }
+    }
+    
+    // Check if we have uploaded LRC lyrics first
+    if (lyricsData.length > 0) {
+      displaySyncedLyrics();
+    } else if (currentMetadata && currentMetadata.artist !== 'Unknown Artist') {
+      // Try to fetch lyrics automatically from API
+      try {
+        const lyrics = await fetchLyrics(currentMetadata.artist, currentMetadata.title);
+        if (lyrics) {
+          displayPlainLyrics(lyrics);
+        } else {
+          throw new Error('No lyrics found');
+        }
+      } catch (error) {
+        $('#lyrics-loading').classList.add('hidden');
+        $('#lyrics-error').classList.remove('hidden');
+        const errorMsg = $('#lyrics-error-message');
+        if (errorMsg) {
+          errorMsg.textContent = 'Lyrics not available for this track. Upload an LRC file for synced lyrics.';
+        }
+      }
+    } else {
+      // Show error message prompting to upload LRC
+      $('#lyrics-loading').classList.add('hidden');
+      $('#lyrics-error').classList.remove('hidden');
+    }
+  }
+  
+  function displayPlainLyrics(lyricsText) {
+    const container = $('#lyrics-content');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Split lyrics into lines
+    const lines = lyricsText.split('\n').filter(line => line.trim());
+    
+    lines.forEach((line, index) => {
+      const div = document.createElement('div');
+      div.className = 'lyrics-line text-slate-300 text-sm py-1 leading-relaxed';
+      div.textContent = line.trim();
+      container.appendChild(div);
+    });
+    
+    // Add scroll hint
+    const scrollHint = document.createElement('div');
+    scrollHint.className = 'text-center text-slate-500 text-xs mt-4 sticky bottom-0 bg-slate-900/80 py-2';
+    scrollHint.innerHTML = '↕ Scroll to view all lyrics';
+    container.appendChild(scrollHint);
+    
+    $('#lyrics-loading').classList.add('hidden');
+    $('#lyrics-content').classList.remove('hidden');
+  }
+  
+  function displaySyncedLyrics() {
+    const container = $('#lyrics-content');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    lyricsData.forEach((line, index) => {
+      const div = document.createElement('div');
+      div.className = 'lyrics-line text-slate-400 transition-all duration-300 py-1';
+      div.dataset.time = line.time;
+      div.dataset.index = index;
+      div.textContent = line.text || '♪';
+      container.appendChild(div);
+    });
+    
+    $('#lyrics-loading').classList.add('hidden');
+    $('#lyrics-content').classList.remove('hidden');
+    
+    // Start syncing lyrics with audio playback
+    startLyricsSync();
+  }
+  
+  function startLyricsSync() {
+    // Clear any existing interval
+    if (lyricsUpdateInterval) {
+      clearInterval(lyricsUpdateInterval);
+    }
+    
+    lyricsUpdateInterval = setInterval(() => {
+      if (!audioEl || audioEl.paused) return;
+      
+      const currentTime = audioEl.currentTime;
+      const lyricsLines = document.querySelectorAll('.lyrics-line');
+      
+      let activeIndex = -1;
+      for (let i = lyricsData.length - 1; i >= 0; i--) {
+        if (currentTime >= lyricsData[i].time) {
+          activeIndex = i;
+          break;
+        }
+      }
+      
+      lyricsLines.forEach((line, index) => {
+        if (index === activeIndex) {
+          line.classList.remove('text-slate-400', 'text-sm');
+          line.classList.add('text-white', 'font-bold', 'text-lg', 'scale-110');
+          // Scroll into view
+          line.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (index < activeIndex) {
+          line.classList.remove('text-white', 'font-bold', 'text-lg', 'scale-110');
+          line.classList.add('text-slate-600', 'text-sm');
+        } else {
+          line.classList.remove('text-white', 'font-bold', 'text-lg', 'scale-110', 'text-slate-600');
+          line.classList.add('text-slate-400', 'text-sm');
+        }
+      });
+    }, 100); // Update every 100ms
+  }
+  
+  function stopLyricsSync() {
+    if (lyricsUpdateInterval) {
+      clearInterval(lyricsUpdateInterval);
+      lyricsUpdateInterval = null;
+    }
   }
 
   function fitCanvasToScreen() {
@@ -617,12 +830,55 @@ document.addEventListener('DOMContentLoaded', () => {
     showRecsBtn.addEventListener('click', displaySimilarTracks);
   }
   
+  if (showLyricsBtn) {
+    showLyricsBtn.addEventListener('click', async () => {
+      // Fetch track info for credits before displaying
+      let trackInfo = null;
+      if (currentMetadata && currentMetadata.artist !== 'Unknown Artist') {
+        try {
+          trackInfo = await fetchTrackInfo(currentMetadata.artist, currentMetadata.title);
+        } catch (e) {
+          console.warn('[bpm-player] Could not fetch track info for credits', e);
+        }
+      }
+      displayLyrics(trackInfo);
+    });
+  }
+  
   if (closeStats) {
     closeStats.addEventListener('click', () => statsPanel.classList.add('hidden'));
   }
   
   if (closeRecs) {
     closeRecs.addEventListener('click', () => recsPanel.classList.add('hidden'));
+  }
+  
+  if (closeLyrics) {
+    closeLyrics.addEventListener('click', () => {
+      lyricsPanel.classList.add('hidden');
+      stopLyricsSync();
+    });
+  }
+  
+  // LRC file upload
+  if (lrcFileUpload) {
+    lrcFileUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const lrcText = event.target.result;
+        lyricsData = parseLRC(lrcText);
+        console.log('[bpm-player] Loaded', lyricsData.length, 'lyrics lines');
+        
+        // Re-display lyrics if panel is open
+        if (!lyricsPanel.classList.contains('hidden')) {
+          displaySyncedLyrics();
+        }
+      };
+      reader.readAsText(file);
+    });
   }
 
   // cover upload UI has been removed — persistent logo handled separately
