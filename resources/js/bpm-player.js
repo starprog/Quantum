@@ -28,7 +28,104 @@ document.addEventListener('DOMContentLoaded', () => {
   let rafId = null;
   let currentMetadata = null; // Store extracted metadata
   let audioElementAttached = false; // Track if MediaElementSource has been created
+  let sessionHistory = []; // Store analyzed tracks
   
+
+  // === SESSION HISTORY MANAGEMENT ===
+  function initHistory() {
+    const historyToggle = $('#history-toggle');
+    const historyPanel = $('#history-panel');
+    const closeHistory = $('#close-history');
+    const clearHistory = $('#clear-history');
+    const exportHistory = $('#export-history');
+    
+    // Load history from localStorage
+    const saved = localStorage.getItem('bpm-session-history');
+    if (saved) {
+      try {
+        sessionHistory = JSON.parse(saved);
+        updateHistoryDisplay();
+      } catch (e) {
+        console.warn('[bpm-player] failed to load history', e);
+      }
+    }
+    
+    if (historyToggle) {
+      historyToggle.addEventListener('click', () => {
+        historyPanel.classList.toggle('hidden');
+      });
+    }
+    
+    if (closeHistory) {
+      closeHistory.addEventListener('click', () => {
+        historyPanel.classList.add('hidden');
+      });
+    }
+    
+    if (clearHistory) {
+      clearHistory.addEventListener('click', () => {
+        if (confirm('Clear all session history?')) {
+          sessionHistory = [];
+          localStorage.removeItem('bpm-session-history');
+          updateHistoryDisplay();
+        }
+      });
+    }
+    
+    if (exportHistory) {
+      exportHistory.addEventListener('click', () => {
+        const dataStr = JSON.stringify(sessionHistory, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `bpm-history-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+    }
+  }
+  
+  function addToHistory(trackData) {
+    const entry = {
+      ...trackData,
+      timestamp: Date.now(),
+      id: Date.now() + Math.random()
+    };
+    
+    sessionHistory.unshift(entry); // Add to beginning
+    if (sessionHistory.length > 50) sessionHistory = sessionHistory.slice(0, 50); // Keep only last 50
+    
+    localStorage.setItem('bpm-session-history', JSON.stringify(sessionHistory));
+    updateHistoryDisplay();
+  }
+  
+  function updateHistoryDisplay() {
+    const container = $('#history-content');
+    if (!container) return;
+    
+    if (sessionHistory.length === 0) {
+      container.innerHTML = '<div class="text-center py-8 text-slate-400 col-span-full">No tracks analyzed yet. Upload a track to get started!</div>';
+      return;
+    }
+    
+    container.innerHTML = sessionHistory.map(track => `
+      <div class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-800 transition-colors">
+        <div class="flex items-center gap-3 mb-2">
+          ${track.albumArt ? `<img src="${track.albumArt}" alt="${track.title}" class="w-12 h-12 rounded object-cover">` : '<div class="w-12 h-12 rounded bg-slate-700 flex items-center justify-center"><svg class="w-6 h-6 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path></svg></div>'}
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-white truncate">${track.title || 'Unknown'}</div>
+            <div class="text-xs text-slate-400 truncate">${track.artist || 'Unknown Artist'}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-lg font-bold text-purple-400">${track.bpm || '—'}</div>
+            <div class="text-xs text-slate-500">BPM</div>
+          </div>
+        </div>
+        <div class="text-xs text-slate-500">${new Date(track.timestamp).toLocaleString()}</div>
+      </div>
+    `).join('');
+  }
 
   function fitCanvasToScreen() {
     if (!canvas) return;
@@ -223,10 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attempt to estimate BPM from the uploaded file (client-side)
     if (statusNote) statusNote.textContent = 'Estimating BPM from uploaded file...';
     if (coverSpinner) coverSpinner.classList.remove('hidden');
+    let estimatedBpm = null;
     try {
       const bpm = await estimateBPMFromFile(file);
       if (bpm && bpm > 0) {
-        if (bpmDisplay) bpmDisplay.textContent = Math.round(bpm) + ' BPM';
+        estimatedBpm = Math.round(bpm);
+        if (bpmDisplay) bpmDisplay.textContent = estimatedBpm + ' BPM';
         if (statusNote) statusNote.textContent = 'Estimated BPM from uploaded file.';
       } else {
         if (statusNote) statusNote.textContent = 'Could not estimate BPM from uploaded file.';
@@ -240,6 +339,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Extract metadata from audio file
     await extractMetadata(file);
+    
+    // Add to session history
+    if (estimatedBpm && currentMetadata) {
+      addToHistory({
+        title: currentMetadata.title,
+        artist: currentMetadata.artist,
+        album: currentMetadata.album,
+        bpm: estimatedBpm,
+        albumArt: coverImage && coverImage.src && !coverImage.src.includes('bpm-logo') ? coverImage.src : null,
+        filename: file.name
+      });
+    }
 
     // (no per-track cover persistence anymore)
   }
@@ -384,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Display similar tracks in right panel
+  // Display similar tracks in right panel with Spotify/YouTube links
   async function displaySimilarTracks() {
     if (!currentMetadata || currentMetadata.artist === 'Unknown Artist') return;
     
@@ -402,14 +513,22 @@ document.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
         
         tracks.forEach(track => {
+          const trackName = track.name;
+          const artistName = track.artist?.name || '';
+          
+          // Main container
           const div = document.createElement('div');
-          div.className = 'flex items-center gap-3 p-3 bg-slate-800/50 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer';
+          div.className = 'bg-slate-800/50 rounded-lg p-3 hover:bg-slate-800 transition-colors';
+          
+          // Top section with track info
+          const topSection = document.createElement('div');
+          topSection.className = 'flex items-center gap-3 mb-2';
           
           // Album art
           const img = document.createElement('img');
           const smallImage = track.image?.find(img => img.size === 'medium' || img.size === 'small');
           img.src = smallImage?.['#text'] || '';
-          img.alt = track.name;
+          img.alt = trackName;
           img.className = 'w-12 h-12 rounded object-cover';
           img.onerror = () => { img.style.display = 'none'; };
           
@@ -419,28 +538,61 @@ document.addEventListener('DOMContentLoaded', () => {
           
           const name = document.createElement('div');
           name.className = 'text-sm font-medium text-white truncate';
-          name.textContent = track.name;
+          name.textContent = trackName;
           
           const artist = document.createElement('div');
           artist.className = 'text-xs text-slate-400 truncate';
-          artist.textContent = track.artist?.name || '';
+          artist.textContent = artistName;
           
           info.appendChild(name);
           info.appendChild(artist);
           
           // Match percentage
+          const matchDiv = document.createElement('div');
           if (track.match) {
-            const match = document.createElement('div');
-            match.className = 'text-xs text-purple-400 font-semibold';
-            match.textContent = Math.round(parseFloat(track.match) * 100) + '%';
-            div.appendChild(img);
-            div.appendChild(info);
-            div.appendChild(match);
-          } else {
-            div.appendChild(img);
-            div.appendChild(info);
+            matchDiv.className = 'text-xs text-purple-400 font-semibold';
+            matchDiv.textContent = Math.round(parseFloat(track.match) * 100) + '%';
           }
           
+          topSection.appendChild(img);
+          topSection.appendChild(info);
+          if (track.match) topSection.appendChild(matchDiv);
+          
+          // Streaming links section
+          const linksSection = document.createElement('div');
+          linksSection.className = 'flex gap-2 mt-2';
+          
+          // Spotify link
+          const spotifyBtn = document.createElement('a');
+          spotifyBtn.href = `https://open.spotify.com/search/${encodeURIComponent(trackName + ' ' + artistName)}`;
+          spotifyBtn.target = '_blank';
+          spotifyBtn.rel = 'noopener noreferrer';
+          spotifyBtn.className = 'flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-300 text-xs rounded transition-colors';
+          spotifyBtn.innerHTML = `
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+            Spotify
+          `;
+          
+          // YouTube link
+          const youtubeBtn = document.createElement('a');
+          youtubeBtn.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(trackName + ' ' + artistName)}`;
+          youtubeBtn.target = '_blank';
+          youtubeBtn.rel = 'noopener noreferrer';
+          youtubeBtn.className = 'flex-1 flex items-center justify-center gap-1 px-2 py-1 bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs rounded transition-colors';
+          youtubeBtn.innerHTML = `
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            YouTube
+          `;
+          
+          linksSection.appendChild(spotifyBtn);
+          linksSection.appendChild(youtubeBtn);
+          
+          div.appendChild(topSection);
+          div.appendChild(linksSection);
           container.appendChild(div);
         });
         
@@ -678,6 +830,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', () => fitCanvasToScreen());
   window.addEventListener('pagehide', () => { if (rafId) cancelAnimationFrame(rafId); if (audioCtx) audioCtx.close(); });
   fitCanvasToScreen();
+  
+  // Initialize history
+  initHistory();
+  
   // Try to load a persistent logo (prefer SVG then PNG) and show it when no cover is present
   (function loadPersistentLogo(){
     const tryUrls = ['/images/bpm-logo.svg', '/images/bpm-logo.png'];

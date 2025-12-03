@@ -40,6 +40,40 @@
 
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);">
 
+    <!-- Session History Button (Bottom-right, floating) -->
+    <div class="fixed bottom-6 right-6 z-30">
+        <button id="history-toggle" class="p-4 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg text-white hover:shadow-2xl hover:scale-110 transition-all" title="Session History">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Session History Panel (Bottom) -->
+    <div id="history-panel" class="hidden fixed bottom-0 left-0 right-0 h-64 bg-slate-900/95 backdrop-blur-md border-t border-white/10 overflow-y-auto z-20 p-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">Session History</h2>
+                <div class="flex gap-2">
+                    <button id="clear-history" class="px-3 py-1 text-sm bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors">
+                        Clear All
+                    </button>
+                    <button id="export-history" class="px-3 py-1 text-sm bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors">
+                        Export JSON
+                    </button>
+                    <button id="close-history" class="text-slate-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div id="history-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div class="text-center py-8 text-slate-400 col-span-full">No tracks analyzed yet. Upload a track to get started!</div>
+            </div>
+        </div>
+    </div>
+
     <!-- Blurred canvas background -->
     <canvas id="spectrum-canvas" aria-hidden="true" style="position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></canvas>
 
