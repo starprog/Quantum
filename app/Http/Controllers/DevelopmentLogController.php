@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Child;
-use App\Models\GrowthRecord;
+use App\Models\DevelopmentLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class GrowthRecordController extends Controller
+class DevelopmentLogController extends Controller
 {
     public function __construct()
     {
@@ -14,116 +15,117 @@ class GrowthRecordController extends Controller
     }
 
     /**
-     * Display growth records for a child.
+     * Display development logs for a child.
      */
     public function index(Child $child)
     {
         $this->authorize('view', $child);
 
-        $growthRecords = $child->growthRecords()->orderBy('recorded_date', 'desc')->paginate(20);
+        $logs = $child->developmentLogs()->with('loggedBy')->paginate(20);
 
-        // Prepare data for growth chart
-        $chartData = $child->growthRecords()
-            ->orderBy('recorded_date')
-            ->get()
-            ->map(function ($record) {
-                return [
-                    'date' => $record->recorded_date->format('Y-m-d'),
-                    'age_months' => $record->age_in_months,
-                    'weight' => $record->weight_kg,
-                    'height' => $record->height_cm,
-                    'head_circumference' => $record->head_circumference_cm,
-                ];
-            });
-
-        return view('growth.index', compact('child', 'growthRecords', 'chartData'));
+        return view('logs.index', compact('child', 'logs'));
     }
 
     /**
-     * Show the form for creating a new growth record.
+     * Show the form for creating a new development log.
      */
     public function create(Child $child)
     {
         $this->authorize('update', $child);
 
-        return view('growth.create', compact('child'));
+        return view('logs.create', compact('child'));
     }
 
     /**
-     * Store a newly created growth record.
+     * Store a newly created development log.
      */
     public function store(Request $request, Child $child)
     {
         $this->authorize('update', $child);
 
         $validated = $request->validate([
-            'recorded_date' => 'required|date|before_or_equal:today',
-            'weight_kg' => 'nullable|numeric|min:0|max:200',
-            'height_cm' => 'nullable|numeric|min:0|max:250',
-            'head_circumference_cm' => 'nullable|numeric|min:0|max:100',
-            'notes' => 'nullable|string',
+            'log_date' => 'required|date|before_or_equal:today',
+            'category' => 'required|in:motor_skills,language,social_skills,cognitive,general',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'media' => 'nullable|array',
         ]);
 
         $validated['child_id'] = $child->id;
-        $validated['age_in_months'] = $child->age_in_months;
+        $validated['logged_by'] = Auth::id();
 
-        GrowthRecord::create($validated);
+        DevelopmentLog::create($validated);
 
-        return redirect()->route('growth.index', $child)
-            ->with('success', 'Growth record added successfully!');
+        return redirect()->route('logs.index', $child)
+            ->with('success', 'Development log added successfully!');
     }
 
     /**
-     * Display the specified growth record.
+     * Display the specified development log.
      */
-    public function show(Child $child, GrowthRecord $growthRecord)
+    public function show(Child $child, DevelopmentLog $log)
     {
         $this->authorize('view', $child);
 
-        return view('growth.show', compact('child', 'growthRecord'));
+        return view('logs.show', compact('child', 'log'));
     }
 
     /**
-     * Show the form for editing the specified growth record.
+     * Show the form for editing the specified development log.
      */
-    public function edit(Child $child, GrowthRecord $growthRecord)
+    public function edit(Child $child, DevelopmentLog $log)
     {
         $this->authorize('update', $child);
 
-        return view('growth.edit', compact('child', 'growthRecord'));
+        return view('logs.edit', compact('child', 'log'));
     }
 
     /**
-     * Update the specified growth record.
+     * Update the specified development log.
      */
-    public function update(Request $request, Child $child, GrowthRecord $growthRecord)
+    public function update(Request $request, Child $child, DevelopmentLog $log)
     {
         $this->authorize('update', $child);
 
         $validated = $request->validate([
-            'recorded_date' => 'required|date|before_or_equal:today',
-            'weight_kg' => 'nullable|numeric|min:0|max:200',
-            'height_cm' => 'nullable|numeric|min:0|max:250',
-            'head_circumference_cm' => 'nullable|numeric|min:0|max:100',
-            'notes' => 'nullable|string',
+            'log_date' => 'required|date|before_or_equal:today',
+            'category' => 'required|in:motor_skills,language,social_skills,cognitive,general',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'media' => 'nullable|array',
         ]);
 
-        $growthRecord->update($validated);
+        $log->update($validated);
 
-        return redirect()->route('growth.index', $child)
-            ->with('success', 'Growth record updated successfully!');
+        return redirect()->route('logs.index', $child)
+            ->with('success', 'Development log updated successfully!');
     }
 
     /**
-     * Remove the specified growth record.
+     * Remove the specified development log.
      */
-    public function destroy(Child $child, GrowthRecord $growthRecord)
+    public function destroy(Child $child, DevelopmentLog $log)
     {
         $this->authorize('update', $child);
 
-        $growthRecord->delete();
+        $log->delete();
 
-        return redirect()->route('growth.index', $child)
-            ->with('success', 'Growth record deleted.');
+        return redirect()->route('logs.index', $child)
+            ->with('success', 'Development log deleted.');
+    }
+
+    /**
+     * Filter logs by category.
+     */
+    public function filterByCategory(Child $child, $category)
+    {
+        $this->authorize('view', $child);
+
+        $logs = $child->developmentLogs()
+            ->where('category', $category)
+            ->with('loggedBy')
+            ->paginate(20);
+
+        return view('logs.index', compact('child', 'logs', 'category'));
     }
 }

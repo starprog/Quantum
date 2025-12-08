@@ -9,6 +9,7 @@ use App\Http\Controllers\MilestoneController;
 use App\Http\Controllers\GrowthRecordController;
 use App\Http\Controllers\DevelopmentLogController;
 use App\Http\Controllers\CaregiverController;
+use App\Http\Controllers\ActivityController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -42,6 +43,13 @@ Route::middleware([
 
     // Child Development Tracker Routes
     Route::resource('children', ChildController::class);
+    
+    // Activity routes
+    Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
+    Route::get('/activities/by-age', [ActivityController::class, 'byAge'])->name('activities.by-age');
+    Route::get('/activities/category/{category}', [ActivityController::class, 'byCategory'])->name('activities.by-category');
+    Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
+    Route::get('/children/{child}/activities', [ActivityController::class, 'forChild'])->name('activities.for-child');
     
     // Milestone routes - nested under children
     Route::get('/children/{child}/milestones', [MilestoneController::class, 'index'])->name('milestones.index');

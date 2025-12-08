@@ -5,6 +5,9 @@
                 {{ $child->full_name }}
             </h2>
             <div class="flex gap-2">
+                <a href="{{ route('activities.for-child', $child) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    View Activities
+                </a>
                 <a href="{{ route('children.edit', $child) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
                     Edit Profile
                 </a>
@@ -91,6 +94,7 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @foreach($recommendedMilestones->take(6) as $milestone)
+                                @if($milestone)
                                 <div class="border rounded p-3">
                                     <div class="flex justify-between items-start">
                                         <div class="flex-1">
@@ -102,12 +106,13 @@
                                         </div>
                                     </div>
                                 </div>
+                                @endif
                             @endforeach
                         </div>
-                        <a href="{{ route('milestones.index', $child) }}" class="inline-block mt-4 text-blue-500 hover:text-blue-700">
-                            View all milestones →
-                        </a>
                     @endif
+                    <a href="{{ route('milestones.index', $child) }}" class="inline-block mt-4 text-blue-500 hover:text-blue-700">
+                        View all milestones →
+                    </a>
                 </div>
             </div>
 

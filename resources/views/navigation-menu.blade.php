@@ -12,17 +12,14 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                        {{ __('Home') }}
-                    </x-nav-link>
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('services') }}" :active="request()->routeIs('services')">
-                        {{ __('Services') }}
+                    <x-nav-link href="{{ route('children.index') }}" :active="request()->routeIs('children.*')">
+                        {{ __('My Children') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
-                        {{ __('Settings') }}
+                    <x-nav-link href="{{ route('activities.index') }}" :active="request()->routeIs('activities.*')">
+                        {{ __('Activities') }}
                     </x-nav-link>
 
                     <!-- Admin Dropdown -->
@@ -169,17 +166,14 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
-                {{ __('Home') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('services') }}" :active="request()->routeIs('services')">
-                {{ __('Services') }}
+            <x-responsive-nav-link href="{{ route('children.index') }}" :active="request()->routeIs('children.*')">
+                {{ __('My Children') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="{{ route('settings') }}" :active="request()->routeIs('settings')">
-                {{ __('Settings') }}
+            <x-responsive-nav-link href="{{ route('activities.index') }}" :active="request()->routeIs('activities.*')">
+                {{ __('Activities') }}
             </x-responsive-nav-link>
 
             <!-- Admin Section -->

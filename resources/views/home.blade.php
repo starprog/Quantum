@@ -11,10 +11,19 @@
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg mb-8">
                 <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
                     <h1 class="text-2xl font-medium text-gray-900">
-                        Hello, {{ Auth::user()->name }}!
+                        @auth
+                            Hello, {{ Auth::user()->name }}!
+                        @else
+                            Welcome to Quantum
+                        @endauth
                     </h1>
                     <p class="mt-6 text-gray-500 leading-relaxed">
-                        Welcome to Quantum - your powerful modular application platform. Explore the features below to get started.
+                        Welcome to Quantum - your powerful modular application platform. 
+                        @auth
+                            Explore the features below to get started.
+                        @else
+                            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-800">Login</a> or <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-800">Register</a> to get started.
+                        @endauth
                     </p>
                 </div>
             </div>
