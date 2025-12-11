@@ -96,16 +96,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function addToHistory(trackData) {
+    // Create a lightweight copy to avoid storing large data URLs
     const entry = {
-      ...trackData,
+      title: trackData.title,
+      artist: trackData.artist,
+      bpm: trackData.bpm,
       timestamp: Date.now(),
-      id: Date.now() + Math.random()
+      id: Date.now() + Math.random(),
+      // Only store album art if it's a small external URL, not a data URL
+      albumArt: trackData.albumArt && !trackData.albumArt.startsWith('data:') ? trackData.albumArt : null,
+      energy: trackData.energy,
+      danceability: trackData.danceability,
+      timeSignature: trackData.timeSignature
     };
     
     sessionHistory.unshift(entry); // Add to beginning
     if (sessionHistory.length > 50) sessionHistory = sessionHistory.slice(0, 50); // Keep only last 50
     
-    localStorage.setItem('bpm-session-history', JSON.stringify(sessionHistory));
+    try {
+      localStorage.setItem('bpm-session-history', JSON.stringify(sessionHistory));
+    } catch (e) {
+      if (e.name === 'QuotaExceededError') {
+        // If quota exceeded, reduce history size and try again
+        sessionHistory = sessionHistory.slice(0, 25);
+        try {
+          localStorage.setItem('bpm-session-history', JSON.stringify(sessionHistory));
+        } catch (e2) {
+          console.error('Failed to save history even after reducing size:', e2);
+        }
+      }
+    }
     updateHistoryDisplay();
   }
   
@@ -641,6 +661,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function showPlaylistConfirmationModal(tracks) {
+    // Reload playlists from localStorage to ensure we have the latest data
+    const saved = localStorage.getItem('bpm-playlists');
+    if (saved) {
+      try {
+        playlists = JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to reload playlists:', e);
+      }
+    }
+    
     if (playlists.length === 0) {
       showNotification('Create a playlist first!', 'error');
       return;
@@ -665,8 +695,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="text-sm text-slate-300 mb-4">Click a playlist to add your selected songs:</p>
         
         <div class="space-y-2 max-h-96 overflow-y-auto mb-6">
-          ${playlists.map(playlist => `
-            <button class="w-full text-left px-4 py-3 bg-slate-700/50 hover:bg-slate-700 hover:ring-2 hover:ring-green-500/50 rounded-lg transition-all text-white playlist-select-btn group" data-playlist-id="${playlist.id}">
+          ${playlists.map((playlist, index) => `
+            <button class="w-full text-left px-4 py-3 bg-slate-700/50 hover:bg-slate-700 hover:ring-2 hover:ring-green-500/50 rounded-lg transition-all text-white playlist-select-btn group" data-playlist-index="${index}">
               <div class="flex items-center justify-between">
                 <div class="flex-1">
                   <div class="font-medium group-hover:text-green-300 transition-colors">${playlist.name}</div>
@@ -689,37 +719,81 @@ document.addEventListener('DOMContentLoaded', () => {
     
     modal.querySelectorAll('.playlist-select-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const playlistId = parseFloat(btn.dataset.playlistId);
-        const playlist = playlists.find(p => p.id === playlistId);
+        const playlistIndex = parseInt(btn.dataset.playlistIndex);
         
-        if (playlist) {
-          let addedCount = 0;
-          let skippedCount = 0;
-          
-          tracks.forEach(track => {
-            const exists = playlist.tracks.some(t => 
-              t.title === track.title && t.artist === track.artist
-            );
-            
-            if (!exists) {
-              playlist.tracks.push(track);
-              addedCount++;
-            } else {
-              skippedCount++;
-            }
-          });
-          
-          // Save after all tracks are added
-          savePlaylists();
-          updatePlaylistsDisplay();
-          
-          document.body.removeChild(modal);
-          
-          if (addedCount > 0) {
-            showNotification(`Successfully added ${addedCount} track${addedCount !== 1 ? 's' : ''} to "${playlist.name}"!`, 'success');
-          } else {
-            showNotification(`All tracks already exist in "${playlist.name}"!`, 'error');
+        // Reload from localStorage again to get absolute latest state
+        const currentSaved = localStorage.getItem('bpm-playlists');
+        let currentPlaylists = [];
+        if (currentSaved) {
+          try {
+            currentPlaylists = JSON.parse(currentSaved);
+          } catch (e) {
+            console.error('Failed to reload playlists on click:', e);
+            showNotification('Error loading playlists!', 'error');
+            return;
           }
+        }
+        
+        if (!currentPlaylists[playlistIndex]) {
+          console.error('Playlist not found at index:', playlistIndex);
+          showNotification('Playlist not found!', 'error');
+          return;
+        }
+        
+        const playlist = currentPlaylists[playlistIndex];
+        
+        let addedCount = 0;
+        let skippedCount = 0;
+        
+        tracks.forEach(track => {
+          const exists = playlist.tracks.some(t => 
+            t.title === track.title && t.artist === track.artist
+          );
+          
+          if (!exists) {
+            // Create a lightweight copy without large data URLs to save space
+            const lightweightTrack = {
+              title: track.title,
+              artist: track.artist,
+              bpm: track.bpm,
+              timestamp: track.timestamp,
+              id: track.id,
+              // Only store album art URL if it's a small external URL, not a data URL
+              albumArt: track.albumArt && !track.albumArt.startsWith('data:') ? track.albumArt : null
+            };
+            playlist.tracks.push(lightweightTrack);
+            addedCount++;
+          } else {
+            skippedCount++;
+          }
+        });
+        
+        // Update the playlist in the array
+        currentPlaylists[playlistIndex] = playlist;
+        
+        // Save back to localStorage
+        try {
+          localStorage.setItem('bpm-playlists', JSON.stringify(currentPlaylists));
+          
+          // Update global playlists array
+          playlists = currentPlaylists;
+          updatePlaylistsDisplay();
+        } catch (e) {
+          if (e.name === 'QuotaExceededError') {
+            showNotification('Storage quota exceeded! Try removing some tracks from playlists.', 'error');
+          } else {
+            showNotification('Error saving playlist!', 'error');
+          }
+          console.error('Failed to save playlists:', e);
+          return;
+        }
+        
+        document.body.removeChild(modal);
+        
+        if (addedCount > 0) {
+          showNotification(`Successfully added ${addedCount} track${addedCount !== 1 ? 's' : ''} to "${playlist.name}"!`, 'success');
+        } else {
+          showNotification(`All tracks already exist in "${playlist.name}"!`, 'error');
         }
       });
     });

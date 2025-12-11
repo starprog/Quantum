@@ -56,6 +56,22 @@
         #spectrum-canvas {
             filter: blur(80px) opacity(0.3);
         }
+        
+        /* Custom Scrollbar Styling */
+        #playlists-panel > div:last-child::-webkit-scrollbar {
+            width: 8px;
+        }
+        #playlists-panel > div:last-child::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        #playlists-panel > div:last-child::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        #playlists-panel > div:last-child::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
     </style>
 
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);">
@@ -160,7 +176,8 @@
     </div>
 
     <!-- Playlists Panel (Left side) -->
-    <div id="playlists-panel" class="hidden fixed left-0 top-0 h-screen w-80 bg-slate-900/95 backdrop-blur-md border-r border-white/10 overflow-y-auto z-20 p-6">
+    <div id="playlists-panel" class="hidden fixed left-0 top-0 h-screen w-80 bg-slate-900/95 backdrop-blur-md border-r border-white/10 z-20 flex flex-col">
+        <div class="flex-shrink-0 p-6 pb-0">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-xl font-bold text-white">My Playlists</h2>
             <button id="close-playlists" class="text-slate-400 hover:text-white transition-colors">
@@ -169,9 +186,13 @@
                 </svg>
             </button>
         </div>
+        </div>
+        
+        <!-- Scrollable Content Area -->
+        <div class="flex-1 overflow-y-auto px-6 pb-6" style="scrollbar-width: thin; scrollbar-color: #475569 #1e293b;">
         
         <!-- Create New Playlist -->
-        <div class="mb-6">
+        <div class="mb-6 mt-6">
             <button id="create-playlist-btn" class="w-full px-4 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-colors flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -183,6 +204,8 @@
         <!-- Playlists List -->
         <div id="playlists-list" class="space-y-3">
             <div class="text-center py-8 text-slate-400">No playlists yet. Create one to get started!</div>
+        </div>
+        
         </div>
     </div>
 
