@@ -172,20 +172,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (createPlaylistBtn) {
       createPlaylistBtn.addEventListener('click', () => {
-        const name = prompt('Enter playlist name:');
-        if (name && name.trim()) {
-          createPlaylist(name.trim());
-        }
+        showCreatePlaylistModal();
       });
     }
     
     if (saveToPlaylistBtn) {
       saveToPlaylistBtn.addEventListener('click', () => {
         if (sessionHistory.length === 0) {
-          alert('No tracks in session history to save.');
+          showNotification('No tracks in session history to save.', 'error');
           return;
         }
-        showPlaylistSelector(sessionHistory);
+        showTrackSelectionModal();
       });
     }
   }
@@ -214,12 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const playlist = playlists.find(p => p.id === playlistId);
     if (!playlist) return;
     
-    const newName = prompt('Enter new name:', playlist.name);
-    if (newName && newName.trim()) {
-      playlist.name = newName.trim();
-      savePlaylists();
-      updatePlaylistsDisplay();
-    }
+    showRenamePlaylistModal(playlistId, playlist.name);
   }
   
   function addTrackToPlaylist(playlistId, track) {
@@ -250,43 +242,485 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePlaylistsDisplay();
   }
   
-  function savePlaylists() {
-    localStorage.setItem('bpm-playlists', JSON.stringify(playlists));
-  }
-  
-  function showPlaylistSelector(tracks) {
-    if (playlists.length === 0) {
-      alert('Create a playlist first!');
-      return;
-    }
-    
-    // Create modal
+  function showCreatePlaylistModal() {
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn';
     modal.innerHTML = `
-      <div class="bg-slate-800 rounded-lg p-6 max-w-md w-full mx-4">
-        <h3 class="text-xl font-bold text-white mb-4">Select Playlist</h3>
-        <div class="space-y-2 max-h-96 overflow-y-auto mb-4">
-          ${playlists.map(playlist => `
-            <button class="w-full text-left px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white playlist-select-btn" data-playlist-id="${playlist.id}">
-              <div class="font-medium">${playlist.name}</div>
-              <div class="text-xs text-slate-400">${playlist.tracks.length} tracks</div>
-            </button>
-          `).join('')}
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-white/10 transform transition-all animate-slideUp">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white">Create New Playlist</h3>
         </div>
-        <button class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors" id="cancel-playlist-select">Cancel</button>
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-300 mb-2">Playlist Name</label>
+          <input 
+            type="text" 
+            id="playlist-name-input" 
+            placeholder="e.g., Workout Mix, Chill Vibes..."
+            class="w-full px-4 py-3 bg-white border border-slate-600 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            maxlength="50"
+          />
+          <div class="mt-2 text-xs text-slate-400">
+            <span id="char-count">0</span>/50 characters
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button id="cancel-create-playlist" class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all font-medium">
+            Cancel
+          </button>
+          <button id="confirm-create-playlist" class="flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white rounded-lg transition-all font-medium shadow-lg shadow-green-500/20">
+            Create Playlist
+          </button>
+        </div>
       </div>
     `;
     
     document.body.appendChild(modal);
     
-    // Add event listeners
+    const input = modal.querySelector('#playlist-name-input');
+    const charCount = modal.querySelector('#char-count');
+    const confirmBtn = modal.querySelector('#confirm-create-playlist');
+    const cancelBtn = modal.querySelector('#cancel-create-playlist');
+    
+    // Auto-focus input
+    setTimeout(() => input.focus(), 100);
+    
+    // Character counter
+    input.addEventListener('input', () => {
+      charCount.textContent = input.value.length;
+    });
+    
+    // Enter key to confirm
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        createPlaylist(input.value.trim());
+        document.body.removeChild(modal);
+      }
+    });
+    
+    // Confirm button
+    confirmBtn.addEventListener('click', () => {
+      if (input.value.trim()) {
+        createPlaylist(input.value.trim());
+        document.body.removeChild(modal);
+      } else {
+        input.classList.add('ring-2', 'ring-red-500');
+        setTimeout(() => input.classList.remove('ring-2', 'ring-red-500'), 500);
+      }
+    });
+    
+    // Cancel button
+    cancelBtn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Click outside to close
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) document.body.removeChild(modal);
+    });
+    
+    // Escape key to close
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    };
+    document.addEventListener('keydown', escapeHandler);
+  }
+  
+  function showRenamePlaylistModal(playlistId, currentName) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn';
+    modal.innerHTML = `
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-white/10 transform transition-all animate-slideUp">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white">Rename Playlist</h3>
+        </div>
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-slate-300 mb-2">Playlist Name</label>
+          <input 
+            type="text" 
+            id="playlist-rename-input" 
+            value="${currentName}"
+            class="w-full px-4 py-3 bg-white border border-slate-600 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            maxlength="50"
+          />
+          <div class="mt-2 text-xs text-slate-400">
+            <span id="char-count-rename">${currentName.length}</span>/50 characters
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button id="cancel-rename-playlist" class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all font-medium">
+            Cancel
+          </button>
+          <button id="confirm-rename-playlist" class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-lg transition-all font-medium shadow-lg shadow-blue-500/20">
+            Rename
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    const input = modal.querySelector('#playlist-rename-input');
+    const charCount = modal.querySelector('#char-count-rename');
+    const confirmBtn = modal.querySelector('#confirm-rename-playlist');
+    const cancelBtn = modal.querySelector('#cancel-rename-playlist');
+    
+    // Auto-focus and select text
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 100);
+    
+    // Character counter
+    input.addEventListener('input', () => {
+      charCount.textContent = input.value.length;
+    });
+    
+    // Enter key to confirm
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        const playlist = playlists.find(p => p.id === playlistId);
+        if (playlist) {
+          playlist.name = input.value.trim();
+          savePlaylists();
+          updatePlaylistsDisplay();
+        }
+        document.body.removeChild(modal);
+      }
+    });
+    
+    // Confirm button
+    confirmBtn.addEventListener('click', () => {
+      if (input.value.trim()) {
+        const playlist = playlists.find(p => p.id === playlistId);
+        if (playlist) {
+          playlist.name = input.value.trim();
+          savePlaylists();
+          updatePlaylistsDisplay();
+        }
+        document.body.removeChild(modal);
+      } else {
+        input.classList.add('ring-2', 'ring-red-500');
+        setTimeout(() => input.classList.remove('ring-2', 'ring-red-500'), 500);
+      }
+    });
+    
+    // Cancel button
+    cancelBtn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    // Click outside to close
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) document.body.removeChild(modal);
+    });
+    
+    // Escape key to close
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    };
+    document.addEventListener('keydown', escapeHandler);
+  }
+  
+  function savePlaylists() {
+    localStorage.setItem('bpm-playlists', JSON.stringify(playlists));
+  }
+  
+  function showTrackSelectionModal() {
+    const TRACKS_PER_PAGE = 5;
+    let currentPage = 0;
+    const totalPages = Math.ceil(sessionHistory.length / TRACKS_PER_PAGE);
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn';
+    modal.innerHTML = `
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 max-w-2xl w-full mx-4 shadow-2xl border border-white/10 transform transition-all animate-slideUp max-h-[90vh] flex flex-col">
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-white">Select Tracks</h3>
+              <p class="text-xs text-slate-400">Choose tracks to add to playlist</p>
+            </div>
+          </div>
+          <button id="close-track-selection" class="text-slate-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="mb-4 flex items-center gap-3">
+          <button id="select-all-tracks" class="px-3 py-1.5 text-sm bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 rounded-lg transition-colors">
+            Select All on Page
+          </button>
+          <button id="deselect-all-tracks" class="px-3 py-1.5 text-sm bg-slate-700 text-slate-300 hover:bg-slate-600 rounded-lg transition-colors">
+            Deselect All
+          </button>
+          <div class="ml-auto text-sm text-slate-400">
+            <span id="selected-count">0</span> selected
+          </div>
+        </div>
+        
+        <div id="track-selection-list" class="space-y-2 mb-4 flex-1">
+          <!-- Tracks will be rendered here -->
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div class="flex items-center justify-center gap-4 mb-6 pb-4 border-b border-white/10">
+          <button id="prev-page" class="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed" disabled>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <div class="text-sm text-slate-300">
+            Page <span id="current-page">1</span> of <span id="total-pages">${totalPages}</span>
+          </div>
+          <button id="next-page" class="p-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="flex gap-3">
+          <button id="cancel-track-selection" class="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all font-medium">
+            Cancel
+          </button>
+          <button id="add-songs-to-playlist" class="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-lg transition-all font-medium shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            Add Songs to Playlist
+          </button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    const trackListContainer = modal.querySelector('#track-selection-list');
+    const selectedCountEl = modal.querySelector('#selected-count');
+    const addSongsBtn = modal.querySelector('#add-songs-to-playlist');
+    const selectAllBtn = modal.querySelector('#select-all-tracks');
+    const deselectAllBtn = modal.querySelector('#deselect-all-tracks');
+    const closeBtn = modal.querySelector('#close-track-selection');
+    const cancelBtn = modal.querySelector('#cancel-track-selection');
+    const prevPageBtn = modal.querySelector('#prev-page');
+    const nextPageBtn = modal.querySelector('#next-page');
+    const currentPageEl = modal.querySelector('#current-page');
+    
+    let selectedIndices = new Set();
+    
+    function renderPage() {
+      const start = currentPage * TRACKS_PER_PAGE;
+      const end = Math.min(start + TRACKS_PER_PAGE, sessionHistory.length);
+      const pageTracks = sessionHistory.slice(start, end);
+      
+      trackListContainer.innerHTML = pageTracks.map((track, pageIndex) => {
+        const actualIndex = start + pageIndex;
+        const isChecked = selectedIndices.has(actualIndex);
+        return `
+          <label class="flex items-center gap-3 p-3 bg-slate-700/30 hover:bg-slate-700/50 rounded-lg cursor-pointer transition-all group">
+            <input type="checkbox" ${isChecked ? 'checked' : ''} class="track-checkbox w-5 h-5 rounded border-2 border-slate-500 bg-slate-800 text-purple-500 focus:ring-2 focus:ring-purple-500 focus:ring-offset-0 transition-all cursor-pointer" data-track-index="${actualIndex}">
+            ${track.albumArt ? `<img src="${track.albumArt}" alt="${track.title}" class="w-12 h-12 rounded object-cover">` : '<div class="w-12 h-12 rounded bg-slate-700 flex items-center justify-center"><svg class="w-6 h-6 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path></svg></div>'}
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-medium text-white truncate group-hover:text-purple-300 transition-colors">${track.title || 'Unknown'}</div>
+              <div class="text-xs text-slate-400 truncate">${track.artist || 'Unknown Artist'}</div>
+            </div>
+            <div class="text-right">
+              <div class="text-sm font-bold text-purple-400">${track.bpm || '—'}</div>
+              <div class="text-xs text-slate-500">BPM</div>
+            </div>
+          </label>
+        `;
+      }).join('');
+      
+      // Update pagination controls
+      currentPageEl.textContent = currentPage + 1;
+      prevPageBtn.disabled = currentPage === 0;
+      nextPageBtn.disabled = currentPage >= totalPages - 1;
+      
+      // Attach checkbox listeners
+      const checkboxes = trackListContainer.querySelectorAll('.track-checkbox');
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const index = parseInt(e.target.dataset.trackIndex);
+          if (e.target.checked) {
+            selectedIndices.add(index);
+          } else {
+            selectedIndices.delete(index);
+          }
+          updateSelectedCount();
+        });
+      });
+    }
+    
+    function updateSelectedCount() {
+      selectedCountEl.textContent = selectedIndices.size;
+      addSongsBtn.disabled = selectedIndices.size === 0;
+    }
+    
+    selectAllBtn.addEventListener('click', () => {
+      const start = currentPage * TRACKS_PER_PAGE;
+      const end = Math.min(start + TRACKS_PER_PAGE, sessionHistory.length);
+      for (let i = start; i < end; i++) {
+        selectedIndices.add(i);
+      }
+      renderPage();
+      updateSelectedCount();
+    });
+    
+    deselectAllBtn.addEventListener('click', () => {
+      selectedIndices.clear();
+      renderPage();
+      updateSelectedCount();
+    });
+    
+    prevPageBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        renderPage();
+      }
+    });
+    
+    nextPageBtn.addEventListener('click', () => {
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        renderPage();
+      }
+    });
+    
+    addSongsBtn.addEventListener('click', () => {
+      const selectedTracks = Array.from(selectedIndices)
+        .map(index => sessionHistory[index]);
+      
+      document.body.removeChild(modal);
+      showPlaylistConfirmationModal(selectedTracks);
+    });
+    
+    closeBtn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    cancelBtn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) document.body.removeChild(modal);
+    });
+    
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    // Initial render
+    renderPage();
+    updateSelectedCount();
+  }
+  
+  function showPlaylistConfirmationModal(tracks) {
+    if (playlists.length === 0) {
+      showNotification('Create a playlist first!', 'error');
+      return;
+    }
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn';
+    modal.innerHTML = `
+      <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl border border-white/10 transform transition-all animate-slideUp">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white">Select Destination Playlist</h3>
+            <p class="text-xs text-slate-400">${tracks.length} track${tracks.length !== 1 ? 's' : ''} selected</p>
+          </div>
+        </div>
+        
+        <p class="text-sm text-slate-300 mb-4">Click a playlist to add your selected songs:</p>
+        
+        <div class="space-y-2 max-h-96 overflow-y-auto mb-6">
+          ${playlists.map(playlist => `
+            <button class="w-full text-left px-4 py-3 bg-slate-700/50 hover:bg-slate-700 hover:ring-2 hover:ring-green-500/50 rounded-lg transition-all text-white playlist-select-btn group" data-playlist-id="${playlist.id}">
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="font-medium group-hover:text-green-300 transition-colors">${playlist.name}</div>
+                  <div class="text-xs text-slate-400">${playlist.tracks.length} tracks</div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-green-500/20 group-hover:bg-green-500 flex items-center justify-center transition-all">
+                  <svg class="w-5 h-5 text-green-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                </div>
+              </div>
+            </button>
+          `).join('')}
+        </div>
+        <button class="w-full px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-all font-medium" id="cancel-playlist-select">Cancel</button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
     modal.querySelectorAll('.playlist-select-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const playlistId = parseFloat(btn.dataset.playlistId);
-        tracks.forEach(track => addTrackToPlaylist(playlistId, track));
-        document.body.removeChild(modal);
-        alert(`Added ${tracks.length} track(s) to playlist!`);
+        const playlist = playlists.find(p => p.id === playlistId);
+        
+        if (playlist) {
+          let addedCount = 0;
+          let skippedCount = 0;
+          
+          tracks.forEach(track => {
+            const exists = playlist.tracks.some(t => 
+              t.title === track.title && t.artist === track.artist
+            );
+            
+            if (!exists) {
+              playlist.tracks.push(track);
+              addedCount++;
+            } else {
+              skippedCount++;
+            }
+          });
+          
+          // Save after all tracks are added
+          savePlaylists();
+          updatePlaylistsDisplay();
+          
+          document.body.removeChild(modal);
+          
+          if (addedCount > 0) {
+            showNotification(`Successfully added ${addedCount} track${addedCount !== 1 ? 's' : ''} to "${playlist.name}"!`, 'success');
+          } else {
+            showNotification(`All tracks already exist in "${playlist.name}"!`, 'error');
+          }
+        }
       });
     });
     
@@ -297,6 +731,30 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) document.body.removeChild(modal);
     });
+    
+    const escapeHandler = (e) => {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modal);
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    };
+    document.addEventListener('keydown', escapeHandler);
+  }
+  
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+    notification.className = `fixed top-6 right-6 ${bgColor} text-white px-6 py-3 rounded-lg shadow-2xl z-[60] animate-slideUp`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transform = 'translateY(-20px)';
+      notification.style.transition = 'all 0.3s ease-out';
+      setTimeout(() => document.body.removeChild(notification), 300);
+    }, 3000);
   }
   
   function updatePlaylistsDisplay() {
