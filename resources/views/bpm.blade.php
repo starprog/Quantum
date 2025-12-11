@@ -119,6 +119,42 @@
                 </div>
             </div>
             
+            <!-- Audio Analysis -->
+            <div>
+                <div class="text-xs text-slate-400 mb-3">Audio Analysis</div>
+                <div class="space-y-3">
+                    <!-- Time Signature -->
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-slate-400">Time Signature</span>
+                            <span id="time-signature" class="text-sm font-bold text-blue-400">—</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Energy Meter -->
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-slate-400">Energy</span>
+                            <span id="energy-value" class="text-sm font-bold text-green-400">—</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div id="energy-bar" class="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Danceability Meter -->
+                    <div class="bg-slate-800/50 rounded-lg p-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-slate-400">Danceability</span>
+                            <span id="danceability-value" class="text-sm font-bold text-pink-400">—</span>
+                        </div>
+                        <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div id="danceability-bar" class="bg-gradient-to-r from-pink-500 to-pink-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Tags -->
             <div>
                 <div class="text-xs text-slate-400 mb-2">Tags</div>

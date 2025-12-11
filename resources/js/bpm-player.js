@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionHistory = []; // Store analyzed tracks
   let lyricsData = []; // Store parsed LRC lyrics with timestamps
   let lyricsUpdateInterval = null; // Interval for syncing lyrics
+  let currentAudioAnalysis = null; // Store energy, danceability, time signature
   
 
   // === SESSION HISTORY MANAGEMENT ===
@@ -580,9 +581,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (coverSpinner) coverSpinner.classList.remove('hidden');
     let estimatedBpm = null;
     try {
-      const bpm = await estimateBPMFromFile(file);
+      const analysis = await estimateBPMFromFile(file);
+      const bpm = analysis.bpm || analysis;
       if (bpm && bpm > 0) {
         estimatedBpm = Math.round(bpm);
+        if (typeof analysis === 'object' && analysis.energy !== undefined) {
+          currentAudioAnalysis = {
+            energy: analysis.energy,
+            danceability: analysis.danceability,
+            timeSignature: analysis.timeSignature
+          };
+          console.log('[bpm-player] Audio analysis:', currentAudioAnalysis);
+        }
         if (bpmDisplay) bpmDisplay.textContent = estimatedBpm + ' BPM';
         if (statusNote) statusNote.textContent = 'Estimated BPM from uploaded file.';
       } else {
@@ -739,6 +749,21 @@ document.addEventListener('DOMContentLoaded', () => {
           wiki.textContent = summary.length > 300 ? summary.substring(0, 300) + '...' : summary;
         } else {
           wiki.textContent = 'No description available.';
+        }
+        
+        // Display audio analysis if available
+        if (currentAudioAnalysis) {
+          $('#time-signature').textContent = currentAudioAnalysis.timeSignature || '4/4';
+          $('#energy-value').textContent = currentAudioAnalysis.energy + '%';
+          $('#energy-bar').style.width = currentAudioAnalysis.energy + '%';
+          $('#danceability-value').textContent = currentAudioAnalysis.danceability + '%';
+          $('#danceability-bar').style.width = currentAudioAnalysis.danceability + '%';
+        } else {
+          $('#time-signature').textContent = '—';
+          $('#energy-value').textContent = '—';
+          $('#energy-bar').style.width = '0%';
+          $('#danceability-value').textContent = '—';
+          $('#danceability-bar').style.width = '0%';
         }
         
         $('#stats-loading').classList.add('hidden');
@@ -1088,13 +1113,175 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // fallback: derive bpm from highest autocorrelation lag
+    let detectedBpm;
     if (best.score <= 0) {
       const peakLag = ac.indexOf(Math.max(...ac));
-      const derivedBpm = peakLag > 0 ? (60 * fps) / peakLag : 0;
-      return Math.round(derivedBpm);
+      detectedBpm = peakLag > 0 ? (60 * fps) / peakLag : 0;
+    } else {
+      detectedBpm = best.bpm;
     }
-
-    return Math.round(best.bpm);
+    
+    // Calculate additional audio characteristics
+    const audioAnalysis = analyzeAudioCharacteristics(channelData, norm, detectedBpm, sampleRate);
+    
+    return {
+      bpm: Math.round(detectedBpm),
+      ...audioAnalysis
+    };
+  }
+  
+  function analyzeAudioCharacteristics(samples, energyEnvelope, bpm, sampleRate) {
+    // Calculate Energy (0-100): Average RMS of the signal
+    let rmsSum = 0;
+    for (let i = 0; i < samples.length; i++) {
+      rmsSum += samples[i] * samples[i];
+    }
+    const rms = Math.sqrt(rmsSum / samples.length);
+    const energy = Math.min(100, Math.round(rms * 500)); // Scale to 0-100
+    
+    // Calculate Danceability (0-100): Based on beat regularity and tempo
+    const avgEnergy = energyEnvelope.reduce((a, b) => a + b, 0) / energyEnvelope.length;
+    let variance = 0;
+    for (let i = 0; i < energyEnvelope.length; i++) {
+      variance += Math.pow(energyEnvelope[i] - avgEnergy, 2);
+    }
+    variance /= energyEnvelope.length;
+    const consistency = 1 / (1 + variance); // Lower variance = more consistent = more danceable
+    
+    // Tempo factor: 90-130 BPM is most danceable
+    let tempoFactor = 1.0;
+    if (bpm >= 90 && bpm <= 130) {
+      tempoFactor = 1.0;
+    } else if (bpm < 90) {
+      tempoFactor = 0.5 + (bpm / 180); // Slower = less danceable
+    } else {
+      tempoFactor = 0.5 + (1.0 - Math.min(1.0, (bpm - 130) / 100)); // Too fast = less danceable
+    }
+    
+    const danceability = Math.min(100, Math.round(consistency * tempoFactor * 100));
+    
+    // Detect Time Signature: Analyze beat patterns
+    const timeSignature = detectTimeSignature(energyEnvelope, bpm, sampleRate);
+    
+    return {
+      energy,
+      danceability,
+      timeSignature
+    };
+  }
+  
+  function detectTimeSignature(energyEnvelope, bpm, sampleRate) {
+    // Improved time signature detection with support for compound meters and triplet feels
+    
+    if (energyEnvelope.length < 100) return '4/4'; // Not enough data
+    
+    const avgEnergy = energyEnvelope.reduce((a, b) => a + b, 0) / energyEnvelope.length;
+    
+    // Use adaptive threshold based on energy distribution
+    const sortedEnergy = [...energyEnvelope].sort((a, b) => b - a);
+    const top20PercentThreshold = sortedEnergy[Math.floor(sortedEnergy.length * 0.2)];
+    const threshold = Math.max(avgEnergy * 1.3, top20PercentThreshold);
+    
+    // Find peaks (strong beats) with minimum distance to avoid duplicates
+    const peaks = [];
+    const minPeakDistance = Math.floor(energyEnvelope.length / (bpm / 60) / 8); // At least 1/8 beat apart
+    
+    for (let i = 2; i < energyEnvelope.length - 2; i++) {
+      if (energyEnvelope[i] > threshold && 
+          energyEnvelope[i] >= energyEnvelope[i - 1] && 
+          energyEnvelope[i] >= energyEnvelope[i + 1] &&
+          energyEnvelope[i] > energyEnvelope[i - 2] &&
+          energyEnvelope[i] > energyEnvelope[i + 2]) {
+        // Check minimum distance from last peak
+        if (peaks.length === 0 || i - peaks[peaks.length - 1] >= minPeakDistance) {
+          peaks.push(i);
+        }
+      }
+    }
+    
+    if (peaks.length < 8) return '4/4'; // Default if insufficient peaks
+    
+    // Analyze intervals between consecutive peaks
+    const intervals = [];
+    for (let i = 1; i < peaks.length; i++) {
+      intervals.push(peaks[i] - peaks[i - 1]);
+    }
+    
+    // Calculate interval statistics
+    intervals.sort((a, b) => a - b);
+    const medianInterval = intervals[Math.floor(intervals.length / 2)];
+    
+    // Look for triplet subdivisions (3:2 ratio pattern)
+    let tripletCount = 0;
+    let straightCount = 0;
+    
+    for (let i = 0; i < intervals.length; i++) {
+      const ratio = intervals[i] / medianInterval;
+      // Check if interval fits triplet pattern (roughly 2/3 or 3/2 of median)
+      if (Math.abs(ratio - 0.67) < 0.15 || Math.abs(ratio - 1.5) < 0.2) {
+        tripletCount++;
+      } else if (Math.abs(ratio - 1.0) < 0.15) {
+        straightCount++;
+      }
+    }
+    
+    const hasTripletFeel = tripletCount > straightCount * 0.4;
+    
+    // Count peaks in groups to detect measure boundaries
+    const measureLength = medianInterval * 4; // Assume 4 beats per measure initially
+    const measures = Math.floor(peaks.length / 4);
+    
+    if (measures < 2) return '4/4';
+    
+    // Analyze peak strength patterns to identify downbeats
+    const peakStrengths = peaks.map(p => energyEnvelope[p]);
+    const avgPeakStrength = peakStrengths.reduce((a, b) => a + b, 0) / peakStrengths.length;
+    
+    // Find stronger peaks (likely downbeats)
+    const strongPeaks = [];
+    for (let i = 0; i < peaks.length; i++) {
+      if (peakStrengths[i] > avgPeakStrength * 1.1) {
+        strongPeaks.push(i);
+      }
+    }
+    
+    // Calculate beats between strong peaks (downbeats)
+    const beatsPerMeasure = [];
+    for (let i = 1; i < strongPeaks.length && i < 10; i++) {
+      beatsPerMeasure.push(strongPeaks[i] - strongPeaks[i - 1]);
+    }
+    
+    if (beatsPerMeasure.length > 0) {
+      const avgBeatsPerMeasure = Math.round(
+        beatsPerMeasure.reduce((a, b) => a + b, 0) / beatsPerMeasure.length
+      );
+      
+      // Determine time signature based on beat grouping and feel
+      if (hasTripletFeel) {
+        // Compound meters (6/8, 9/8, 12/8)
+        if (avgBeatsPerMeasure >= 11 || (avgBeatsPerMeasure >= 4 && bpm < 80)) {
+          return '12/8'; // 4 groups of 3 eighth notes
+        } else if (avgBeatsPerMeasure >= 8) {
+          return '9/8'; // 3 groups of 3 eighth notes
+        } else if (avgBeatsPerMeasure >= 5) {
+          return '6/8'; // 2 groups of 3 eighth notes
+        }
+      }
+      
+      // Simple meters
+      if (avgBeatsPerMeasure <= 2) return '2/4';
+      if (avgBeatsPerMeasure === 3) return '3/4';
+      if (avgBeatsPerMeasure === 5) return '5/4';
+      if (avgBeatsPerMeasure === 6 && !hasTripletFeel) return '6/4';
+      if (avgBeatsPerMeasure >= 7) return '7/4';
+    }
+    
+    // Final fallback based on BPM and triplet feel
+    if (hasTripletFeel && bpm >= 60 && bpm <= 90) {
+      return '12/8'; // Slow triplet feel songs like "Hold the Line"
+    }
+    
+    return '4/4'; // Most common default
   }
 
   function mergeChannels(audioBuffer) {
