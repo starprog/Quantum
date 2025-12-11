@@ -41,7 +41,22 @@
     <div class="min-h-screen flex items-center justify-center relative overflow-hidden" style="background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);">
 
     <!-- Session History Button (Bottom-right, floating) -->
-    <div class="fixed bottom-6 right-6 z-30">
+    <div class="fixed bottom-6 right-6 z-30 flex flex-col gap-3">
+        <!-- BPM Filter Button -->
+        <button id="bpm-filter-toggle" class="p-4 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 shadow-lg text-white hover:shadow-2xl hover:scale-110 transition-all" title="BPM Filter">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+            </svg>
+        </button>
+        
+        <!-- Playlists Button -->
+        <button id="playlists-toggle" class="p-4 rounded-full bg-gradient-to-br from-green-500 to-teal-500 shadow-lg text-white hover:shadow-2xl hover:scale-110 transition-all" title="Playlists">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+            </svg>
+        </button>
+        
+        <!-- Session History Button -->
         <button id="history-toggle" class="p-4 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 shadow-lg text-white hover:shadow-2xl hover:scale-110 transition-all" title="Session History">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -55,6 +70,9 @@
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-white">Session History</h2>
                 <div class="flex gap-2">
+                    <button id="save-to-playlist-btn" class="px-3 py-1 text-sm bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-colors">
+                        Save to Playlist
+                    </button>
                     <button id="clear-history" class="px-3 py-1 text-sm bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors">
                         Clear All
                     </button>
@@ -71,6 +89,80 @@
             <div id="history-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 <div class="text-center py-8 text-slate-400 col-span-full">No tracks analyzed yet. Upload a track to get started!</div>
             </div>
+        </div>
+    </div>
+
+    <!-- BPM Filter Panel (Top) -->
+    <div id="bpm-filter-panel" class="hidden fixed top-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-b border-white/10 z-20 p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-white">BPM Range Filter</h2>
+                <button id="close-bpm-filter" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <button class="bpm-filter-btn px-4 py-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors" data-min="0" data-max="999">
+                    <span class="font-bold">All</span>
+                    <span class="text-xs ml-1">(All BPM)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-colors" data-min="60" data-max="90">
+                    <span class="font-bold">Chill</span>
+                    <span class="text-xs ml-1">(60-90)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors" data-min="90" data-max="110">
+                    <span class="font-bold">Hip-Hop</span>
+                    <span class="text-xs ml-1">(90-110)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-pink-500/20 text-pink-300 rounded-lg hover:bg-pink-500/30 transition-colors" data-min="110" data-max="130">
+                    <span class="font-bold">Pop/Dance</span>
+                    <span class="text-xs ml-1">(110-130)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-yellow-500/20 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-colors" data-min="120" data-max="140">
+                    <span class="font-bold">Workout</span>
+                    <span class="text-xs ml-1">(120-140)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors" data-min="140" data-max="180">
+                    <span class="font-bold">EDM/Techno</span>
+                    <span class="text-xs ml-1">(140-180)</span>
+                </button>
+                <button class="bpm-filter-btn px-4 py-2 bg-orange-500/20 text-orange-300 rounded-lg hover:bg-orange-500/30 transition-colors" data-min="180" data-max="999">
+                    <span class="font-bold">D&B/Hardcore</span>
+                    <span class="text-xs ml-1">(180+)</span>
+                </button>
+            </div>
+            <div id="filtered-results" class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Filtered tracks will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlists Panel (Left side) -->
+    <div id="playlists-panel" class="hidden fixed left-0 top-0 h-screen w-80 bg-slate-900/95 backdrop-blur-md border-r border-white/10 overflow-y-auto z-20 p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white">My Playlists</h2>
+            <button id="close-playlists" class="text-slate-400 hover:text-white transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Create New Playlist -->
+        <div class="mb-6">
+            <button id="create-playlist-btn" class="w-full px-4 py-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Create Playlist
+            </button>
+        </div>
+        
+        <!-- Playlists List -->
+        <div id="playlists-list" class="space-y-3">
+            <div class="text-center py-8 text-slate-400">No playlists yet. Create one to get started!</div>
         </div>
     </div>
 

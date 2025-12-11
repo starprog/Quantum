@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let lyricsData = []; // Store parsed LRC lyrics with timestamps
   let lyricsUpdateInterval = null; // Interval for syncing lyrics
   let currentAudioAnalysis = null; // Store energy, danceability, time signature
+  let playlists = []; // Store user playlists
+  let currentBPMFilter = { min: 0, max: 999 }; // Current BPM filter
   
 
   // === SESSION HISTORY MANAGEMENT ===
@@ -130,6 +132,291 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <div class="text-xs text-slate-500">${new Date(track.timestamp).toLocaleString()}</div>
+      </div>
+    `).join('');
+  }
+
+  // === PLAYLISTS MANAGEMENT ===
+  function initPlaylists() {
+    const playlistsToggle = $('#playlists-toggle');
+    const playlistsPanel = $('#playlists-panel');
+    const closePlaylists = $('#close-playlists');
+    const createPlaylistBtn = $('#create-playlist-btn');
+    const saveToPlaylistBtn = $('#save-to-playlist-btn');
+    
+    // Load playlists from localStorage
+    const saved = localStorage.getItem('bpm-playlists');
+    if (saved) {
+      try {
+        playlists = JSON.parse(saved);
+        updatePlaylistsDisplay();
+      } catch (e) {
+        console.warn('[bpm-player] failed to load playlists', e);
+      }
+    }
+    
+    if (playlistsToggle) {
+      playlistsToggle.addEventListener('click', () => {
+        playlistsPanel.classList.toggle('hidden');
+        // Close other panels
+        $('#bpm-filter-panel').classList.add('hidden');
+        $('#history-panel').classList.add('hidden');
+      });
+    }
+    
+    if (closePlaylists) {
+      closePlaylists.addEventListener('click', () => {
+        playlistsPanel.classList.add('hidden');
+      });
+    }
+    
+    if (createPlaylistBtn) {
+      createPlaylistBtn.addEventListener('click', () => {
+        const name = prompt('Enter playlist name:');
+        if (name && name.trim()) {
+          createPlaylist(name.trim());
+        }
+      });
+    }
+    
+    if (saveToPlaylistBtn) {
+      saveToPlaylistBtn.addEventListener('click', () => {
+        if (sessionHistory.length === 0) {
+          alert('No tracks in session history to save.');
+          return;
+        }
+        showPlaylistSelector(sessionHistory);
+      });
+    }
+  }
+  
+  function createPlaylist(name) {
+    const playlist = {
+      id: Date.now() + Math.random(),
+      name: name,
+      tracks: [],
+      created: Date.now()
+    };
+    playlists.push(playlist);
+    savePlaylists();
+    updatePlaylistsDisplay();
+  }
+  
+  function deletePlaylist(playlistId) {
+    if (confirm('Delete this playlist?')) {
+      playlists = playlists.filter(p => p.id !== playlistId);
+      savePlaylists();
+      updatePlaylistsDisplay();
+    }
+  }
+  
+  function renamePlaylist(playlistId) {
+    const playlist = playlists.find(p => p.id === playlistId);
+    if (!playlist) return;
+    
+    const newName = prompt('Enter new name:', playlist.name);
+    if (newName && newName.trim()) {
+      playlist.name = newName.trim();
+      savePlaylists();
+      updatePlaylistsDisplay();
+    }
+  }
+  
+  function addTrackToPlaylist(playlistId, track) {
+    const playlist = playlists.find(p => p.id === playlistId);
+    if (!playlist) return;
+    
+    // Check if track already exists
+    const exists = playlist.tracks.some(t => 
+      t.title === track.title && t.artist === track.artist
+    );
+    
+    if (exists) {
+      alert('Track already in playlist!');
+      return;
+    }
+    
+    playlist.tracks.push(track);
+    savePlaylists();
+    updatePlaylistsDisplay();
+  }
+  
+  function removeTrackFromPlaylist(playlistId, trackIndex) {
+    const playlist = playlists.find(p => p.id === playlistId);
+    if (!playlist) return;
+    
+    playlist.tracks.splice(trackIndex, 1);
+    savePlaylists();
+    updatePlaylistsDisplay();
+  }
+  
+  function savePlaylists() {
+    localStorage.setItem('bpm-playlists', JSON.stringify(playlists));
+  }
+  
+  function showPlaylistSelector(tracks) {
+    if (playlists.length === 0) {
+      alert('Create a playlist first!');
+      return;
+    }
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+    modal.innerHTML = `
+      <div class="bg-slate-800 rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-white mb-4">Select Playlist</h3>
+        <div class="space-y-2 max-h-96 overflow-y-auto mb-4">
+          ${playlists.map(playlist => `
+            <button class="w-full text-left px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-white playlist-select-btn" data-playlist-id="${playlist.id}">
+              <div class="font-medium">${playlist.name}</div>
+              <div class="text-xs text-slate-400">${playlist.tracks.length} tracks</div>
+            </button>
+          `).join('')}
+        </div>
+        <button class="w-full px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors" id="cancel-playlist-select">Cancel</button>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    modal.querySelectorAll('.playlist-select-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const playlistId = parseFloat(btn.dataset.playlistId);
+        tracks.forEach(track => addTrackToPlaylist(playlistId, track));
+        document.body.removeChild(modal);
+        alert(`Added ${tracks.length} track(s) to playlist!`);
+      });
+    });
+    
+    modal.querySelector('#cancel-playlist-select').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) document.body.removeChild(modal);
+    });
+  }
+  
+  function updatePlaylistsDisplay() {
+    const container = $('#playlists-list');
+    if (!container) return;
+    
+    if (playlists.length === 0) {
+      container.innerHTML = '<div class="text-center py-8 text-slate-400">No playlists yet. Create one to get started!</div>';
+      return;
+    }
+    
+    container.innerHTML = playlists.map(playlist => `
+      <div class="bg-slate-800/50 rounded-lg p-4">
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex-1">
+            <h3 class="font-bold text-white mb-1">${playlist.name}</h3>
+            <div class="text-xs text-slate-400">${playlist.tracks.length} tracks</div>
+          </div>
+          <div class="flex gap-2">
+            <button class="text-slate-400 hover:text-blue-400 transition-colors" onclick="window.renamePlaylist(${playlist.id})" title="Rename">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+              </svg>
+            </button>
+            <button class="text-slate-400 hover:text-red-400 transition-colors" onclick="window.deletePlaylist(${playlist.id})" title="Delete">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="space-y-2 max-h-60 overflow-y-auto">
+          ${playlist.tracks.length === 0 ? '<div class="text-xs text-slate-500 text-center py-2">No tracks yet</div>' : 
+            playlist.tracks.map((track, index) => `
+              <div class="flex items-center gap-2 bg-slate-700/50 rounded p-2">
+                ${track.albumArt ? `<img src="${track.albumArt}" alt="${track.title}" class="w-8 h-8 rounded object-cover">` : '<div class="w-8 h-8 rounded bg-slate-600"></div>'}
+                <div class="flex-1 min-w-0">
+                  <div class="text-xs font-medium text-white truncate">${track.title || 'Unknown'}</div>
+                  <div class="text-xs text-slate-400 truncate">${track.artist || 'Unknown'}</div>
+                </div>
+                <div class="text-xs font-bold text-purple-400">${track.bpm || '—'}</div>
+                <button class="text-slate-400 hover:text-red-400 transition-colors" onclick="window.removeTrackFromPlaylist(${playlist.id}, ${index})" title="Remove">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            `).join('')
+          }
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // === BPM FILTER MANAGEMENT ===
+  function initBPMFilter() {
+    const bpmFilterToggle = $('#bpm-filter-toggle');
+    const bpmFilterPanel = $('#bpm-filter-panel');
+    const closeBPMFilter = $('#close-bpm-filter');
+    const filterButtons = document.querySelectorAll('.bpm-filter-btn');
+    
+    if (bpmFilterToggle) {
+      bpmFilterToggle.addEventListener('click', () => {
+        bpmFilterPanel.classList.toggle('hidden');
+        // Close other panels
+        $('#playlists-panel').classList.add('hidden');
+        $('#history-panel').classList.add('hidden');
+      });
+    }
+    
+    if (closeBPMFilter) {
+      closeBPMFilter.addEventListener('click', () => {
+        bpmFilterPanel.classList.add('hidden');
+      });
+    }
+    
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const min = parseInt(btn.dataset.min);
+        const max = parseInt(btn.dataset.max);
+        currentBPMFilter = { min, max };
+        
+        // Update active state
+        filterButtons.forEach(b => b.classList.remove('ring-2', 'ring-white'));
+        btn.classList.add('ring-2', 'ring-white');
+        
+        // Filter and display
+        filterHistoryByBPM(min, max);
+      });
+    });
+  }
+  
+  function filterHistoryByBPM(min, max) {
+    const filtered = sessionHistory.filter(track => {
+      const bpm = parseFloat(track.bpm);
+      if (isNaN(bpm)) return false;
+      return bpm >= min && bpm <= max;
+    });
+    
+    const container = $('#filtered-results');
+    if (!container) return;
+    
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="text-center py-8 text-slate-400 col-span-full">No tracks found in this BPM range.</div>';
+      return;
+    }
+    
+    container.innerHTML = filtered.map(track => `
+      <div class="bg-slate-800/50 rounded-lg p-3 hover:bg-slate-800 transition-colors">
+        <div class="flex items-center gap-3 mb-2">
+          ${track.albumArt ? `<img src="${track.albumArt}" alt="${track.title}" class="w-12 h-12 rounded object-cover">` : '<div class="w-12 h-12 rounded bg-slate-700 flex items-center justify-center"><svg class="w-6 h-6 text-slate-500" fill="currentColor" viewBox="0 0 20 20"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"></path></svg></div>'}
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium text-white truncate">${track.title || 'Unknown'}</div>
+            <div class="text-xs text-slate-400 truncate">${track.artist || 'Unknown Artist'}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-lg font-bold text-purple-400">${track.bpm || '—'}</div>
+            <div class="text-xs text-slate-500">BPM</div>
+          </div>
+        </div>
       </div>
     `).join('');
   }
@@ -1321,6 +1608,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initialize history
   initHistory();
+  
+  // Initialize playlists
+  initPlaylists();
+  
+  // Initialize BPM filter
+  initBPMFilter();
+  
+  // Expose playlist functions to global scope for onclick handlers
+  window.deletePlaylist = deletePlaylist;
+  window.renamePlaylist = renamePlaylist;
+  window.removeTrackFromPlaylist = removeTrackFromPlaylist;
   
   // Try to load a persistent logo (prefer SVG then PNG) and show it when no cover is present
   (function loadPersistentLogo(){
