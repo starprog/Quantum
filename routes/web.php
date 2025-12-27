@@ -35,3 +35,8 @@ Route::middleware([
     Route::post('/modules/scan', [ModuleController::class, 'scan'])->name('modules.scan');
     Route::post('/modules/upload', [ModuleController::class, 'upload'])->name('modules.upload');
 });
+
+Route::get('/battle', function () {
+    return view('battle-game');
+});
+
